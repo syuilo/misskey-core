@@ -1,4 +1,5 @@
 import {Schema, Connection, Document, Model} from 'mongoose';
+import {User} from '../db';
 
 const schema = new Schema({
 	created_at: { type: Date,                    required: true,  default: Date.now                   },
@@ -8,6 +9,13 @@ const schema = new Schema({
 	reply_to:   { type: Schema.Types.ObjectId,   required: false, default: null,     ref: 'Post'      },
 	text:       { type: String,                  required: false, default: null                       },
 	user:       { type: Schema.Types.ObjectId,   required: true,                     ref: 'User'      }
+});
+
+schema.method('serialize', async () => {
+	const self = this;
+	return new Promise(async (resolve, reject) => {
+		await User.findById(self.id).exec();
+	});
 });
 
 export default function(db: Connection): Model<Document> {
