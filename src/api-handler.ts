@@ -87,7 +87,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) => {
 		}
 
 		function call(): void {
-			require(`${__dirname}/rest/${endpoint.name}`).default(
+			require(`${__dirname}/endpoints/${endpoint.name}`).default(
 				req, res, ctx.app, ctx.user, ctx.isOfficial);
 		}
 	}, (err: any) => {

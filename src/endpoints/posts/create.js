@@ -8,35 +8,32 @@ import event from '../../event';
 const maxTextLength = 300;
 const maxFileLength = 4;
 
-/**
- * 投稿を作成します
- * @param app API利用App
- * @param user API利用ユーザー
- * @param text 本文
- * @param files 添付するファイルのID
- * @return 作成された投稿オブジェクト
- */
-export default (app: any, user: any, text?: string, files?: string[]) =>
-	new Promise<any>((resolve, reject) =>
+export default (req, res, app, user) =>
 {
+	let text = req.body.text;
+
 	// Init 'text' parameter
 	if (text !== undefined && text !== null) {
 		text = text.trim();
 		if (text.length === 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
-			return reject('too-long-text');
+			return res.status(400).send('too-long-text');
 		}
 	} else {
 		text = null;
 	}
 
+	let files = req.body.files;
+
 	// Init 'files' parameter
 	if (files !== undefined && files !== null) {
+		files = files.split(',');
+
 		if (files.length === 0) {
 			files = null;
 		} else if (files.length > maxFileLength) {
-			return reject('too-many-files');
+			return res.status(400).send('too-many-files');
 		}
 
 		if (files !== null) {
@@ -53,8 +50,9 @@ export default (app: any, user: any, text?: string, files?: string[]) =>
 					}
 				});
 			});
+
 			if (isRejected) {
-				return reject('duplicate-files');
+				return res.status(400).send('duplicate-files');
 			}
 		}
 	} else {
@@ -63,7 +61,7 @@ export default (app: any, user: any, text?: string, files?: string[]) =>
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (text === null && files === null) {
-		return reject('text-or-files-is-required');
+		return res.status(400).send('text-or-files-is-required');
 	}
 
 	// 添付ファイルがあれば添付ファイルのバリデーションを行う
@@ -75,23 +73,23 @@ export default (app: any, user: any, text?: string, files?: string[]) =>
 		create(null);
 	}
 
-	function create(files: any[]): void {
+	function create(files) {
 		// ハッシュタグ抽出
-		const hashtags: string[] = extractHashtags(text);
+		const hashtags = extractHashtags(text);
 
 		// 作成
 		Post.create({
 			user: user.id,
-			files: files !== null ? files.map(file => file.id) : null,
+			files: files ? files.map(file => file.id) : null,
 			text: text,
 			prev: user.latest_post,
 			next: null
-		}, (createErr: any, createdPost: any) => {
+		}, (createErr, createdPost) => {
 			if (createErr) {
-				return reject(createErr);
+				return res.status(500).send(createErr);
 			}
 
-			resolve(createdPost);
+			res.send(createdPost);
 
 			// 投稿数インクリメント
 			user.posts_count++;
@@ -107,14 +105,10 @@ export default (app: any, user: any, text?: string, files?: string[]) =>
 
 			// 作成した投稿を前の投稿の次の投稿に設定する
 			if (user.latest_post !== null) {
-				Post.findByIdAndUpdate(<string>user.latest_post, { $set: { next: createdPost._id } });
+				Post.findByIdAndUpdate(user.latest_post, { $set: { next: createdPost._id } });
 			}
 
 			event.publishPost(user.id, createdPost);
 		});
 	}
-});
-
-export const handler = () => {
-
 };
