@@ -1,7 +1,6 @@
-import {User} from '../db/db';
-import {IUser} from '../db/interfaces';
+import User from '../models/user';
 
-export default function(text: string): Promise<IUser[]> {
+export default function(text: string): Promise<any[]> {
 	if (text === null) {
 		return Promise.resolve(null);
 	}
@@ -12,9 +11,9 @@ export default function(text: string): Promise<IUser[]> {
 		return Promise.resolve(null);
 	}
 
-	return Promise.all(mentions.map(mention => new Promise<IUser>((resolve, reject) => {
+	return Promise.all(mentions.map(mention => new Promise<any>((resolve, reject) => {
 		const sn = mention.replace('@', '');
-		User.findOne({screenNameLower: sn.toLowerCase()}, (err: any, user: IUser) => {
+		User.findOne({username: sn}, (err, user) => {
 			if (err !== null) {
 				reject(err);
 			} else {

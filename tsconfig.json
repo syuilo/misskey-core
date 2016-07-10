@@ -34,7 +34,6 @@
 		"./src/common/extract-mentions.ts",
 		"./src/common/get-drive-file.ts",
 		"./src/common/lookup-follow-state.ts",
-		"./src/common/read-talk-message.ts",
 		"./src/common/register-hashtags.ts",
 		"./src/common/save-post-mentions.ts",
 		"./src/config.ts",

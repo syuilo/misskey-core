@@ -1,12 +1,11 @@
-import {DriveFile} from '../db/db';
-import {IDriveFile} from '../db/interfaces';
+import DriveFile from '../models/drive-file';
 
 export default (
 	meId: string,
 	fileId: string
-) => new Promise<IDriveFile>((resolve, reject) =>
+) => new Promise<any>((resolve, reject) =>
 {
-	DriveFile.findById(fileId, (err: any, file: IDriveFile) => {
+	DriveFile.findById(fileId, (err, file) => {
 		if (err) {
 			reject(err);
 		} else if (file === null) {
