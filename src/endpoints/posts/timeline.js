@@ -5,7 +5,7 @@ export default async (params, res, app, user) =>
 {
 	let limit = params.limit;
 
-	// Init 'text' parameter
+	// Init 'limit' parameter
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
@@ -45,19 +45,18 @@ export default async (params, res, app, user) =>
 	}
 
 	// クエリを発行してタイムラインを取得
-	const timeline =
-		await Post
-			.find(query)
-			.sort(sort)
-			.limit(limit)
-			.lean()
-			.exec();
+	const timeline = await Post
+		.find(query)
+		.sort(sort)
+		.limit(limit)
+		.lean()
+		.exec();
 
 	if (timeline.length === 0) {
 		return res([]);
 	}
 
-	// send
+	// serialize
 	res(timeline.map(async (post) => {
 		return await serialize(post);
 	}));
