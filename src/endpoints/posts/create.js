@@ -8,9 +8,9 @@ import event from '../../event';
 const maxTextLength = 300;
 const maxFileLength = 4;
 
-export default (req, res, app, user) =>
+export default (params, res, app, user) =>
 {
-	let text = req.body.text;
+	let text = params.text;
 
 	// Init 'text' parameter
 	if (text !== undefined && text !== null) {
@@ -18,13 +18,13 @@ export default (req, res, app, user) =>
 		if (text.length === 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
-			return res.status(400).send('too-long-text');
+			return res(400, 'too-long-text');
 		}
 	} else {
 		text = null;
 	}
 
-	let files = req.body.files;
+	let files = params.files;
 
 	// Init 'files' parameter
 	if (files !== undefined && files !== null) {
@@ -61,7 +61,7 @@ export default (req, res, app, user) =>
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (text === null && files === null) {
-		return res.status(400).send('text-or-files-is-required');
+		return res(400, 'text-or-files-is-required');
 	}
 
 	// 添付ファイルがあれば添付ファイルのバリデーションを行う
@@ -86,10 +86,10 @@ export default (req, res, app, user) =>
 			next: null
 		}, (createErr, createdPost) => {
 			if (createErr) {
-				return res.status(500).send(createErr);
+				return res(500, createErr);
 			}
 
-			res.send(createdPost);
+			res(createdPost);
 
 			// 投稿数インクリメント
 			user.posts_count++;
@@ -105,7 +105,9 @@ export default (req, res, app, user) =>
 
 			// 作成した投稿を前の投稿の次の投稿に設定する
 			if (user.latest_post !== null) {
-				Post.findByIdAndUpdate(user.latest_post, { $set: { next: createdPost._id } });
+				Post.findByIdAndUpdate(user.latest_post, {
+					$set: { next: createdPost._id }
+				});
 			}
 
 			event.publishPost(user.id, createdPost);
