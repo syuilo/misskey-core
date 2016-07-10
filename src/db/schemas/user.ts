@@ -51,24 +51,24 @@ export default function(db: Connection): Model<Document> {
 		delete ret.avatar;
 		delete ret.avatarPath;
 		ret.avatarUrl = doc.avatar !== null
-			? `${config.fileServer.url}/${encodePath(doc.avatarPath)}`
-			: `${config.fileServer.url}/defaults/avatar.jpg`;
+			? `${config.drive.url}/${encodePath(doc.avatarPath)}`
+			: `${config.drive.url}/defaults/avatar.jpg`;
 		ret.avatarThumbnailUrl = `${ret.avatarUrl}?thumbnail`;
 
 		// Normalization banner URL
 		delete ret.banner;
 		delete ret.bannerPath;
 		ret.bannerUrl = doc.banner !== null
-			? `${config.fileServer.url}/${encodePath(doc.bannerPath)}`
-			: `${config.fileServer.url}/defaults/banner.jpg`;
+			? `${config.drive.url}/${encodePath(doc.bannerPath)}`
+			: `${config.drive.url}/defaults/banner.jpg`;
 		ret.bannerThumbnailUrl = `${ret.bannerUrl}?thumbnail`;
 
 		// Normalization wallpaper URL
 		delete ret.wallpaper;
 		delete ret.wallpaperPath;
 		ret.wallpaperUrl = doc.wallpaper !== null
-			? `${config.fileServer.url}/${encodePath(doc.wallpaperPath)}`
-			: `${config.fileServer.url}/defaults/wallpaper.jpg`;
+			? `${config.drive.url}/${encodePath(doc.wallpaperPath)}`
+			: `${config.drive.url}/defaults/wallpaper.jpg`;
 		ret.wallpaperThumbnailUrl = `${ret.wallpaperUrl}?thumbnail`;
 
 		// Remove needless properties

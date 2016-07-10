@@ -45,6 +45,9 @@ export interface IConfig {
 		port: number;
 		password: string;
 	};
+	drive: {
+		url: string;
+	};
 	apiPass: string;
 	port: {
 		internal: number;

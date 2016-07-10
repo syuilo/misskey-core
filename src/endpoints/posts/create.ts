@@ -1,5 +1,5 @@
-import {Post, Post} from '../../db/db';
-import {IApplication, IUser, IPost, IPost, IDriveFile} from '../../db/interfaces';
+import {Post} from '../../db/db';
+import {IApplication, IUser, IPost, IDriveFile} from '../../db/interfaces';
 import savePostMentions from '../../core/save-post-mentions';
 import extractHashtags from '../../core/extract-hashtags';
 import registerHashtags from '../../core/register-hashtags';

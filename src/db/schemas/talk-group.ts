@@ -23,8 +23,8 @@ export default function(db: Connection): Model<Document> {
 		delete ret.icon;
 		delete ret.iconPath;
 		ret.iconUrl = doc.icon !== null
-			? `${config.fileServer.url}/${encodePath(doc.iconPath)}`
-			: `${config.fileServer.url}/defaults/talk-group-icon.jpg`;
+			? `${config.drive.url}/${encodePath(doc.iconPath)}`
+			: `${config.drive.url}/defaults/talk-group-icon.jpg`;
 		ret.iconThumbnailUrl = `${ret.iconUrl}?thumbnail`;
 	};
 

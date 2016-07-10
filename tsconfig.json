@@ -40,8 +40,6 @@
 		"./src/core/register-hashtags.ts",
 		"./src/core/save-post-mentions.ts",
 		"./src/core/serialize-notification.ts",
-		"./src/core/serialize-post.ts",
-		"./src/core/serialize-posts.ts",
 		"./src/core/serialize-talk-message.ts",
 		"./src/core/serialize-user.ts",
 		"./src/db/db.ts",

@@ -22,7 +22,7 @@ export default function(db: Connection): Model<Document> {
 	}
 	(<any>schema).options.toObject.transform = (doc: any, ret: any) => {
 		ret.id = doc.id;
-		ret.url = `${config.fileServer.url}/${(<string>doc.serverPath).split('/').map(encodeURI).join('/')}`;
+		ret.url = `${config.drive.url}/${(<string>doc.serverPath).split('/').map(encodeURI).join('/')}`;
 		ret.thumbnailUrl = `${ret.url}?thumbnail`;
 		delete ret._id;
 		delete ret.__v;
