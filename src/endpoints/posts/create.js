@@ -33,7 +33,7 @@ export default (params, res, app, user) =>
 		if (files.length === 0) {
 			files = null;
 		} else if (files.length > maxFileLength) {
-			return res.status(400).send('too-many-files');
+			return res(400, 'too-many-files');
 		}
 
 		if (files !== null) {
@@ -52,7 +52,7 @@ export default (params, res, app, user) =>
 			});
 
 			if (isRejected) {
-				return res.status(400).send('duplicate-files');
+				return res(400, 'duplicate-files');
 			}
 		}
 	} else {
