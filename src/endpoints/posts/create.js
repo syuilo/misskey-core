@@ -8,7 +8,7 @@ import event from '../../event';
 const maxTextLength = 300;
 const maxFileLength = 4;
 
-export default (params, res, app, user) =>
+export default async (params, res, app, user) =>
 {
 	let text = params.text;
 
@@ -64,53 +64,43 @@ export default (params, res, app, user) =>
 		return res(400, 'text-or-files-is-required');
 	}
 
-	// 添付ファイルがあれば添付ファイルのバリデーションを行う
+	// 添付ファイルがあれば添付ファイル取得
 	if (files !== null) {
-		Promise
-			.all(files.map(file => getDriveFile(user.id, file)))
-			.then(create, reject);
-	} else {
-		create(null);
+		files = await Promise.all(files.map(file => getDriveFile(user.id, file)));
 	}
 
-	function create(files) {
-		// ハッシュタグ抽出
-		const hashtags = extractHashtags(text);
+	// 作成
+	const createdPost = await Post.create({
+		user: user.id,
+		files: files ? files.map(file => file.id) : null,
+		text: text,
+		prev: user.latest_post,
+		next: null
+	});
 
-		// 作成
-		Post.create({
-			user: user.id,
-			files: files ? files.map(file => file.id) : null,
-			text: text,
-			prev: user.latest_post,
-			next: null
-		}, (createErr, createdPost) => {
-			if (createErr) {
-				return res(500, createErr);
-			}
+	res(createdPost);
 
-			res(createdPost);
+	// 投稿数インクリメント
+	user.posts_count++;
+	// 最終Postを更新
+	user.latest_post = createdPost._id;
+	user.save();
 
-			// 投稿数インクリメント
-			user.posts_count++;
-			// 最終Postを更新
-			user.latest_post = createdPost._id;
-			user.save();
+	// ハッシュタグ抽出
+	const hashtags = extractHashtags(text);
 
-			// ハッシュタグをデータベースに登録
-			registerHashtags(user, hashtags);
+	// ハッシュタグをデータベースに登録
+	registerHashtags(user, hashtags);
 
-			// メンションを抽出してデータベースに登録
-			savePostMentions(user, createdPost, createdPost.text);
+	// メンションを抽出してデータベースに登録
+	savePostMentions(user, createdPost, createdPost.text);
 
-			// 作成した投稿を前の投稿の次の投稿に設定する
-			if (user.latest_post !== null) {
-				Post.findByIdAndUpdate(user.latest_post, {
-					$set: { next: createdPost._id }
-				});
-			}
-
-			event.publishPost(user.id, createdPost);
+	// 作成した投稿を前の投稿の次の投稿に設定する
+	if (user.latest_post !== null) {
+		Post.findByIdAndUpdate(user.latest_post, {
+			$set: { next: createdPost._id }
 		});
 	}
+
+	event.publishPost(user.id, createdPost);
 };
