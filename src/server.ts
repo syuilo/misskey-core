@@ -45,6 +45,10 @@ app.get('/index.css', (req, res) => {
 	res.sendFile(__dirname + '/web/index.css');
 });
 
+app.get('/wallpaper.svg', (req, res) => {
+	res.sendFile(__dirname + '/resources/wallpaper.svg');
+});
+
 // Register REST API handlers
 endpoints.forEach(endpoint => {
 	if (endpoint.withFile === true) {
