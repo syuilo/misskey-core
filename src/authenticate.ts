@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {User} from './db/db';
+import User from './models/user';
 import config from './config';
 
 export default (req: express.Request) =>
