@@ -33,6 +33,7 @@ try {
 export default conf;
 
 export interface IConfig {
+	maintainer: string;
 	mongo: {
 		uri: string;
 		options: {

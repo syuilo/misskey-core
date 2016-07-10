@@ -1,6 +1,6 @@
 import * as redis from 'redis';
-import {UserFollowing} from './db/db';
-import {IPost, IUserFollowing, INotification, ITalkGroup, ITalkMessage, ITalkUserMessage} from './db/interfaces';
+import {Following} from './db/db';
+import {IPost, IFollowing, INotification, ITalkGroup, ITalkMessage, ITalkUserMessage} from './db/interfaces';
 import config from './config';
 
 class MisskeyEvent {
@@ -31,9 +31,16 @@ class MisskeyEvent {
 		this.publish(`user-stream:${userId}`, postObj);
 
 		// 自分のフォロワーのストリーム
-		UserFollowing.find({followee: userId}, (_: any, followers: IUserFollowing[]) => {
-			followers.forEach(follower => {
-				this.publish(`user-stream:${follower.follower}`, postObj);
+		Following
+		.find({followee: userId})
+		.select({
+			follower: 1,
+			_id: 0
+		})
+		.lean()
+		.exec((_: any, followings: IFollowing[]) => {
+			followings.forEach(following => {
+				this.publish(`user-stream:${following.follower}`, postObj);
 			});
 		});
 	}
