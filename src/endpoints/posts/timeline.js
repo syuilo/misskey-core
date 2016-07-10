@@ -15,7 +15,7 @@ const serialize = require('../../serializers/post');
  * @param {Object} user
  * @return {void}
  */
-export default async (params, res, app, user) =>
+module.exports = async (params, res, app, user) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
