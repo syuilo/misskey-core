@@ -39,8 +39,6 @@
 		"./src/core/read-talk-message.ts",
 		"./src/core/register-hashtags.ts",
 		"./src/core/save-post-mentions.ts",
-		"./src/core/serialize-notification.ts",
-		"./src/core/serialize-talk-message.ts",
 		"./src/core/serializers/user.ts",
 		"./src/core/serializers/drive-file.ts",
 		"./src/core/serializers/drive-folder.ts",

@@ -87,9 +87,7 @@ export default (app: IApplication, user: IUser, text?: string, files?: string[])
 			text: text,
 			prev: user.latest_post,
 			next: null
-		})
-		.lean()
-		.exec((createErr: any, createdPost: IPost) => {
+		}, (createErr: any, createdPost: IPost) => {
 			if (createErr) {
 				return reject(createErr);
 			}
@@ -110,7 +108,7 @@ export default (app: IApplication, user: IUser, text?: string, files?: string[])
 
 			// 作成した投稿を前の投稿の次の投稿に設定する
 			if (user.latest_post !== null) {
-				Post.findByIdAndUpdate(user.latest_post, { $set: { next: createdPost._id } });
+				Post.findByIdAndUpdate(<string>user.latest_post, { $set: { next: createdPost._id } });
 			}
 
 			event.publishPost(user.id, createdPost);
