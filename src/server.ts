@@ -14,7 +14,6 @@ import * as multer from 'multer';
 
 import config from './config';
 import endpoints from './endpoints';
-import apiHandler from './api-handler';
 
 const worker = cluster.worker;
 
@@ -55,7 +54,7 @@ endpoints.forEach(endpoint => {
 	}
 
 	function handler(req: express.Request, res: express.Response): void {
-		apiHandler(endpoint, req, res);
+		require('./api-handler')(endpoint, req, res);
 	}
 });
 

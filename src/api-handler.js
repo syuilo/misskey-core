@@ -12,8 +12,8 @@ const limiterDB = redis.createClient(
 	}
 );
 
-export default (endpoint, req, res) => {
-
+export default (endpoint, req, res) =>
+{
 	const limitKey = endpoint.hasOwnProperty('limitKey')
 		? endpoint.limitKey
 		: endpoint.name;
@@ -29,7 +29,7 @@ export default (endpoint, req, res) => {
 	// 短い期間の方のリミット
 	function detectBriefInterval(ctx) {
 		const minIntervalLimiter = new Limiter({
-			id: `${ctx.user.id}:${endpoint.name}:for-detect-brief-interval`,
+			id: `${ctx.user.id}:${limitKey}:for-detect-brief-interval`,
 			duration: endpoint.minInterval,
 			max: 1,
 			db: limiterDB
