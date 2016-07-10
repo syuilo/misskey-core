@@ -23,6 +23,7 @@
 		"./src/**/*.ts"
 	],
 	"files": [
+		"./node_modules/typescript/lib/lib.es6.d.ts",
 		"./typings/bundle.d.ts",
 		"./src/api-handler.ts",
 		"./src/argv.ts",
@@ -60,7 +61,6 @@
 		"./src/db/schemas/user-following.ts",
 		"./src/db/schemas/user.ts",
 		"./src/endpoints.ts",
-		"./src/endpoints/post/create.ts",
 		"./src/endpoints/posts/create.ts",
 		"./src/event.ts",
 		"./src/index.ts",
