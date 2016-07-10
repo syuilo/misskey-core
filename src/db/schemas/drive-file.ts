@@ -29,5 +29,5 @@ export default function(db: Connection): Model<Document> {
 		delete ret.serverPath;
 	};
 
-	return db.model('DriveFile', schema, 'DriveFiles');
+	return db.model('DriveFile', schema, 'drive_files');
 }

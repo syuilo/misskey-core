@@ -19,5 +19,5 @@ export default function(db: Connection): Model<Document> {
 		delete ret.__v;
 	};
 
-	return db.model('DriveFolder', schema, 'DriveFolders');
+	return db.model('DriveFolder', schema, 'drive_folders');
 }
