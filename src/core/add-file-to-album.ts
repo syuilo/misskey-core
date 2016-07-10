@@ -1,31 +1,36 @@
-import {dataSize} from 'powerful';
 import * as crypto from 'crypto';
 import * as gm from 'gm';
 import {AlbumFile, AlbumFolder} from '../db/db';
 import {IAlbumFile, IAlbumFolder} from '../db/interfaces';
+const fileType = require('file-type');
+const mimeType = require('mime-types');
 
 /**
  * アルバムにファイルを追加します
- * @param appId 経由AppのID
- * @param userId 利用ユーザーのID
+ * @param userId ユーザーID
  * @param fileName ファイル名
- * @param mimetype ファイルのMIME Type
  * @param file 内容
- * @param size ファイルサイズ(byte)
+ * @param comment ファイルの説明
+ * @param type ファイルタイプ
  * @param folderId フォルダID
  * @param force trueに設定すると、ハッシュが同じファイルが見つかった場合でも無視してアルバムに登録します
  * @return 追加したファイルオブジェクト
  */
 export default function(
-	appId: string,
 	userId: string,
 	fileName: string,
-	mimetype: string,
 	file: Buffer,
-	size: number,
+	comment: string = null,
+	type: string = null,
 	folderId: string = null,
 	force: boolean = false
 ): Promise<IAlbumFile> {
+	// ファイルサイズ
+	const size = file.byteLength;
+
+	// ファイルタイプ
+	type = fileType(file) || mimeType.lookup(fileName) || type || 'application/octet-stream';
+
 	// ハッシュ生成
 	const hash: string = crypto
 		.createHash('sha256')
@@ -37,9 +42,8 @@ export default function(
 			// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
 			AlbumFile.findOne({
 				user: userId,
-				isDeleted: false, // 削除されているファイルは除外する
 				hash: hash,
-				dataSize: size
+				datasize: size
 			}, (hashmuchFileFindErr: any, hashmuchFile: IAlbumFile) => {
 				if (hashmuchFileFindErr !== null) {
 					console.error(hashmuchFileFindErr);
@@ -55,23 +59,29 @@ export default function(
 				}
 			});
 		} else {
-			// unconditionalがtrueの場合は強制登録
+			// forceがtrueの場合は強制登録
 			register();
 		}
 
 		function register(): void {
 			// アルバム使用量を取得するためにすべてのファイルを取得
-			AlbumFile.find({user: userId}, (albumFilesFindErr: any, albumFiles: IAlbumFile[]) => {
+			AlbumFile
+			.find({user: userId})
+			.select({
+				datasize: 1,
+				_id: 0
+			})
+			.lean()
+			.exec((albumFilesFindErr: any, albumFiles: IAlbumFile[]) => {
 				if (albumFilesFindErr !== null) {
-					console.error(albumFilesFindErr);
 					return reject(albumFilesFindErr);
 				}
 
 				// 現時点でのアルバム使用量を算出(byte)
-				const used = albumFiles.map(albumFile => albumFile.dataSize).reduce((x, y) => x + y, 0);
+				const used = albumFiles.map(albumFile => albumFile.datasize).reduce((x, y) => x + y, 0);
 
-				// 1000MBを超える場合
-				if (used + size > dataSize.fromMiB(1000)) {
+				// 1GBを超える場合
+				if (used + size > 1073741824) {
 					return reject('no-free-space');
 				}
 
@@ -93,13 +103,12 @@ export default function(
 				function create(folder: IAlbumFolder = null): void {
 					// AlbumFileドキュメントを作成
 					AlbumFile.create({
-						app: appId !== null ? appId : null,
 						user: userId,
 						folder: folder !== null ? folder.id : null,
-						dataSize: size,
-						mimeType: mimetype,
+						datasize: size,
+						type: type,
 						name: fileName,
-						serverPath: null,
+						comment: comment,
 						hash: hash
 					}, (albumFileCreateErr: any, albumFile: IAlbumFile) => {
 						if (albumFileCreateErr !== null) {
@@ -108,7 +117,7 @@ export default function(
 						}
 
 						// 画像だった場合
-						if (/^image\/.*$/.test(mimetype)) {
+						if (/^image\/.*$/.test(type)) {
 							// 幅と高さを取得してプロパティに保存しておく
 							(<any>gm)(file, fileName)
 							.size((getSizeErr: any, whsize: any) => {

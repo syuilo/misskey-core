@@ -22,7 +22,7 @@ export interface IUser extends Document {
 	links: string[];
 }
 
-export interface IUserFollowing extends Document {
+export interface IFollowing extends Document {
 	created_at: Date;
 	followee: string | Types.ObjectId | IUser;
 	follower: string | Types.ObjectId | IUser;
@@ -60,12 +60,6 @@ export interface IPost extends Document {
 	user: string | Types.ObjectId | IUser;
 }
 
-export interface IPostLike extends Document {
-	createdAt: Date;
-	post: string | Types.ObjectId | IPost;
-	user: string | Types.ObjectId | IUser;
-}
-
 export interface IPostMention extends Document {
 	createdAt: Date;
 	isRead: boolean;
@@ -74,24 +68,21 @@ export interface IPostMention extends Document {
 }
 
 export interface IAlbumFile extends Document {
-	app: string | Types.ObjectId | IApplication;
-	createdAt: Date;
-	dataSize: number;
+	created_at: Date;
+	data: Buffer;
+	datasize: number;
+	comment: string;
 	folder: string | Types.ObjectId | IAlbumFolder;
-	mimeType: string;
+	type: string;
 	hash: string;
-	isDeleted: boolean;
-	isHidden: boolean;
-	isPrivate: boolean;
 	name: string;
 	properties: any;
-	serverPath: string;
 	tags: string[] | Types.ObjectId[] | IAlbumTag[];
 	user: string | Types.ObjectId | IUser;
 }
 
 export interface IAlbumFolder extends Document {
-	createdAt: Date;
+	created_at: Date;
 	color: string;
 	name: string;
 	parent: string | Types.ObjectId | IAlbumFolder;
