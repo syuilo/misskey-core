@@ -42,12 +42,12 @@ gulp.task('build:styles', () => {
 
 gulp.task('build:copy', () => {
 	return gulp.src([
-		'./src/web/**/*',
+		'./src/**/*',
 		'!**/*.ts',
 		'!**/*.ls',
 		'!**/*.styl'
 	])
-		.pipe(gulp.dest('./built/web/'));
+		.pipe(gulp.dest('./built/'));
 });
 
 gulp.task('test', [
