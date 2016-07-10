@@ -1,18 +1,38 @@
-import Post from '../../models/post';
-import savePostMentions from '../../core/save-post-mentions';
-import extractHashtags from '../../core/extract-hashtags';
-import registerHashtags from '../../core/register-hashtags';
-import getDriveFile from '../../core/get-drive-file';
-import event from '../../event';
+'use strict';
 
+/**
+ * Module dependencies
+ */
+const Post = require('../../models/post');
+const savePostMentions = require('../../core/save-post-mentions');
+const extractHashtags = require('../../core/extract-hashtags');
+const registerHashtags = require('../../core/register-hashtags');
+const getDriveFile = require('../../core/get-drive-file');
+const event = require('../../event');
+
+/**
+ * 最大文字数
+ */
 const maxTextLength = 300;
+
+/**
+ * 添付できるファイルの数
+ */
 const maxFileLength = 4;
 
+/**
+ * Create a post
+ *
+ * @param {Object} params
+ * @param {Object} res
+ * @param {Object} app
+ * @param {Object} user
+ * @return {void}
+ */
 export default async (params, res, app, user) =>
 {
-	let text = params.text;
-
 	// Init 'text' parameter
+	let text = params.text;
 	if (text !== undefined && text !== null) {
 		text = text.trim();
 		if (text.length === 0) {
@@ -24,9 +44,8 @@ export default async (params, res, app, user) =>
 		text = null;
 	}
 
-	let files = params.files;
-
 	// Init 'files' parameter
+	let files = params.files;
 	if (files !== undefined && files !== null) {
 		files = files.split(',');
 
@@ -65,9 +84,8 @@ export default async (params, res, app, user) =>
 
 	res(createdPost);
 
-	// 投稿数インクリメント
+	// ユーザー情報更新
 	user.posts_count++;
-	// 最終Postを更新
 	user.latest_post = createdPost._id;
 	user.save();
 
@@ -87,5 +105,6 @@ export default async (params, res, app, user) =>
 		});
 	}
 
+	// Publish to stream
 	event.publishPost(user.id, createdPost);
 };

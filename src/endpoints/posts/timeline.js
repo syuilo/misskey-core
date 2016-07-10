@@ -1,11 +1,24 @@
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+'use strict';
 
+/**
+ * Module dependencies
+ */
+const Post = require('../../models/post');
+const serialize = require('../../serializers/post');
+
+/**
+ * Get timeline
+ *
+ * @param {Object} params
+ * @param {Object} res
+ * @param {Object} app
+ * @param {Object} user
+ * @return {void}
+ */
 export default async (params, res, app, user) =>
 {
-	let limit = params.limit;
-
 	// Init 'limit' parameter
+	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 

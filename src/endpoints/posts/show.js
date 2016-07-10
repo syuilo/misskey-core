@@ -1,6 +1,20 @@
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+'use strict';
 
+/**
+ * Module dependencies
+ */
+const Post = require('../../models/post');
+const serialize = require('../../serializers/post');
+
+/**
+ * Show a post
+ *
+ * @param {Object} params
+ * @param {Object} res
+ * @param {Object} app
+ * @param {Object} user
+ * @return {void}
+ */
 export default async (params, res, app, user) =>
 {
 	const id = params['id'];
