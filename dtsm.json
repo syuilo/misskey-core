@@ -1,0 +1,53 @@
+{
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
+  "path": "typings",
+  "bundle": "typings/bundle.d.ts",
+  "link": {
+    "npm": {
+      "include": true
+    }
+  },
+  "dependencies": {
+    "express/express.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "mongoose/mongoose.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "body-parser/body-parser.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "cors/cors.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "gm/gm.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "multer/multer.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "redis/redis.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "serve-favicon/serve-favicon.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "js-yaml/js-yaml.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "shelljs/shelljs.d.ts": {
+      "ref": "edb64e4a35896510ce02b93c0bca5ec3878db738"
+    },
+    "argv/argv.d.ts": {
+      "ref": "1315d46f8066eec8c197914da88e98629ebc2254"
+    },
+    "ratelimiter/ratelimiter.d.ts": {
+      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+    }
+  }
+}
