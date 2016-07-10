@@ -38,22 +38,7 @@ export default async (params, res, app, user) =>
 
 		if (files !== null) {
 			// 重複チェック
-			let isRejected = false;
-			files.forEach(file => {
-				let count = 0;
-				files.forEach(file2 => {
-					if (file === file2) {
-						count++;
-						if (count === 2) {
-							isRejected = true;
-						}
-					}
-				});
-			});
-
-			if (isRejected) {
-				return res(400, 'duplicate-files');
-			}
+			files = files.filter((x, i, self) => self.indexOf(x) === i);
 		}
 	} else {
 		files = null;
