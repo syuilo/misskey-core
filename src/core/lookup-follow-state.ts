@@ -1,5 +1,5 @@
-import {UserFollowing} from '../db/db';
-import {IUserFollowing} from '../db/interfaces';
+import {Following} from '../db/db';
+import {IFollowing} from '../db/interfaces';
 
 export default function(meId: string, otherpartyId: string): Promise<boolean> {
 	return new Promise<boolean>((resolve, reject) => {

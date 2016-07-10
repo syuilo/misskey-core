@@ -7,5 +7,5 @@ export default function(db: Connection): Model<Document> {
 		follower: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 	});
 
-	return db.model('UserFollowing', schema, 'UserFollowings');
+	return db.model('Following', schema, 'followings');
 }

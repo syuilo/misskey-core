@@ -13,8 +13,6 @@ export default function(
 				reject('file-not-found');
 			} else if (file.user.toString() !== meId.toString()) {
 				reject('file-not-found');
-			} else if (file.isDeleted) {
-				reject('file-not-found');
 			} else {
 				resolve(file);
 			}

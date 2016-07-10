@@ -79,7 +79,7 @@ export default function(db: Connection): Model<Document> {
 		delete ret.encryptedPassword;
 	};
 
-	return db.model('User', schema, 'Users');
+	return db.model('User', schema, 'users');
 }
 
 function encodePath(path: string): string {
