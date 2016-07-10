@@ -1,87 +1,27 @@
 import {Schema, Connection, Document, Model} from 'mongoose';
-import config from '../../config';
+
+const schema = new Schema({
+	avatar:          { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
+	banner:          { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
+	birthday:        { type: Date, required: false, default: null },
+	comment:         { type: String, required: false, default: null },
+	created_at:      { type: Date, required: true, default: Date.now },
+	description:     { type: String, required: false, default: null },
+	email:           { type: String, required: false, sparse: true, default: null },
+	followers_count: { type: Number, required: false, default: 0 },
+	following_count: { type: Number, required: false, default: 0 },
+	is_suspended:    { type: Boolean, required: false, default: false },
+	is_verified:     { type: Boolean, required: false, default: false },
+	lang:            { type: String, required: true },
+	latest_Post:     { type: Schema.Types.ObjectId, required: false, default: null },
+	location:        { type: String, required: false, default: null },
+	name:            { type: String, required: true },
+	password:        { type: String, required: true },
+	posts_count:     { type: Number, required: false, default: 0 },
+	username:        { type: String, required: true, unique: true, lowercase: true },
+	links:           { type: [String], required: false, default: null }
+});
 
 export default function(db: Connection): Model<Document> {
-	const schema = new Schema({
-		avatar: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
-		avatarPath: { type: String, required: false, default: null },
-		banner: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
-		bannerPath: { type: String, required: false, default: null },
-		birthday: { type: Date, required: false, default: null },
-		color: { type: String, required: false, default: null },
-		comment: { type: String, required: false, default: null },
-		createdAt: { type: Date, required: true, default: Date.now },
-		credit: { type: Number, required: true },
-		description: { type: String, required: false, default: null },
-		email: { type: String, required: false, sparse: true, default: null },
-		encryptedPassword: { type: String, required: true },
-		followersCount: { type: Number, required: false, default: 0 },
-		followingCount: { type: Number, required: false, default: 0 },
-		isDeleted: { type: Boolean, required: false, default: false },
-		isEmailVerified: { type: Boolean, required: false, default: false },
-		isPrivate: { type: Boolean, required: false, default: false },
-		isPro: { type: Boolean, required: false, default: false },
-		isStaff: { type: Boolean, required: false, default: false },
-		isSuspended: { type: Boolean, required: false, default: false },
-		isVerified: { type: Boolean, required: false, default: false },
-		lang: { type: String, required: true },
-		latestPost: { type: Schema.Types.ObjectId, required: false, default: null },
-		likedCount: { type: Number, required: false, default: 0 },
-		likesCount: { type: Number, required: false, default: 0 },
-		location: { type: String, required: false, default: null },
-		name: { type: String, required: true },
-		pinnedPost: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
-		postsCount: { type: Number, required: false, default: 0 },
-		screenName: { type: String, required: true, unique: true },
-		screenNameLower: { type: String, required: true, unique: true, lowercase: true },
-		tags: { type: [String], required: false, default: [] },
-		timelineReadCursor: { type: Number, required: false, default: 0 },
-		url: { type: String, required: false, default: null },
-		wallpaper: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
-		wallpaperPath: { type: String, required: false, default: null }
-	});
-
-	if (!(<any>schema).options.toObject) {
-		(<any>schema).options.toObject = {};
-	}
-	(<any>schema).options.toObject.transform = (doc: any, ret: any) => {
-		ret.id = doc.id;
-
-		// Normalization avatar URL
-		delete ret.avatar;
-		delete ret.avatarPath;
-		ret.avatarUrl = doc.avatar !== null
-			? `${config.drive.url}/${encodePath(doc.avatarPath)}`
-			: `${config.drive.url}/defaults/avatar.jpg`;
-		ret.avatarThumbnailUrl = `${ret.avatarUrl}?thumbnail`;
-
-		// Normalization banner URL
-		delete ret.banner;
-		delete ret.bannerPath;
-		ret.bannerUrl = doc.banner !== null
-			? `${config.drive.url}/${encodePath(doc.bannerPath)}`
-			: `${config.drive.url}/defaults/banner.jpg`;
-		ret.bannerThumbnailUrl = `${ret.bannerUrl}?thumbnail`;
-
-		// Normalization wallpaper URL
-		delete ret.wallpaper;
-		delete ret.wallpaperPath;
-		ret.wallpaperUrl = doc.wallpaper !== null
-			? `${config.drive.url}/${encodePath(doc.wallpaperPath)}`
-			: `${config.drive.url}/defaults/wallpaper.jpg`;
-		ret.wallpaperThumbnailUrl = `${ret.wallpaperUrl}?thumbnail`;
-
-		// Remove needless properties
-		delete ret._id;
-		delete ret.__v;
-		delete ret.screenNameLower;
-		delete ret.email;
-		delete ret.encryptedPassword;
-	};
-
 	return db.model('User', schema, 'users');
-}
-
-function encodePath(path: string): string {
-	return (<string>path).split('/').map(encodeURI).join('/');
 }

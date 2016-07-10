@@ -1,5 +1,4 @@
 import {Schema, Connection, Document, Model} from 'mongoose';
-import config from '../../config';
 
 const schema = new Schema({
 	comment:    { type: String, required: false, default: null },
@@ -16,18 +15,5 @@ const schema = new Schema({
 });
 
 export default function(db: Connection): Model<Document> {
-
-	if (!(<any>schema).options.toObject) {
-		(<any>schema).options.toObject = {};
-	}
-	(<any>schema).options.toObject.transform = (doc: any, ret: any) => {
-		ret.id = doc.id;
-		ret.url = `${config.drive.url}/${(<string>doc.serverPath).split('/').map(encodeURI).join('/')}`;
-		ret.thumbnailUrl = `${ret.url}?thumbnail`;
-		delete ret._id;
-		delete ret.__v;
-		delete ret.serverPath;
-	};
-
 	return db.model('DriveFile', schema, 'drive_files');
 }
