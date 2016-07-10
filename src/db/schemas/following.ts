@@ -1,11 +1,11 @@
 import {Schema, Connection, Document, Model} from 'mongoose';
 
-export default function(db: Connection): Model<Document> {
-	const schema = new Schema({
-		createdAt: { type: Date, required: true, default: Date.now },
-		followee: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-		follower: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
-	});
+const schema = new Schema({
+	created_at: { type: Date, required: true, default: Date.now },
+	followee: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+	follower: { type: Schema.Types.ObjectId, required: true, ref: 'User' }
+});
 
+export default function(db: Connection): Model<Document> {
 	return db.model('Following', schema, 'followings');
 }
