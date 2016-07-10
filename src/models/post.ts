@@ -1,4 +1,5 @@
-import {Schema, Connection, Document, Model} from 'mongoose';
+import {Schema} from 'mongoose';
+import db from '../db';
 
 const schema = new Schema({
 	created_at: { type: Date, required: true,  default: Date.now },
@@ -10,6 +11,4 @@ const schema = new Schema({
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export default function(db: Connection): Model<Document> {
-	return db.model('Post', schema, 'posts');
-}
+export const User = db.model('Post', schema, 'posts');

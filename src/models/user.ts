@@ -1,4 +1,5 @@
-import {Schema, Connection, Document, Model} from 'mongoose';
+import {Schema} from 'mongoose';
+import db from '../db';
 
 const schema = new Schema({
 	avatar:          { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
@@ -22,6 +23,4 @@ const schema = new Schema({
 	links:           { type: [String], required: false, default: null }
 });
 
-export default function(db: Connection): Model<Document> {
-	return db.model('User', schema, 'users');
-}
+export const User = db.model('User', schema, 'users');
