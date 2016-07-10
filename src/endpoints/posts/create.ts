@@ -114,3 +114,7 @@ export default (app: any, user: any, text?: string, files?: string[]) =>
 		});
 	}
 });
+
+export const handler = () => {
+
+};

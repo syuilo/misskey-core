@@ -32,7 +32,7 @@ app.locals.cache = true;
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/web/');
 
-app.use(favicon(`${__dirname}/resources/favicon.png`));
+app.use(favicon(`${__dirname}/resources/icon.png`));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // CORS
