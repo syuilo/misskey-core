@@ -18,8 +18,8 @@ export default async (params, res, app, user) =>
 		limit = 10;
 	}
 
-	let sinceId = params['since-id'] || null;
-	let maxId = params['max-id'] || null;
+	const sinceId = params['since-id'] || null;
+	const maxId = params['max-id'] || null;
 
 	// 自分がフォローしているユーザーの関係を取得
 	const following = await UserFollowing
