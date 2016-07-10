@@ -9,4 +9,4 @@ const schema = new Schema({
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export const User = db.model('DriveFolder', schema, 'drive_folders');
+export default db.model('DriveFolder', schema, 'drive_folders');

@@ -1,5 +1,4 @@
-import {Post} from '../../db/db';
-import {IApplication, IUser, IPost, IDriveFile} from '../../db/interfaces';
+import Post from '../../models/post';
 import savePostMentions from '../../core/save-post-mentions';
 import extractHashtags from '../../core/extract-hashtags';
 import registerHashtags from '../../core/register-hashtags';
@@ -17,7 +16,7 @@ const maxFileLength = 4;
  * @param files 添付するファイルのID
  * @return 作成された投稿オブジェクト
  */
-export default (app: IApplication, user: IUser, text?: string, files?: string[]) =>
+export default (app: any, user: any, text?: string, files?: string[]) =>
 	new Promise<any>((resolve, reject) =>
 {
 	// Init 'text' parameter
@@ -76,7 +75,7 @@ export default (app: IApplication, user: IUser, text?: string, files?: string[])
 		create(null);
 	}
 
-	function create(files: IDriveFile[]): void {
+	function create(files: any[]): void {
 		// ハッシュタグ抽出
 		const hashtags: string[] = extractHashtags(text);
 
@@ -87,7 +86,7 @@ export default (app: IApplication, user: IUser, text?: string, files?: string[])
 			text: text,
 			prev: user.latest_post,
 			next: null
-		}, (createErr: any, createdPost: IPost) => {
+		}, (createErr: any, createdPost: any) => {
 			if (createErr) {
 				return reject(createErr);
 			}

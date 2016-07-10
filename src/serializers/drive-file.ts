@@ -1,4 +1,4 @@
-import {DriveFile} from '../../db/db';
+import DriveFile from '../models/drive-file';
 import serializeDriveTag from './drive-tag';
 
 const self = (

@@ -23,4 +23,4 @@ const schema = new Schema({
 	links:           { type: [String], required: false, default: null }
 });
 
-export const User = db.model('User', schema, 'users');
+export default db.model('User', schema, 'users');

@@ -1,4 +1,4 @@
-import {DriveTag} from '../../db/db';
+import DriveTag from '../models/drive-tag';
 
 const self = (
 	tag: any

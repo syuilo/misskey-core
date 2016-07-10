@@ -7,4 +7,4 @@ const schema = new Schema({
 	user:  { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export const User = db.model('DriveTag', schema, 'drive_tags');
+export default db.model('DriveTag', schema, 'drive_tags');

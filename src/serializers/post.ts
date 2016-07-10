@@ -1,11 +1,10 @@
-import {Post} from '../../db/db';
-import {IUser} from '../../db/interfaces';
+import Post from '../models/post';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 
 const self = (
 	post: any,
-	me: IUser,
+	me: any,
 	options?: {
 		serializeReplyTo: boolean
 	}

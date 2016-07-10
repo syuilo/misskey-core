@@ -1,4 +1,4 @@
-import {DriveFolder} from '../../db/db';
+import DriveFolder from '../models/drive-folder';
 
 const self = (
 	folder: any,

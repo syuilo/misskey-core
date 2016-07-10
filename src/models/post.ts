@@ -11,4 +11,4 @@ const schema = new Schema({
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export const User = db.model('Post', schema, 'posts');
+export default db.model('Post', schema, 'posts');

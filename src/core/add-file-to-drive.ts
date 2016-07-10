@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import * as gm from 'gm';
-import {DriveFile, DriveFolder} from '../db/db';
-import {IDriveFile, IDriveFolder} from '../db/interfaces';
+import DriveFile from '../models/drive-file';
+import DriveFolder from '../models/drive-folder';
 const fileType = require('file-type');
 const mimeType = require('mime-types');
 
@@ -24,7 +24,7 @@ export default (
 	type: string = null,
 	folderId: string = null,
 	force: boolean = false
-) => new Promise<IDriveFile>((resolve, reject) =>
+) => new Promise<any>((resolve, reject) =>
 {
 	// ファイルサイズ
 	const size = file.byteLength;
@@ -44,7 +44,7 @@ export default (
 			user: userId,
 			hash: hash,
 			datasize: size
-		}, (hashmuchFileFindErr: any, hashmuchFile: IDriveFile) => {
+		}, (hashmuchFileFindErr: any, hashmuchFile: any) => {
 			if (hashmuchFileFindErr !== null) {
 				console.error(hashmuchFileFindErr);
 				return reject('something-happend');
@@ -72,7 +72,7 @@ export default (
 			_id: 0
 		})
 		.lean()
-		.exec((driveFilesFindErr: any, driveFiles: IDriveFile[]) => {
+		.exec((driveFilesFindErr: any, driveFiles: any[]) => {
 			if (driveFilesFindErr !== null) {
 				return reject(driveFilesFindErr);
 			}
@@ -86,7 +86,7 @@ export default (
 			}
 
 			if (folderId !== null) {
-				DriveFolder.findById(folderId, (folderFindErr: any, folder: IDriveFolder) => {
+				DriveFolder.findById(folderId, (folderFindErr: any, folder: any) => {
 					if (folderFindErr !== null) {
 						return reject(folderFindErr);
 					} else if (folder === null) {
@@ -100,7 +100,7 @@ export default (
 				create(null);
 			}
 
-			function create(folder: IDriveFolder = null): void {
+			function create(folder: any = null): void {
 				// DriveFileドキュメントを作成
 				DriveFile.create({
 					user: userId,
@@ -110,7 +110,7 @@ export default (
 					name: fileName,
 					comment: comment,
 					hash: hash
-				}, (driveFileCreateErr: any, driveFile: IDriveFile) => {
+				}, (driveFileCreateErr: any, driveFile: any) => {
 					if (driveFileCreateErr !== null) {
 						console.error(driveFileCreateErr);
 						return reject(driveFileCreateErr);
@@ -139,8 +139,8 @@ export default (
 		});
 	}
 
-	function save(driveFile: IDriveFile): void {
-		driveFile.save((saveErr: any, saved: IDriveFile) => {
+	function save(driveFile: any): void {
+		driveFile.save((saveErr: any, saved: any) => {
 			if (saveErr !== null) {
 				console.error(saveErr);
 				return reject(saveErr);

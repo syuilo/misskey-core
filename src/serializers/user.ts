@@ -1,10 +1,9 @@
-import {User} from '../../db/db';
-import {IUser} from '../../db/interfaces';
-import config from '../../config';
+import User from '../models/user';
+import config from '../config';
 
 export default (
 	user: any,
-	me: IUser,
+	me: any,
 	options?: {
 		includeProfileImageIds: boolean
 	}
