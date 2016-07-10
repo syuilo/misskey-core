@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "misskey-core",
   "version": "0.0.0",
   "description": "Misskey API",
@@ -7,7 +8,14 @@
   "repository": "https://github.com/syuilo/misskey-core.git",
   "bugs": "https://github.com/syuilo/misskey-core/issues",
   "main": "./built/index.js",
-  "typings": "./built/index.d.ts",
+  "scripts": {
+    "start": "node ./built/main.js",
+    "dts": "dtsm --insight false install",
+    "build": "gulp build",
+    "lint": "gulp lint",
+    "test": "gulp test",
+    "watch": "gulp watch"
+  },
   "devDependencies": {
     "gulp": "3.9.1",
     "gulp-stylus": "2.5.0",
