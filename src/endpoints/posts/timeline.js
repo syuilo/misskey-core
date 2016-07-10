@@ -45,21 +45,20 @@ export default async (params, res, app, user) =>
 	}
 
 	// クエリを発行してタイムラインを取得
-	Post
-	.find(query)
-	.sort(sort)
-	.limit(limit)
-	.lean()
-	.exec((err, timeline) => {
-		if (err) {
-			return res(500, err);
-		} else if (timeline.length === 0) {
-			return res([]);
-		}
+	const timeline =
+		await Post
+			.find(query)
+			.sort(sort)
+			.limit(limit)
+			.lean()
+			.exec();
 
-		// send
-		res(timeline.map(async (post) => {
-			return await serialize(post);
-		}));
-	});
+	if (timeline.length === 0) {
+		return res([]);
+	}
+
+	// send
+	res(timeline.map(async (post) => {
+		return await serialize(post);
+	}));
 };
