@@ -17,5 +17,5 @@ export default function(db: Connection): Model<Document> {
 		delete ret.__v;
 	};
 
-	return db.model('AlbumTag', schema, 'AlbumTags');
+	return db.model('DriveTag', schema, 'DriveTags');
 }

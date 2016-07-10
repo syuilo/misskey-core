@@ -1,9 +1,9 @@
 import {Post, Post} from '../../db/db';
-import {IApplication, IUser, IPost, IPost, IAlbumFile} from '../../db/interfaces';
+import {IApplication, IUser, IPost, IPost, IDriveFile} from '../../db/interfaces';
 import savePostMentions from '../../core/save-post-mentions';
 import extractHashtags from '../../core/extract-hashtags';
 import registerHashtags from '../../core/register-hashtags';
-import getAlbumFile from '../../core/get-album-file';
+import getDriveFile from '../../core/get-drive-file';
 import event from '../../event';
 
 const maxTextLength = 300;
@@ -70,13 +70,13 @@ export default (app: IApplication, user: IUser, text?: string, files?: string[])
 	// 添付ファイルがあれば添付ファイルのバリデーションを行う
 	if (files !== null) {
 		Promise
-			.all(files.map(file => getAlbumFile(user.id, file)))
+			.all(files.map(file => getDriveFile(user.id, file)))
 			.then(create, reject);
 	} else {
 		create(null);
 	}
 
-	function create(files: IAlbumFile[]): void {
+	function create(files: IDriveFile[]): void {
 		// ハッシュタグ抽出
 		const hashtags: string[] = extractHashtags(text);
 

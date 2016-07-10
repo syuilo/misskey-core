@@ -4,7 +4,7 @@ const schema = new Schema({
 	created_at: { type: Date, required: true, default: Date.now },
 	color:      { type: String, required: true },
 	name:       { type: String, required: false, default: '' },
-	parent:     { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFolder' },
+	parent:     { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFolder' },
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
@@ -19,5 +19,5 @@ export default function(db: Connection): Model<Document> {
 		delete ret.__v;
 	};
 
-	return db.model('AlbumFolder', schema, 'AlbumFolders');
+	return db.model('DriveFolder', schema, 'DriveFolders');
 }

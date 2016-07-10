@@ -1,12 +1,12 @@
-import {AlbumFile} from '../db/db';
-import {IAlbumFile} from '../db/interfaces';
+import {DriveFile} from '../db/db';
+import {IDriveFile} from '../db/interfaces';
 
 export default (
 	meId: string,
 	fileId: string
-) => new Promise<IAlbumFile>((resolve, reject) =>
+) => new Promise<IDriveFile>((resolve, reject) =>
 {
-	AlbumFile.findById(fileId, (err: any, file: IAlbumFile) => {
+	DriveFile.findById(fileId, (err: any, file: IDriveFile) => {
 		if (err) {
 			reject(err);
 		} else if (file === null) {

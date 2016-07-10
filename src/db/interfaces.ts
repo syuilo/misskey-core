@@ -1,8 +1,8 @@
 import {Document, Types} from 'mongoose';
 
 export interface IUser extends Document {
-	avatar: string | Types.ObjectId | IAlbumFile;
-	banner: string | Types.ObjectId | IAlbumFile;
+	avatar: string | Types.ObjectId | IDriveFile;
+	banner: string | Types.ObjectId | IDriveFile;
 	birthday: Date;
 	comment: string;
 	created_at: Date;
@@ -49,7 +49,7 @@ export interface IHashtag extends Document {
 
 export interface IPost extends Document {
 	created_at: Date;
-	files: string[] | Types.ObjectId[] | IAlbumFile[];
+	files: string[] | Types.ObjectId[] | IDriveFile[];
 	prev: string | Types.ObjectId | IPost;
 	next: string | Types.ObjectId | IPost;
 	reply_to: string | Types.ObjectId | IPost;
@@ -67,29 +67,29 @@ export interface IPostMention extends Document {
 	user: string | Types.ObjectId | IUser;
 }
 
-export interface IAlbumFile extends Document {
+export interface IDriveFile extends Document {
 	created_at: Date;
 	data: Buffer;
 	datasize: number;
 	comment: string;
-	folder: string | Types.ObjectId | IAlbumFolder;
+	folder: string | Types.ObjectId | IDriveFolder;
 	type: string;
 	hash: string;
 	name: string;
 	properties: any;
-	tags: string[] | Types.ObjectId[] | IAlbumTag[];
+	tags: string[] | Types.ObjectId[] | IDriveTag[];
 	user: string | Types.ObjectId | IUser;
 }
 
-export interface IAlbumFolder extends Document {
+export interface IDriveFolder extends Document {
 	created_at: Date;
 	color: string;
 	name: string;
-	parent: string | Types.ObjectId | IAlbumFolder;
+	parent: string | Types.ObjectId | IDriveFolder;
 	user: string | Types.ObjectId | IUser;
 }
 
-export interface IAlbumTag extends Document {
+export interface IDriveTag extends Document {
 	color: string;
 	name: string;
 	user: string | Types.ObjectId | IUser;
@@ -107,7 +107,7 @@ export interface INotification extends Document {
 export interface ITalkGroup extends Document {
 	allowInvite: boolean;
 	createdAt: Date;
-	icon: string | Types.ObjectId | IAlbumFile;
+	icon: string | Types.ObjectId | IDriveFile;
 	iconPath: string;
 	members: string[] | Types.ObjectId[] | IUser[];
 	name: string;
@@ -128,7 +128,7 @@ export interface ITalkMessage extends Document {
 }
 
 export interface ITalkUserMessage extends ITalkMessage {
-	file: string | Types.ObjectId | IAlbumFile;
+	file: string | Types.ObjectId | IDriveFile;
 	isContentModified: boolean;
 	isDeleted: boolean;
 	isRead: boolean;
@@ -138,7 +138,7 @@ export interface ITalkUserMessage extends ITalkMessage {
 }
 
 export interface ITalkGroupMessage extends ITalkMessage {
-	file: string | Types.ObjectId | IAlbumFile;
+	file: string | Types.ObjectId | IDriveFile;
 	group: string | Types.ObjectId | ITalkGroup;
 	isContentModified: boolean;
 	isDeleted: boolean;

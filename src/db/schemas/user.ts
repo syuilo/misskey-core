@@ -3,9 +3,9 @@ import config from '../../config';
 
 export default function(db: Connection): Model<Document> {
 	const schema = new Schema({
-		avatar: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFile' },
+		avatar: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
 		avatarPath: { type: String, required: false, default: null },
-		banner: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFile' },
+		banner: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
 		bannerPath: { type: String, required: false, default: null },
 		birthday: { type: Date, required: false, default: null },
 		color: { type: String, required: false, default: null },
@@ -37,7 +37,7 @@ export default function(db: Connection): Model<Document> {
 		tags: { type: [String], required: false, default: [] },
 		timelineReadCursor: { type: Number, required: false, default: 0 },
 		url: { type: String, required: false, default: null },
-		wallpaper: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFile' },
+		wallpaper: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
 		wallpaperPath: { type: String, required: false, default: null }
 	});
 

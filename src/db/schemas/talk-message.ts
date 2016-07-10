@@ -42,7 +42,7 @@ export function message(db: Connection): Model<Document> {
 
 export function userMessage(db: Connection): Model<Document> {
 	const schema = new Schema(Object.assign({
-		file: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFile' },
+		file: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
 		isContentModified: { type: Boolean, required: false, default: false },
 		isDeleted: { type: Boolean, required: false, default: false },
 		isRead: { type: Boolean, required: false, default: false },
@@ -75,7 +75,7 @@ export function groupMessageBase(db: Connection): Model<Document> {
 
 export function groupMessage(db: Connection): Model<Document> {
 	const schema = new Schema(Object.assign({
-		file: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'AlbumFile' },
+		file: { type: Schema.Types.ObjectId, required: false, default: null, ref: 'DriveFile' },
 		isContentModified: { type: Boolean, required: false, default: false },
 		isDeleted: { type: Boolean, required: false, default: false },
 		text: { type: String, required: false, default: '' },

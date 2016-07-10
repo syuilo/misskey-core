@@ -3,9 +3,9 @@ import config from '../config';
 
 const db = mongoose.createConnection(config.mongo.uri, config.mongo.options);
 
-import albumFile from './schemas/album-file';
-import albumFolder from './schemas/album-folder';
-import albumTag from './schemas/album-tag';
+import driveFile from './schemas/drive-file';
+import driveFolder from './schemas/drive-folder';
+import driveTag from './schemas/drive-tag';
 import application from './schemas/application';
 import hashtag from './schemas/hashtag';
 import notification from './schemas/notification';
@@ -19,9 +19,9 @@ import user from './schemas/user';
 import following from './schemas/following';
 
 /* tslint:disable:variable-name */
-export const AlbumFile = albumFile(db);
-export const AlbumFolder = albumFolder(db);
-export const AlbumTag = albumTag(db);
+export const DriveFile = driveFile(db);
+export const DriveFolder = driveFolder(db);
+export const DriveTag = driveTag(db);
 export const Application = application(db);
 export const Hashtag = hashtag(db);
 export const Notification = notification(db);

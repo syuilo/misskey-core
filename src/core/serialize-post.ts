@@ -1,5 +1,5 @@
-import {User, Post, PostLike, Repost, AlbumFile} from '../db/db';
-import {IUser, IPost, IAlbumFile} from '../db/interfaces';
+import {User, Post, PostLike, Repost, DriveFile} from '../db/db';
+import {IUser, IPost, IDriveFile} from '../db/interfaces';
 
 export default function serializePost(
 	post: any,
@@ -46,7 +46,7 @@ function serializeStatus(
 		}
 		// Get attached files
 		Promise.all(postObj.files.map((fileId: string) => new Promise<Object>((resolve2, reject2) => {
-			AlbumFile.findById(fileId, (findErr: any, file: IAlbumFile) => {
+			DriveFile.findById(fileId, (findErr: any, file: IDriveFile) => {
 				if (findErr !== null) {
 					reject2(findErr);
 				} else {
@@ -95,7 +95,7 @@ function serializeReply(
 			}
 			// Get attached files
 			Promise.all(postObj.files.map((fileId: string) => new Promise<Object>((resolve2, reject2) => {
-				AlbumFile.findById(fileId, (findErr: any, file: IAlbumFile) => {
+				DriveFile.findById(fileId, (findErr: any, file: IDriveFile) => {
 					if (findErr !== null) {
 						reject2(findErr);
 					} else {

@@ -1,19 +1,19 @@
 import * as crypto from 'crypto';
 import * as gm from 'gm';
-import {AlbumFile, AlbumFolder} from '../db/db';
-import {IAlbumFile, IAlbumFolder} from '../db/interfaces';
+import {DriveFile, DriveFolder} from '../db/db';
+import {IDriveFile, IDriveFolder} from '../db/interfaces';
 const fileType = require('file-type');
 const mimeType = require('mime-types');
 
 /**
- * アルバムにファイルを追加します
+ * ドライブにファイルを追加します
  * @param userId ユーザーID
  * @param fileName ファイル名
  * @param file 内容
  * @param comment ファイルの説明
  * @param type ファイルタイプ
  * @param folderId フォルダID
- * @param force trueに設定すると、ハッシュが同じファイルが見つかった場合でも無視してアルバムに登録します
+ * @param force trueに設定すると、ハッシュが同じファイルが見つかった場合でも無視してドライブに登録します
  * @return 追加したファイルオブジェクト
  */
 export default (
@@ -24,7 +24,7 @@ export default (
 	type: string = null,
 	folderId: string = null,
 	force: boolean = false
-) => new Promise<IAlbumFile>((resolve, reject) =>
+) => new Promise<IDriveFile>((resolve, reject) =>
 {
 	// ファイルサイズ
 	const size = file.byteLength;
@@ -40,11 +40,11 @@ export default (
 
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
-		AlbumFile.findOne({
+		DriveFile.findOne({
 			user: userId,
 			hash: hash,
 			datasize: size
-		}, (hashmuchFileFindErr: any, hashmuchFile: IAlbumFile) => {
+		}, (hashmuchFileFindErr: any, hashmuchFile: IDriveFile) => {
 			if (hashmuchFileFindErr !== null) {
 				console.error(hashmuchFileFindErr);
 				return reject('something-happend');
@@ -64,21 +64,21 @@ export default (
 	}
 
 	function register(): void {
-		// アルバム使用量を取得するためにすべてのファイルを取得
-		AlbumFile
+		// ドライブ使用量を取得するためにすべてのファイルを取得
+		DriveFile
 		.find({user: userId})
 		.select({
 			datasize: 1,
 			_id: 0
 		})
 		.lean()
-		.exec((albumFilesFindErr: any, albumFiles: IAlbumFile[]) => {
-			if (albumFilesFindErr !== null) {
-				return reject(albumFilesFindErr);
+		.exec((driveFilesFindErr: any, driveFiles: IDriveFile[]) => {
+			if (driveFilesFindErr !== null) {
+				return reject(driveFilesFindErr);
 			}
 
-			// 現時点でのアルバム使用量を算出(byte)
-			const used = albumFiles.map(albumFile => albumFile.datasize).reduce((x, y) => x + y, 0);
+			// 現時点でのドライブ使用量を算出(byte)
+			const used = driveFiles.map(driveFile => driveFile.datasize).reduce((x, y) => x + y, 0);
 
 			// 1GBを超える場合
 			if (used + size > 1073741824) {
@@ -86,7 +86,7 @@ export default (
 			}
 
 			if (folderId !== null) {
-				AlbumFolder.findById(folderId, (folderFindErr: any, folder: IAlbumFolder) => {
+				DriveFolder.findById(folderId, (folderFindErr: any, folder: IDriveFolder) => {
 					if (folderFindErr !== null) {
 						return reject(folderFindErr);
 					} else if (folder === null) {
@@ -100,9 +100,9 @@ export default (
 				create(null);
 			}
 
-			function create(folder: IAlbumFolder = null): void {
-				// AlbumFileドキュメントを作成
-				AlbumFile.create({
+			function create(folder: IDriveFolder = null): void {
+				// DriveFileドキュメントを作成
+				DriveFile.create({
 					user: userId,
 					folder: folder !== null ? folder.id : null,
 					datasize: size,
@@ -110,10 +110,10 @@ export default (
 					name: fileName,
 					comment: comment,
 					hash: hash
-				}, (albumFileCreateErr: any, albumFile: IAlbumFile) => {
-					if (albumFileCreateErr !== null) {
-						console.error(albumFileCreateErr);
-						return reject(albumFileCreateErr);
+				}, (driveFileCreateErr: any, driveFile: IDriveFile) => {
+					if (driveFileCreateErr !== null) {
+						console.error(driveFileCreateErr);
+						return reject(driveFileCreateErr);
 					}
 
 					// 画像だった場合
@@ -123,24 +123,24 @@ export default (
 						.size((getSizeErr: any, whsize: any) => {
 							if (getSizeErr !== undefined && getSizeErr !== null) {
 								console.error(getSizeErr);
-								return save(albumFile);
+								return save(driveFile);
 							}
-							albumFile.properties = {
+							driveFile.properties = {
 								width: whsize.width,
 								height: whsize.height
 							};
-							save(albumFile);
+							save(driveFile);
 						});
 					} else {
-						save(albumFile);
+						save(driveFile);
 					}
 				});
 			}
 		});
 	}
 
-	function save(albumFile: IAlbumFile): void {
-		albumFile.save((saveErr: any, saved: IAlbumFile) => {
+	function save(driveFile: IDriveFile): void {
+		driveFile.save((saveErr: any, saved: IDriveFile) => {
 			if (saveErr !== null) {
 				console.error(saveErr);
 				return reject(saveErr);

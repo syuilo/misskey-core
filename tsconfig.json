@@ -34,7 +34,7 @@
 		"./src/core/create-notification.ts",
 		"./src/core/extract-hashtags.ts",
 		"./src/core/extract-mentions.ts",
-		"./src/core/get-album-file.ts",
+		"./src/core/get-drive-file.ts",
 		"./src/core/lookup-follow-state.ts",
 		"./src/core/read-talk-message.ts",
 		"./src/core/register-hashtags.ts",

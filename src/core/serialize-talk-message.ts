@@ -15,7 +15,7 @@ export default function(
 				})
 				.populate({
 					path: 'file',
-					model: 'AlbumFile'
+					model: 'DriveFile'
 				}, (err: any, message2: ITalkUserMessage) => {
 					if (err !== null) {
 						reject(err);
@@ -37,7 +37,7 @@ export default function(
 				}
 				q.populate({
 					path: 'file',
-					model: 'AlbumFile'
+					model: 'DriveFile'
 				}, (err: any, message2: ITalkGroupMessage) => {
 					if (err !== null) {
 						reject(err);
