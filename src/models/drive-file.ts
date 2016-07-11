@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import {Schema, Document} from 'mongoose';
 import db from '../db';
 
 const schema = new Schema({
@@ -15,4 +15,18 @@ const schema = new Schema({
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export default db.model('DriveFile', schema, 'drive_files');
+interface DriveFile extends Document {
+	comment:    string;
+	created_at: Date;
+	data:       Buffer;
+	datasize:   number;
+	folder:     string;
+	type:       string;
+	hash:       string;
+	name:       string;
+	properties: any;
+	tags:       string[];
+	user:       string;
+}
+
+export default db.model<DriveFile>('DriveFile', schema, 'drive_files');

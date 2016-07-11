@@ -72,7 +72,11 @@ export default (
 
 	// フォルダ指定時
 	if (folderId !== null) {
-		const folder = await DriveFolder.findById(folderId);
+		const folder = await DriveFolder
+			.findById(folderId)
+			.lean()
+			.exec();
+
 		if (folder === null) {
 			return reject('folder-not-found');
 		} else if (folder.user !== userId) {

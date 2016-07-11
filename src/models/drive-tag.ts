@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import {Schema, Document} from 'mongoose';
 import db from '../db';
 
 const schema = new Schema({
@@ -7,4 +7,10 @@ const schema = new Schema({
 	user:  { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export default db.model('DriveTag', schema, 'drive_tags');
+interface DriveTag extends Document {
+	color:      string;
+	name:       string;
+	user:       string;
+}
+
+export default db.model<DriveTag>('DriveTag', schema, 'drive_tags');

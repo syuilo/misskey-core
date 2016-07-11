@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import {Schema, Document} from 'mongoose';
 import db from '../db';
 
 const schema = new Schema({
@@ -7,8 +7,20 @@ const schema = new Schema({
 	next:       { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
 	prev:       { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
 	reply_to:   { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
+	repost:     { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
 	text:       { type: String, required: false, default: null },
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export default db.model('Post', schema, 'posts');
+interface Post extends Document {
+	created_at: Date;
+	files:      string[];
+	next:       string;
+	prev:       string;
+	reply_to:   string;
+	repost:     string;
+	text:       string;
+	user:       string;
+}
+
+export default db.model<Post>('Post', schema, 'posts');
