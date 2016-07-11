@@ -75,7 +75,7 @@ export default (
 		const folder = await DriveFolder.findById(folderId);
 		if (folder === null) {
 			return reject('folder-not-found');
-		} else if (folder.user.toString() !== userId) {
+		} else if (folder.user !== userId) {
 			return reject('folder-not-found');
 		}
 	}

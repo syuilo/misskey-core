@@ -3,7 +3,7 @@ import User from './models/user';
 import config from './config';
 
 export default (req: express.Request) =>
-	new Promise<{ app: any, user: any, isOfficial: boolean }>((resolve, reject) =>
+	new Promise<{ app: any, user: any, isOfficial: boolean }>(async (resolve, reject) =>
 {
 	if (req.headers['pass'] === undefined || req.headers['pass'] === null) {
 		resolve({ app: null, user: null, isOfficial: false });
@@ -12,19 +12,15 @@ export default (req: express.Request) =>
 	} else if (req.headers['user'] === undefined || req.headers['user'] === null || req.headers['user'] === 'null') {
 		resolve({ app: null, user: null, isOfficial: true });
 	} else {
-		User
-		.findById(req.headers['user'])
-		.lean()
-		.exec((err, user) => {
-			if (err) {
-				return reject(err);
-			}
+		const user = await User
+			.findById(req.headers['user'])
+			.lean()
+			.exec();
 
-			resolve({
-				app: null,
-				user: user,
-				isOfficial: true
-			});
+		resolve({
+			app: null,
+			user: user,
+			isOfficial: true
 		});
 	}
 });
