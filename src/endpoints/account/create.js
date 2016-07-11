@@ -35,10 +35,13 @@ module.exports = async (params, res, app, user) =>
 	const salt = bcrypt.genSaltSync(14);
 	const hash = bcrypt.hashSync(password, salt);
 
-	res(await User.create({
+	// Create account
+	const account = await User.create({
 		username: username,
 		name: name,
 		lang: 'ja',
 		password: hash
-	}));
+	});
+
+	res(account.toObject());
 };
