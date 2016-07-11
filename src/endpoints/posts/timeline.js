@@ -46,15 +46,15 @@ module.exports = async (params, res, app, user) =>
 		: [user.id];
 
 	// タイムライン取得用のクエリを生成
-	const sort = {created_at: -1};
+	const sort = { created_at: -1 };
 	const query = {
 		user: { $in: followingIds }
 	};
 	if (sinceId !== null) {
 		sort.created_at = 1;
-		query.cursor = {$gt: sinceId};
+		query.cursor = { $gt: sinceId };
 	} else if (maxId !== null) {
-		query.cursor = {$lt: maxId};
+		query.cursor = { $lt: maxId };
 	}
 
 	// クエリを発行してタイムラインを取得
