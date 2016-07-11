@@ -9,7 +9,7 @@ const mimeType = require('mime-types');
  * ドライブにファイルを追加します
  * @param userId ユーザーID
  * @param fileName ファイル名
- * @param file 内容
+ * @param data 内容
  * @param comment ファイルの説明
  * @param type ファイルタイプ
  * @param folderId フォルダID
@@ -35,7 +35,7 @@ export default (
 	// ハッシュ生成
 	const hash: string = crypto
 		.createHash('sha256')
-		.update(file)
+		.update(data)
 		.digest('hex');
 
 	if (!force) {

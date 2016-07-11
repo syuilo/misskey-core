@@ -1,4 +1,4 @@
-import {Following} from '../db/db';
+import Following from '../models/following';
 
 export default (meId: string, otherpartyId: string) =>
 	new Promise<boolean>((resolve, reject) =>
