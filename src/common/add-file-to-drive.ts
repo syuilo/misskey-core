@@ -24,7 +24,7 @@ export default (
 	type: string = null,
 	folderId: string = null,
 	force: boolean = false
-) => new Promise<any>((resolve, reject) =>
+) => new Promise<any>(async (resolve, reject) =>
 {
 	// ファイルサイズ
 	const size = file.byteLength;
@@ -40,103 +40,74 @@ export default (
 
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
-		DriveFile.findOne({
+		const much = await DriveFile.findOne({
 			user: userId,
 			hash: hash,
 			datasize: size
-		}, (hashmuchFileFindErr: any, hashmuchFile: any) => {
-			if (hashmuchFileFindErr !== null) {
-				console.error(hashmuchFileFindErr);
-				return reject('something-happend');
-			}
-
-			// 無かったら新規登録
-			if (hashmuchFile === null) {
-				register();
-			} else {
-				// あったら登録せずにそれを返却
-				resolve(hashmuchFile);
-			}
 		});
-	} else {
-		// forceがtrueの場合は強制登録
-		register();
+
+		if (much !== null) {
+			resolve(much);
+			return;
+		}
 	}
 
-	function register(): void {
-		// ドライブ使用量を取得するためにすべてのファイルを取得
-		DriveFile
+	// ドライブ使用量を取得するためにすべてのファイルを取得
+	const driveFiles = await DriveFile
 		.find({user: userId})
 		.select({
 			datasize: 1,
 			_id: 0
 		})
 		.lean()
-		.exec((driveFilesFindErr: any, driveFiles: any[]) => {
-			if (driveFilesFindErr !== null) {
-				return reject(driveFilesFindErr);
+		.exec();
+
+	// 現時点でのドライブ使用量を算出(byte)
+	const used = driveFiles.map(driveFile => driveFile.datasize).reduce((x, y) => x + y, 0);
+
+	// 1GBを超える場合
+	if (used + size > 1073741824) {
+		return reject('no-free-space');
+	}
+
+	// フォルダ指定時
+	if (folderId !== null) {
+		const folder = await DriveFolder.findById(folderId);
+		if (folder === null) {
+			return reject('folder-not-found');
+		} else if (folder.user.toString() !== userId) {
+			return reject('folder-not-found');
+		}
+	}
+
+	// DriveFileドキュメントを作成
+	const driveFile = await DriveFile.create({
+		user: userId,
+		folder: folderId,
+		datasize: size,
+		type: type,
+		name: fileName,
+		comment: comment,
+		hash: hash
+	});
+
+	// 画像だった場合
+	if (/^image\/.*$/.test(type)) {
+		// 幅と高さを取得してプロパティに保存しておく
+		(<any>gm)(file, fileName)
+		.size((getSizeErr: any, whsize: any) => {
+			if (getSizeErr !== undefined && getSizeErr !== null) {
+				console.error(getSizeErr);
+				return save(driveFile);
 			}
-
-			// 現時点でのドライブ使用量を算出(byte)
-			const used = driveFiles.map(driveFile => driveFile.datasize).reduce((x, y) => x + y, 0);
-
-			// 1GBを超える場合
-			if (used + size > 1073741824) {
-				return reject('no-free-space');
-			}
-
-			if (folderId !== null) {
-				DriveFolder.findById(folderId, (folderFindErr: any, folder: any) => {
-					if (folderFindErr !== null) {
-						return reject(folderFindErr);
-					} else if (folder === null) {
-						return reject('folder-not-found');
-					} else if (folder.user.toString() !== userId) {
-						return reject('folder-not-found');
-					}
-					create(folder);
-				});
-			} else {
-				create(null);
-			}
-
-			function create(folder: any = null): void {
-				// DriveFileドキュメントを作成
-				DriveFile.create({
-					user: userId,
-					folder: folder !== null ? folder.id : null,
-					datasize: size,
-					type: type,
-					name: fileName,
-					comment: comment,
-					hash: hash
-				}, (driveFileCreateErr: any, driveFile: any) => {
-					if (driveFileCreateErr !== null) {
-						console.error(driveFileCreateErr);
-						return reject(driveFileCreateErr);
-					}
-
-					// 画像だった場合
-					if (/^image\/.*$/.test(type)) {
-						// 幅と高さを取得してプロパティに保存しておく
-						(<any>gm)(file, fileName)
-						.size((getSizeErr: any, whsize: any) => {
-							if (getSizeErr !== undefined && getSizeErr !== null) {
-								console.error(getSizeErr);
-								return save(driveFile);
-							}
-							driveFile.properties = {
-								width: whsize.width,
-								height: whsize.height
-							};
-							save(driveFile);
-						});
-					} else {
-						save(driveFile);
-					}
-				});
-			}
+			driveFile.properties = {
+				width: whsize.width,
+				height: whsize.height
+			};
+			save(driveFile);
 		});
+	} else {
+		save(driveFile);
 	}
 
 	function save(driveFile: any): void {
