@@ -19,7 +19,7 @@ const mimeType = require('mime-types');
 export default (
 	userId: string,
 	fileName: string,
-	file: Buffer,
+	data: Buffer,
 	comment: string = null,
 	type: string = null,
 	folderId: string = null,
@@ -27,10 +27,10 @@ export default (
 ) => new Promise<any>(async (resolve, reject) =>
 {
 	// ファイルサイズ
-	const size = file.byteLength;
+	const size = data.byteLength;
 
 	// ファイルタイプ
-	type = fileType(file) || mimeType.lookup(fileName) || type || 'application/octet-stream';
+	type = fileType(data) || mimeType.lookup(fileName) || type || 'application/octet-stream';
 
 	// ハッシュ生成
 	const hash: string = crypto
@@ -53,7 +53,7 @@ export default (
 	}
 
 	// ドライブ使用量を取得するためにすべてのファイルを取得
-	const driveFiles = await DriveFile
+	const files = await DriveFile
 		.find({user: userId})
 		.select({
 			datasize: 1,
@@ -63,7 +63,7 @@ export default (
 		.exec();
 
 	// 現時点でのドライブ使用量を算出(byte)
-	const used = driveFiles.map(driveFile => driveFile.datasize).reduce((x, y) => x + y, 0);
+	const used = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
 
 	// 1GBを超える場合
 	if (used + size > 1073741824) {
@@ -85,9 +85,10 @@ export default (
 	}
 
 	// DriveFileドキュメントを作成
-	const driveFile = await DriveFile.create({
+	const file = await DriveFile.create({
 		user: userId,
 		folder: folderId,
+		data: data,
 		datasize: size,
 		type: type,
 		name: fileName,
@@ -98,24 +99,24 @@ export default (
 	// 画像だった場合
 	if (/^image\/.*$/.test(type)) {
 		// 幅と高さを取得してプロパティに保存しておく
-		(<any>gm)(file, fileName)
-		.size((getSizeErr: any, whsize: any) => {
+		gm(data, fileName)
+		.size((getSizeErr, whsize) => {
 			if (getSizeErr !== undefined && getSizeErr !== null) {
 				console.error(getSizeErr);
-				return save(driveFile);
+				return save(file);
 			}
-			driveFile.properties = {
+			file.properties = {
 				width: whsize.width,
 				height: whsize.height
 			};
-			save(driveFile);
+			save(file);
 		});
 	} else {
-		save(driveFile);
+		save(file);
 	}
 
-	function save(driveFile: any): void {
-		driveFile.save((saveErr: any, saved: any) => {
+	function save(file: any): void {
+		file.save((saveErr, saved) => {
 			if (saveErr !== null) {
 				console.error(saveErr);
 				return reject(saveErr);
