@@ -31,6 +31,7 @@
     "argv": "0.0.2",
     "body-parser": "1.15.2",
     "cors": "2.7.1",
+    "dtsm": "^1.1.0",
     "express": "4.14.0",
     "file-type": "3.8.0",
     "js-yaml": "3.6.1",
