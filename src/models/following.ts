@@ -1,4 +1,4 @@
-import {Schema} from 'mongoose';
+import {Schema, Document} from 'mongoose';
 import db from '../db';
 
 const schema = new Schema({
@@ -7,4 +7,10 @@ const schema = new Schema({
 	follower:   { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
 
-export default db.model('Following', schema, 'followings');
+interface Following extends Document {
+	created_at: Date;
+	followee:   string;
+	follower:   string;
+}
+
+export default db.model<Following>('Following', schema, 'following');
