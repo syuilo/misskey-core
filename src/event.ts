@@ -1,6 +1,5 @@
 import * as redis from 'redis';
-import {Following} from './db/db';
-import {IPost, IFollowing, INotification, ITalkGroup, ITalkMessage, ITalkUserMessage} from './db/interfaces';
+import Following from './models/following';
 import config from './config';
 
 class MisskeyEvent {
