@@ -4,6 +4,15 @@ html(dir='ltr')
 	head
 		meta(charset='utf-8')
 		title Misskey Core
-		link(rel='stylesheet', href='/index.css')
+		style
+			include index.css
+		script
+			include particles.js
 
 	body
+		div#canv
+
+		main
+
+		script.
+			particlesJS.load('canv', 'resources/particles.json');

@@ -34,19 +34,14 @@ app.set('views', __dirname + '/web/');
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve static resources
+app.use('/resources', express.static(__dirname + '/resources'));
+
 // CORS
 app.use(cors());
 
 app.get('/', (req, res) => {
 	res.render('index');
-});
-
-app.get('/index.css', (req, res) => {
-	res.sendFile(__dirname + '/web/index.css');
-});
-
-app.get('/wallpaper.svg', (req, res) => {
-	res.sendFile(__dirname + '/resources/wallpaper.svg');
 });
 
 // Register REST API handlers
