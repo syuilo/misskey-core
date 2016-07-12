@@ -11,6 +11,7 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as cors from 'cors';
 import * as multer from 'multer';
+import * as accesses from 'accesses';
 
 import config from './config';
 import endpoints from './endpoints';
@@ -31,6 +32,7 @@ app.locals.cache = true;
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/web/');
 
+app.use(accesses.express());
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.use(bodyParser.urlencoded({ extended: true }));
 

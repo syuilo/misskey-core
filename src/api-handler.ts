@@ -71,7 +71,7 @@ export default (endpoint, req, res) =>
 	}
 
 	function call(ctx) {
-		require(`${__dirname}/endpoints/${endpoint.name}`).default(
+		require(`${__dirname}/endpoints/${endpoint.name}`)(
 			req.body, response, ctx.app, ctx.user, ctx.isOfficial);
 	}
 

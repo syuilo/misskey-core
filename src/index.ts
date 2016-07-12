@@ -27,6 +27,7 @@
  */
 
 import * as cluster from 'cluster';
+import * as accesses from 'accesses';
 import {logInfo, logWarn} from 'log-cool';
 import argv from './argv';
 import config from './config';
@@ -58,6 +59,12 @@ if (cluster.isMaster) {
 	for (let i = 0; i < cpuCount; i++) {
 		cluster.fork();
 	}
+
+	// Setup accesses from master proccess
+	accesses.serve({
+		appName: 'Misskey Core',
+		port: 617
+	});
 }
 // Workers
 else {

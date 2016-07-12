@@ -28,6 +28,7 @@
     "typescript": "1.8.10"
   },
   "dependencies": {
+    "accesses": "^1.0.5",
     "argv": "0.0.2",
     "body-parser": "1.15.2",
     "cors": "2.7.1",
