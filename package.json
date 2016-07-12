@@ -19,6 +19,7 @@
   "devDependencies": {
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-3": "^6.11.0",
+    "dtsm": "^1.1.0",
     "gulp": "3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-stylus": "2.5.0",
