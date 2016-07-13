@@ -1,4 +1,4 @@
-import {Document} from 'mongoose';
+import * as mongoose from 'mongoose';
 import User from '../models/user';
 import config from '../config';
 
@@ -16,7 +16,7 @@ export default (
 
 	if (typeof user === 'string') {
 		user = await User.findById(user).lean().exec();
-	} else if (user instanceof Document) {
+	} else if (user instanceof (<any>mongoose).Document) {
 		console.error('plz .lean()');
 		reject();
 	}
@@ -28,8 +28,6 @@ export default (
 	// Remove private properties
 	delete user.email;
 	delete user.password;
-
-	console.log(user);
 
 	user.avatar_url = user.avatar !== null
 		? `${config.drive.url}/${user.avatar}`
