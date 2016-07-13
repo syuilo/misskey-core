@@ -12,13 +12,13 @@ const limiterDB = redis.createClient(
 	}
 );
 
-export default (endpoint, req, res) =>
+export default (endpoint: any, req: express.Request, res: express.Response) =>
 {
 	const limitKey = endpoint.hasOwnProperty('limitKey')
 		? endpoint.limitKey
 		: endpoint.name;
 
-	function response(x, y) {
+	function response(x: any, y: any): void {
 		if (typeof x === 'number') {
 			res.status(x).send(y);
 		} else {
@@ -27,7 +27,7 @@ export default (endpoint, req, res) =>
 	}
 
 	// 短い期間の方のリミット
-	function detectBriefInterval(ctx) {
+	function detectBriefInterval(ctx: any): void {
 		const minIntervalLimiter = new Limiter({
 			id: `${ctx.user.id}:${limitKey}:for-detect-brief-interval`,
 			duration: endpoint.minInterval,
@@ -51,7 +51,7 @@ export default (endpoint, req, res) =>
 	}
 
 	// 長い期間の方のリミット
-	function rateLimit(ctx) {
+	function rateLimit(ctx: any): void {
 		const limiter = new Limiter({
 			id: `${ctx.user.id}:${limitKey}`,
 			duration: endpoint.limitDuration,
@@ -70,7 +70,7 @@ export default (endpoint, req, res) =>
 		});
 	}
 
-	function call(ctx) {
+	function call(ctx: any): void {
 		require(`${__dirname}/endpoints/${endpoint.name}`)(
 			req.body, response, ctx.app, ctx.user, ctx.isOfficial);
 	}
@@ -88,6 +88,7 @@ export default (endpoint, req, res) =>
 			call(ctx);
 		}
 	}, err => {
+		console.error(err);
 		res.status(403).send('authentication-failed');
 	});
 };

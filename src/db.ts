@@ -5,6 +5,10 @@
 import * as mongoose from 'mongoose';
 import config from './config';
 
+// Use native promises
+// SEE: http://mongoosejs.com/docs/promises.html
+(<any>mongoose).Promise = global.Promise;
+
 // init mongo connection
 const db = mongoose.createConnection(
 	config.mongo.uri, config.mongo.options);

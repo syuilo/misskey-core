@@ -33,6 +33,9 @@ import argv from './argv';
 import config from './config';
 import checkDependencies from './check-dependencies';
 
+require("babel-core/register");
+require("babel-polyfill");
+
 (<any>Error).stackTraceLimit = Infinity;
 
 const env = process.env.NODE_ENV;

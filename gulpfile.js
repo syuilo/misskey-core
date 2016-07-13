@@ -9,6 +9,7 @@ const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
 const stylus = require('gulp-stylus');
+const es = require('event-stream');
 
 const project = ts.createProject('tsconfig.json');
 
@@ -31,6 +32,9 @@ gulp.task('build:ts', () => {
 	project
 		.src()
 		.pipe(ts(project))
+		.pipe(babel({
+			presets: ['es2015', 'stage-3']
+		}))
 		.pipe(gulp.dest('./built/'));
 });
 
@@ -41,13 +45,17 @@ gulp.task('build:styles', () => {
 });
 
 gulp.task('build:copy', () => {
-	return gulp.src([
-		'./src/**/*',
-		'!**/*.ts',
-		'!**/*.ls',
-		'!**/*.styl'
-	])
-		.pipe(gulp.dest('./built/'));
+	return es.merge(
+		gulp.src([
+			'./src/resources/**/*'
+		]).pipe(gulp.dest('./built/resources/')),
+		gulp.src([
+			'./src/web/**/*',
+			'!**/*.ts',
+			'!**/*.ls',
+			'!**/*.styl'
+		]).pipe(gulp.dest('./built/web/'))
+	);
 });
 
 gulp.task('test', [

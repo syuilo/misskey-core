@@ -55,7 +55,7 @@ endpoints.forEach(endpoint => {
 	}
 
 	function handler(req: express.Request, res: express.Response): void {
-		require('./api-handler')(endpoint, req, res);
+		require('./api-handler').default(endpoint, req, res);
 	}
 });
 

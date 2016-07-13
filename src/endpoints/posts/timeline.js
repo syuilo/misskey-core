@@ -3,8 +3,8 @@
 /**
  * Module dependencies
  */
-const Post = require('../../models/post');
-const serialize = require('../../serializers/post');
+import Post from '../../models/post';
+import serialize from '../../serializers/post';
 
 /**
  * Get timeline

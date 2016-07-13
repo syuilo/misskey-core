@@ -15,7 +15,7 @@ interface IEndpoint {
 export default <IEndpoint[]>[
 	{ name: 'login', login: false },
 
-	{ name: 'screenname/available', login: false },
+	{ name: 'username/available', login: false },
 
 	{ name: 'account/create',          login: false },
 	{ name: 'account/show',            login: true },

@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-const serialize = require('../../serializers/user');
+import serialize from '../../serializers/user';
 
 /**
  * Show an account

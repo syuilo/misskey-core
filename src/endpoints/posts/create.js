@@ -3,12 +3,12 @@
 /**
  * Module dependencies
  */
-const Post = require('../../models/post');
-const savePostMentions = require('../../core/save-post-mentions');
-const extractHashtags = require('../../core/extract-hashtags');
-const registerHashtags = require('../../core/register-hashtags');
-const getDriveFile = require('../../core/get-drive-file');
-const event = require('../../event');
+import Post from '../../models/post';
+import savePostMentions from '../../core/save-post-mentions';
+import extractHashtags from '../../core/extract-hashtags';
+import registerHashtags from '../../core/register-hashtags';
+import getDriveFile from '../../core/get-drive-file';
+import event from '../../event';
 
 /**
  * 最大文字数

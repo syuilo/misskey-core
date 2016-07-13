@@ -1,9 +1,10 @@
 import * as crypto from 'crypto';
 import * as gm from 'gm';
-import DriveFile from '../models/drive-file';
-import DriveFolder from '../models/drive-folder';
 const fileType = require('file-type');
 const mimeType = require('mime-types');
+const prominence = require('prominence');
+import DriveFile from '../models/drive-file';
+import DriveFolder from '../models/drive-folder';
 
 /**
  * ドライブにファイルを追加します
@@ -99,29 +100,19 @@ export default (
 	// 画像だった場合
 	if (/^image\/.*$/.test(type)) {
 		// 幅と高さを取得してプロパティに保存しておく
-		gm(data, fileName)
-		.size((getSizeErr, whsize) => {
-			if (getSizeErr !== undefined && getSizeErr !== null) {
-				console.error(getSizeErr);
-				return save(file);
-			}
-			file.properties = {
-				width: whsize.width,
-				height: whsize.height
-			};
-			save(file);
-		});
-	} else {
-		save(file);
+		const g = gm(data, fileName);
+		const size = await prominence(g).size();
+		file.properties = {
+			width: size.width,
+			height: size.height
+		};
 	}
 
-	function save(file: any): void {
-		file.save((saveErr, saved) => {
-			if (saveErr !== null) {
-				console.error(saveErr);
-				return reject(saveErr);
-			}
-			resolve(saved);
-		});
-	}
+	file.save((saveErr, saved) => {
+		if (saveErr) {
+			console.error(saveErr);
+			return reject(saveErr);
+		}
+		resolve(saved);
+	});
 });
