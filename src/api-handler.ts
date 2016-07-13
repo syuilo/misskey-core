@@ -39,9 +39,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		minIntervalLimiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				res.status(500).send('something-happened');
+				response(500, 'something-happened');
 			} else if (limit.remaining === 0) {
-				res.status(429).send('brief-interval-detected');
+				response(429, 'brief-interval-detected');
 			} else {
 				if (endpoint.hasOwnProperty('limitDuration') && endpoint.hasOwnProperty('limitMax')) {
 					rateLimit(ctx);
@@ -63,9 +63,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		limiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				res.status(500).send('something-happened');
+				response(500, 'something-happened');
 			} else if (limit.remaining === 0) {
-				res.status(429).send('rate-limit-exceeded');
+				response(429, 'rate-limit-exceeded');
 			} else {
 				call(ctx);
 			}
@@ -78,7 +78,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 				req.body, response, ctx.app, ctx.user, ctx.isOfficial);
 		} catch (e) {
 			console.error(e);
-			res.status(500).send('something-happened');
+			response(500, 'something-happened');
 		}
 	}
 
@@ -96,6 +96,6 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		}
 	}, err => {
 		console.error(err);
-		res.status(403).send('authentication-failed');
+		response(403, 'authentication-failed');
 	});
 };
