@@ -33,6 +33,7 @@
     "argv": "0.0.2",
     "babel-core": "^6.10.4",
     "babel-polyfill": "^6.9.1",
+    "bcrypt": "^0.8.7",
     "body-parser": "1.15.2",
     "cors": "2.7.1",
     "express": "4.14.0",

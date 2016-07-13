@@ -71,8 +71,13 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 	}
 
 	function call(ctx: any): void {
-		require(`${__dirname}/endpoints/${endpoint.name}`)(
-			req.body, response, ctx.app, ctx.user, ctx.isOfficial);
+		try {
+			require(`${__dirname}/endpoints/${endpoint.name}`)(
+				req.body, response, ctx.app, ctx.user, ctx.isOfficial);
+		} catch (e) {
+			console.error(e);
+			res.status(500).send('something-happened');
+		}
 	}
 
 	authenticate(req).then(ctx => {

@@ -20,7 +20,7 @@ const schema = new Schema({
 	password:        { type: String, required: true },
 	posts_count:     { type: Number, required: false, default: 0 },
 	username:        { type: String, required: true, unique: true, lowercase: true },
-	links:           { type: [String], required: false, default: null }
+	links:           { type: [String], required: false, default: [] }
 });
 
 interface User extends Document {

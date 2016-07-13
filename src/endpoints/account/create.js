@@ -23,6 +23,10 @@ module.exports = async (params, res, app, user) =>
 		return res(400, 'username-is-required');
 	}
 
+	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
+		return res(400, 'invalid-username');
+	}
+
 	// Init 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
