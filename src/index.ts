@@ -26,6 +26,11 @@
  * SOFTWARE.
  */
 
+Error.stackTraceLimit = Infinity;
+
+/**
+ * Module dependencies
+ */
 import * as cluster from 'cluster';
 import * as accesses from 'accesses';
 import {logInfo, logWarn} from 'log-cool';
@@ -35,8 +40,6 @@ import checkDependencies from './check-dependencies';
 
 require("babel-core/register");
 require("babel-polyfill");
-
-(<any>Error).stackTraceLimit = Infinity;
 
 const env = process.env.NODE_ENV;
 
