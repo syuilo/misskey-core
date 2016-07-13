@@ -33,7 +33,7 @@ module.exports = async (params, res, app) =>
 	}
 
 	const user = id !== null
-		? await User.findByIg(id).lean().exec()
+		? await User.findById(id).lean().exec()
 		: await User.findOne({username}).lean().exec();
 
 	if (user === null) {
