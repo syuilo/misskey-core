@@ -13,7 +13,7 @@ interface IEndpoint {
 }
 
 export default <IEndpoint[]>[
-	{ name: 'login', login: false },
+	{ name: 'signin', login: false },
 
 	{ name: 'username/available', login: false },
 

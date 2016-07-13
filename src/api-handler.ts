@@ -20,7 +20,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 	function response(x: any, y: any): void {
 		if (typeof x === 'number') {
-			res.status(x).send(y);
+			res.status(x).send({
+				error: y
+			});
 		} else {
 			res.send(x);
 		}

@@ -4,10 +4,11 @@
  * Module dependencies
  */
 import bcrypt from 'bcrypt';
-import User from '../../models/user';
+import User from '../models/user';
+import serialize from '../serializers/user';
 
 /**
- * Create an account
+ * Signin
  *
  * @param {Object} params
  * @param {Object} res
@@ -22,29 +23,25 @@ module.exports = async (params, res, app) =>
 		return res(400, 'username-is-required');
 	}
 
-	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
-		return res(400, 'invalid-username');
-	}
-
 	// Init 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
 		return res(400, 'password-is-required');
 	}
 
-	const name = params.name || '名無し';
+	const user = await User.findOne({username}).lean().exec();
 
-	// Generate hash of password
-	const salt = bcrypt.genSaltSync(14);
-	const hash = bcrypt.hashSync(password, salt);
+	if (user === null) {
+		return res(404, 'user-not-found');
+	}
 
-	// Create account
-	const account = await User.create({
-		username: username,
-		name: name,
-		lang: 'ja',
-		password: hash
+	bcrypt.compare(password, user.password, async (compareErr, same) => {
+		if (compareErr) {
+			return res(500, 'something-happened');
+		} else if (!same) {
+			return res(400, 'incorrect-password');
+		}
+
+		res(await serialize(user));
 	});
-
-	res(account.toObject());
 };
