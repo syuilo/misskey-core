@@ -14,7 +14,7 @@ const schema = new Schema({
 	is_suspended:    { type: Boolean, required: false, default: false },
 	is_verified:     { type: Boolean, required: false, default: false },
 	lang:            { type: String, required: true },
-	latest_Post:     { type: Schema.Types.ObjectId, required: false, default: null },
+	latest_post:     { type: Schema.Types.ObjectId, required: false, default: null },
 	location:        { type: String, required: false, default: null },
 	name:            { type: String, required: true },
 	password:        { type: String, required: true },
@@ -36,7 +36,7 @@ interface User extends Document {
 	is_suspended:    boolean;
 	is_verified:     boolean;
 	lang:            string;
-	latest_Post:     string;
+	latest_post:     string;
 	location:        string;
 	name:            string;
 	password:        string;
