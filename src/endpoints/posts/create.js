@@ -4,10 +4,11 @@
  * Module dependencies
  */
 import Post from '../../models/post';
-import savePostMentions from '../../core/save-post-mentions';
-import extractHashtags from '../../core/extract-hashtags';
-import registerHashtags from '../../core/register-hashtags';
-import getDriveFile from '../../core/get-drive-file';
+import User from '../../models/user';
+//import savePostMentions from '../../core/save-post-mentions';
+//import extractHashtags from '../../core/extract-hashtags';
+//import registerHashtags from '../../core/register-hashtags';
+import getDriveFile from '../../common/get-drive-file';
 import event from '../../event';
 
 /**
@@ -82,21 +83,24 @@ module.exports = async (params, res, app, user) =>
 		next: null
 	});
 
-	res(createdPost);
+	res(createdPost.toObject());
 
 	// ユーザー情報更新
-	user.posts_count++;
-	user.latest_post = createdPost._id;
-	user.save();
+	User.findByIdAndUpdate(user.id, {
+		$set: {
+			posts_count: user.posts_count + 1,
+			latest_post: createdPost._id
+		}
+	});
 
 	// ハッシュタグ抽出
-	const hashtags = extractHashtags(text);
+	//const hashtags = extractHashtags(text);
 
 	// ハッシュタグをデータベースに登録
-	registerHashtags(user, hashtags);
+	//registerHashtags(user, hashtags);
 
 	// メンションを抽出してデータベースに登録
-	savePostMentions(user, createdPost, createdPost.text);
+	//savePostMentions(user, createdPost, createdPost.text);
 
 	// 作成した投稿を前の投稿の次の投稿に設定する
 	if (user.latest_post !== null) {
