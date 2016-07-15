@@ -1,4 +1,4 @@
-Misskey Core
+![](./core.png)
 -------------------------------
 
 An api server of Misskey.
