@@ -6,8 +6,10 @@ const schema = new Schema({
 	files:      { type: [Schema.Types.ObjectId], required: false, default: null, ref: 'DriveFile' },
 	next:       { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
 	prev:       { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
+	replies_count: { type: Number, required: false, default: 0 },
 	reply_to:   { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
 	repost:     { type: Schema.Types.ObjectId, required: false, default: null, ref: 'Post' },
+	repost_count: { type: Number, required: false, default: 0 },
 	text:       { type: String, required: false, default: null },
 	user:       { type: Schema.Types.ObjectId, required: true, ref: 'User' }
 });
