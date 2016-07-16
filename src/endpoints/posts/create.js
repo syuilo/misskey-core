@@ -92,6 +92,10 @@ module.exports = async (params, reply, app, user) =>
 
 	const post = res.ops[0];
 
+	user.posts_count++;
+	user.latest_post = post._id;
+	post.user = user;
+
 	reply(await serialize(post));
 
 	// ハッシュタグ抽出
@@ -112,10 +116,7 @@ module.exports = async (params, reply, app, user) =>
 
 	// ユーザー情報更新
 	User.updateOne({_id: user.id}, {
-		$set: {
-			posts_count: user.posts_count + 1,
-			latest_post: post._id
-		}
+		$set: user
 	});
 
 	// Publish to stream

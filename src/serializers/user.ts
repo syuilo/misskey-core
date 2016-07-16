@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 import User from '../models/user';
 import config from '../config';
+const deepcopy = require('deepcopy');
 
 export default (
 	user: any,
@@ -10,33 +11,36 @@ export default (
 	}
 ) => new Promise<any>(async (resolve, reject) =>
 {
+	let _user = deepcopy(user);
+
 	const opts = options || {
 		includeProfileImageIds: false
 	};
 
-	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
-		user = await User.findOne({_id: user});
+	// Populate the user if user is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(_user)) {
+		_user = await User.findOne({_id: _user});
 	}
 
-	user.id = user._id;
-	delete user._id;
+	_user.id = _user._id;
+	delete _user._id;
 
 	// Remove private properties
-	delete user.email;
-	delete user.password;
+	delete _user.email;
+	delete _user.password;
 
-	user.avatar_url = user.avatar !== null
-		? `${config.drive.url}/${user.avatar}`
+	_user.avatar_url = _user.avatar !== null
+		? `${config.drive.url}/${_user.avatar}`
 		: `${config.drive.url}/default-avatar.jpg`;
 
-	user.banner_url = user.banner !== null
-		? `${config.drive.url}/${user.banner}`
+	_user.banner_url = _user.banner !== null
+		? `${config.drive.url}/${_user.banner}`
 		: `${config.drive.url}/default-banner.jpg`;
 
 	if (!opts.includeProfileImageIds) {
-		delete user.avatar;
-		delete user.banner;
+		delete _user.avatar;
+		delete _user.banner;
 	}
 
-	resolve(user);
+	resolve(_user);
 });

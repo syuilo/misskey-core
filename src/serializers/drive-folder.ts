@@ -1,5 +1,6 @@
 import * as mongo from 'mongodb';
 import DriveFolder from '../models/drive-folder';
+const deepcopy = require('deepcopy');
 
 const self = (
 	folder: any,
@@ -8,22 +9,26 @@ const self = (
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
+	let _folder = deepcopy(folder);
+
 	const opts = options || {
 		includeParent: true
 	};
 
-	if (mongo.ObjectID.prototype.isPrototypeOf(folder)) {
-		folder = await DriveFolder.findOne({_id: folder});
+	// Populate the folder if folder is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(_folder)) {
+		_folder = await DriveFolder.findOne({_id: _folder});
 	}
 
-	folder.id = folder._id;
-	delete folder._id;
+	_folder.id = _folder._id;
+	delete _folder._id;
 
-	if (opts.includeParent && folder.parent) {
-		folder.parent = await self(folder.parent);
+	if (opts.includeParent && _folder.parent) {
+		// Populate parent folder
+		_folder.parent = await self(_folder.parent);
 	}
 
-	resolve(folder);
+	resolve(_folder);
 });
 
 export default self;

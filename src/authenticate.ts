@@ -13,8 +13,10 @@ export default (req: express.Request) =>
 	} else if (!req.headers['user']) {
 		resolve({ app: null, user: null, isOfficial: true });
 	} else {
+		const id = req.headers['user'];
+
 		const user = await User
-			.findOne({_id: new mongo.ObjectID(req.headers['user'])});
+			.findOne({_id: new mongo.ObjectID(id)});
 
 		user.id = user._id;
 

@@ -2,6 +2,7 @@ import * as mongo from 'mongodb';
 import Post from '../models/post';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
+const deepcopy = require('deepcopy');
 
 const self = (
 	post: any,
@@ -11,36 +12,43 @@ const self = (
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
+	let _post = deepcopy(post);
+
 	const opts = options || {
 		serializeReplyTo: true
 	};
 
-	if (mongo.ObjectID.prototype.isPrototypeOf(post)) {
-		post = await Post.findOne({_id: post});
+	// Populate the post if post is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(_post)) {
+		_post = await Post.findOne({_id: _post});
 	}
 
-	post.id = post._id;
-	delete post._id;
+	_post.id = _post._id;
+	delete _post._id;
 
-	post.user = await serializeUser(post.user, me);
+	// Populate user
+	_post.user = await serializeUser(_post.user, me);
 
-	if (post.files) {
-		post.files = await (<string[]>post.files).map(async (file) => {
+	if (_post.files) {
+		// Populate files
+		_post.files = await (<string[]>_post.files).map(async (file) => {
 			return await serializeDriveFile(file);
 		});
 	}
 
-	if (post.reply_to && opts.serializeReplyTo) {
-		post.reply_to = await self(post.reply_to, me, {
+	if (_post.reply_to && opts.serializeReplyTo) {
+		// Populate reply to post
+		_post.reply_to = await self(_post.reply_to, me, {
 			serializeReplyTo: false
 		});
 	}
 
-	if (post.repost) {
-		post.repost = await self(post.repost, me);
+	if (_post.repost) {
+		// Populate repost
+		_post.repost = await self(_post.repost, me);
 	}
 
-	resolve(post);
+	resolve(_post);
 });
 
 export default self;
