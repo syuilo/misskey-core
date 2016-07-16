@@ -1,9 +1,22 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
 import * as mongo from 'mongodb';
 import Post from '../models/post';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 const deepcopy = require('deepcopy');
 
+/**
+ * Serialize a post
+ *
+ * @param {Object} post
+ * @param {Object} me?
+ * @param {Object} options?
+ * @return {Promise<Object>}
+ */
 const self = (
 	post: any,
 	me: any,

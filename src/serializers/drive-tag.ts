@@ -1,7 +1,18 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
 import * as mongo from 'mongodb';
 import DriveTag from '../models/drive-tag';
 const deepcopy = require('deepcopy');
 
+/**
+ * Serialize a drive tag
+ *
+ * @param {Object} tag
+ * @return {Promise<Object>}
+ */
 const self = (
 	tag: any
 ) => new Promise<Object>(async (resolve, reject) =>

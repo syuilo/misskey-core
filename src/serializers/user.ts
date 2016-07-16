@@ -1,8 +1,21 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
 import * as mongo from 'mongodb';
 import User from '../models/user';
 import config from '../config';
 const deepcopy = require('deepcopy');
 
+/**
+ * Serialize a user
+ *
+ * @param {Object} user
+ * @param {Object} me?
+ * @param {Object} options?
+ * @return {Promise<Object>}
+ */
 export default (
 	user: any,
 	me?: any,

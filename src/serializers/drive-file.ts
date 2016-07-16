@@ -1,8 +1,20 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
 import * as mongo from 'mongodb';
 import DriveFile from '../models/drive-file';
 import serializeDriveTag from './drive-tag';
 const deepcopy = require('deepcopy');
 
+/**
+ * Serialize a drive file
+ *
+ * @param {Object} file
+ * @param {Object} options?
+ * @return {Promise<Object>}
+ */
 const self = (
 	file: any,
 	options?: {

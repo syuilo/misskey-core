@@ -1,7 +1,19 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
 import * as mongo from 'mongodb';
 import DriveFolder from '../models/drive-folder';
 const deepcopy = require('deepcopy');
 
+/**
+ * Serialize a drive folder
+ *
+ * @param {Object} folder
+ * @param {Object} options?
+ * @return {Promise<Object>}
+ */
 const self = (
 	folder: any,
 	options?: {
