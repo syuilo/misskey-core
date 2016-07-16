@@ -1,9 +1,3 @@
-import db from '../db';
+import * as mongodb from 'mongodb';
 
-export interface Following {
-	created_at: Date;
-	followee:   string;
-	follower:   string;
-}
-
-export default db.collection('following');
+export default (<mongodb.Db>(<any>global).db).collection('following');

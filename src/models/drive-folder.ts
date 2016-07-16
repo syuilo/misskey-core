@@ -1,11 +1,3 @@
-import db from '../db';
+import * as mongodb from 'mongodb';
 
-export interface DriveFolder {
-	color:      string;
-	created_at: Date;
-	name:       string;
-	parent:     string;
-	user:       string;
-}
-
-export default db.collection('drive_folders');
+export default (<mongodb.Db>(<any>global).db).collection('drive_folders');

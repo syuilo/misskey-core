@@ -1,9 +1,3 @@
-import db from '../db';
+import * as mongodb from 'mongodb';
 
-export interface DriveTag {
-	color:      string;
-	name:       string;
-	user:       string;
-}
-
-export default db.collection('drive_tags');
+export default (<mongodb.Db>(<any>global).db).collection('drive_tags');
