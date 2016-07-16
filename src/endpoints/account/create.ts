@@ -22,6 +22,7 @@ module.exports = async (params: any, reply: any, app: any) =>
 		return reply(400, 'username-is-required');
 	}
 
+	// Validate username
 	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
 		return reply(400, 'invalid-username');
 	}
@@ -40,10 +41,25 @@ module.exports = async (params: any, reply: any, app: any) =>
 
 	// Create account
 	const res = await User.insert({
-		username: username,
-		name: name,
+		avatar: null,
+		banner: null,
+		birthday: null,
+		comment: null,
+		created_at: Date.now(),
+		description: null,
+		email: null,
+		followers_count: 0,
+		following_count: 0,
+		is_suspended: false,
+		is_verified: false,
 		lang: 'ja',
-		password: hash
+		latest_post: null,
+		links: null,
+		location: null,
+		name: name,
+		password: hash,
+		posts_count: 0,
+		username: username
 	});
 
 	const account = res.ops[0];
