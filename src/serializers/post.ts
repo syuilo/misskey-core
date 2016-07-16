@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import Post from '../models/post';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
@@ -14,7 +15,7 @@ const self = (
 		serializeReplyTo: true
 	};
 
-	if (typeof post === 'string') {
+	if (mongo.ObjectID.prototype.isPrototypeOf(post)) {
 		post = await Post.findOne({_id: post});
 	}
 

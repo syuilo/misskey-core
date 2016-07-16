@@ -5,6 +5,7 @@
  */
 import * as bcrypt from 'bcrypt';
 import User from '../../models/user';
+import serialize from '../../serializers/user';
 
 /**
  * Create an account
@@ -14,7 +15,7 @@ import User from '../../models/user';
  * @param {Object} app
  * @return {void}
  */
-module.exports = async (params: any, reply: any, app: any) =>
+module.exports = async (params, reply, app) =>
 {
 	// Init 'username' parameter
 	const username = params.username;
@@ -64,5 +65,5 @@ module.exports = async (params: any, reply: any, app: any) =>
 
 	const account = res.ops[0];
 
-	reply(account);
+	reply(await serialize(account));
 };

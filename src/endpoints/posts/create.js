@@ -5,6 +5,7 @@
  */
 import Post from '../../models/post';
 import User from '../../models/user';
+import serialize from '../../serializers/post';
 //import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
@@ -25,12 +26,12 @@ const maxFileLength = 4;
  * Create a post
  *
  * @param {Object} params
- * @param {Object} res
+ * @param {Object} reply
  * @param {Object} app
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, res, app, user) =>
+module.exports = async (params, reply, app, user) =>
 {
 	// Init 'text' parameter
 	let text = params.text;
@@ -39,7 +40,7 @@ module.exports = async (params, res, app, user) =>
 		if (text.length === 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
-			return res(400, 'too-long-text');
+			return reply(400, 'too-long-text');
 		}
 	} else {
 		text = null;
@@ -53,7 +54,7 @@ module.exports = async (params, res, app, user) =>
 		if (files.length === 0) {
 			files = null;
 		} else if (files.length > maxFileLength) {
-			return res(400, 'too-many-files');
+			return reply(400, 'too-many-files');
 		}
 
 		if (files !== null) {
@@ -66,7 +67,7 @@ module.exports = async (params, res, app, user) =>
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (text === null && files === null) {
-		return res(400, 'text-or-files-is-required');
+		return reply(400, 'text-or-files-is-required');
 	}
 
 	// 添付ファイルがあれば添付ファイル取得
@@ -74,24 +75,24 @@ module.exports = async (params, res, app, user) =>
 		files = await Promise.all(files.map(file => getDriveFile(user.id, file)));
 	}
 
-	// 作成
-	const createdPost = await Post.create({
-		user: user.id,
+	// TODO
+	const replyTo = null;
+
+	// 投稿を作成
+	const res = await Post.insert({
+		created_at: Date.now(),
 		files: files ? files.map(file => file.id) : null,
-		text: text,
+		next: null,
 		prev: user.latest_post,
-		next: null
+		replies_count: 0,
+		reply_to: replyTo,
+		text: text,
+		user: user.id
 	});
 
-	res(createdPost.toObject());
+	const post = res.ops[0];
 
-	// ユーザー情報更新
-	User.findByIdAndUpdate(user.id, {
-		$set: {
-			posts_count: user.posts_count + 1,
-			latest_post: createdPost._id
-		}
-	});
+	reply(await serialize(post));
 
 	// ハッシュタグ抽出
 	//const hashtags = extractHashtags(text);
@@ -100,14 +101,22 @@ module.exports = async (params, res, app, user) =>
 	//registerHashtags(user, hashtags);
 
 	// メンションを抽出してデータベースに登録
-	//savePostMentions(user, createdPost, createdPost.text);
+	//savePostMentions(user, post, post.text);
 
 	// 作成した投稿を前の投稿の次の投稿に設定する
 	if (user.latest_post !== null) {
-		Post.findByIdAndUpdate(user.latest_post, {
-			$set: { next: createdPost._id }
+		Post.updateOne({_id: user.latest_post}, {
+			$set: { next: post._id }
 		});
 	}
+
+	// ユーザー情報更新
+	User.updateOne({_id: user.id}, {
+		$set: {
+			posts_count: user.posts_count + 1,
+			latest_post: post._id
+		}
+	});
 
 	// Publish to stream
 	event.publishPost(user.id, createdPost);

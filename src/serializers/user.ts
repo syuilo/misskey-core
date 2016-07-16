@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import * as mongo from 'mongodb';
 import User from '../models/user';
 import config from '../config';
 
@@ -14,11 +14,8 @@ export default (
 		includeProfileImageIds: false
 	};
 
-	if (typeof user === 'string') {
+	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
 		user = await User.findOne({_id: user});
-	} else if (user instanceof (<any>mongoose).Document) {
-		console.error('plz .lean()');
-		reject();
 	}
 
 	user.id = user._id;

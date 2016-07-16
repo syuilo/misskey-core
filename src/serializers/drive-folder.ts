@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import DriveFolder from '../models/drive-folder';
 
 const self = (
@@ -11,7 +12,7 @@ const self = (
 		includeParent: true
 	};
 
-	if (typeof folder === 'string') {
+	if (mongo.ObjectID.prototype.isPrototypeOf(folder)) {
 		folder = await DriveFolder.findOne({_id: folder});
 	}
 

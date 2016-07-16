@@ -14,7 +14,7 @@ import serialize from '../../serializers/user';
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params: any, reply: any, app: any, user: any) =>
+module.exports = async (params, reply, app, user) =>
 {
 	// serialize
 	reply(await serialize(user));

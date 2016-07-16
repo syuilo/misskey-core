@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import DriveFile from '../models/drive-file';
 import serializeDriveTag from './drive-tag';
 
@@ -12,7 +13,7 @@ const self = (
 		includeTags: true
 	};
 
-	if (typeof file === 'string') {
+	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
 		file = await DriveFile.findOne({_id: file});
 	}
 

@@ -1,10 +1,11 @@
+import * as mongo from 'mongodb';
 import DriveTag from '../models/drive-tag';
 
 const self = (
 	tag: any
 ) => new Promise<Object>(async (resolve, reject) =>
 {
-	if (typeof tag === 'string') {
+	if (mongo.ObjectID.prototype.isPrototypeOf(tag)) {
 		tag = await DriveTag.findOne({_id: tag});
 	}
 
