@@ -15,12 +15,11 @@ const self = (
 	};
 
 	if (typeof post === 'string') {
-		post = await Post.findById(post).lean().exec();
+		post = await Post.findOne({_id: post});
 	}
 
 	post.id = post._id;
 	delete post._id;
-	delete post.__v;
 
 	post.user = await serializeUser(post.user, me);
 

@@ -13,12 +13,11 @@ const self = (
 	};
 
 	if (typeof file === 'string') {
-		file = await DriveFile.findById(file).lean().exec();
+		file = await DriveFile.findOne({_id: file});
 	}
 
 	file.id = file._id;
 	delete file._id;
-	delete file.__v;
 
 	if (opts.includeTags && file.tags) {
 		file.tags = await (<string[]>file.tags).map(async (tag) => {

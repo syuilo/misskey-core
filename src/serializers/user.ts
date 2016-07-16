@@ -4,7 +4,7 @@ import config from '../config';
 
 export default (
 	user: any,
-	me: any,
+	me?: any,
 	options?: {
 		includeProfileImageIds: boolean
 	}
@@ -15,7 +15,7 @@ export default (
 	};
 
 	if (typeof user === 'string') {
-		user = await User.findById(user).lean().exec();
+		user = await User.findOne({_id: user});
 	} else if (user instanceof (<any>mongoose).Document) {
 		console.error('plz .lean()');
 		reject();
@@ -23,7 +23,6 @@ export default (
 
 	user.id = user._id;
 	delete user._id;
-	delete user.__v;
 
 	// Remove private properties
 	delete user.email;

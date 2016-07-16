@@ -1,7 +1,6 @@
-import {Schema, Document} from 'mongoose';
 import db from '../db';
 
-interface DriveFolder extends Document {
+export interface DriveFolder {
 	color:      string;
 	created_at: Date;
 	name:       string;
@@ -9,4 +8,4 @@ interface DriveFolder extends Document {
 	user:       string;
 }
 
-export default db.model<DriveFolder>('DriveFolder', schema, 'drive_folders');
+export default db.collection('drive_folders');

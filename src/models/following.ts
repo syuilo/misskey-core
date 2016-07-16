@@ -1,10 +1,9 @@
-import {Schema, Document} from 'mongoose';
 import db from '../db';
 
-interface Following extends Document {
+export interface Following {
 	created_at: Date;
 	followee:   string;
 	follower:   string;
 }
 
-export default db.model<Following>('Following', schema, 'following');
+export default db.collection('following');

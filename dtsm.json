@@ -16,9 +16,6 @@
     "express/express.d.ts": {
       "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
     },
-    "mongoose/mongoose.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
-    },
     "body-parser/body-parser.d.ts": {
       "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
     },
@@ -48,6 +45,12 @@
     },
     "ratelimiter/ratelimiter.d.ts": {
       "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+    },
+    "mongodb/mongodb.d.ts": {
+      "ref": "7499bb5e447c09b582f479ab9f9143d0c9af59fc"
+    },
+    "bcrypt/bcrypt.d.ts": {
+      "ref": "7499bb5e447c09b582f479ab9f9143d0c9af59fc"
     }
   }
 }

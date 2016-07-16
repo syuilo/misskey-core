@@ -38,6 +38,8 @@ import argv from './argv';
 import config from './config';
 import checkDependencies from './check-dependencies';
 
+require('./db');
+
 require("babel-core/register");
 require("babel-polyfill");
 

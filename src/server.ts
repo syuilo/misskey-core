@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 
 // Register REST API handlers
 endpoints.forEach(endpoint => {
-	if (endpoint.withFile === true) {
+	if (endpoint.withFile) {
 		app.post('/' + endpoint.name, upload.single('file'), handler);
 	} else {
 		app.post('/' + endpoint.name, handler);

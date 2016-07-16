@@ -1,3 +1,4 @@
+import * as mongo from 'mongodb';
 import * as express from 'express';
 import User from './models/user';
 import config from './config';
@@ -9,13 +10,11 @@ export default (req: express.Request) =>
 		resolve({ app: null, user: null, isOfficial: false });
 	} else if (req.headers['pass'] !== config.apiPass) {
 		reject('incorrect-pass');
-	} else if (!req.headers['user'] || req.headers['user'] === 'null') {
+	} else if (!req.headers['user']) {
 		resolve({ app: null, user: null, isOfficial: true });
 	} else {
 		const user = await User
-			.findById(req.headers['user'])
-			.lean()
-			.exec();
+			.findOne({_id: new mongo.ObjectID(req.headers['user'])});
 
 		user.id = user._id;
 

@@ -5,12 +5,11 @@ const self = (
 ) => new Promise<Object>(async (resolve, reject) =>
 {
 	if (typeof tag === 'string') {
-		tag = await DriveTag.findById(tag).lean().exec();
+		tag = await DriveTag.findOne({_id: tag});
 	}
 
 	tag.id = tag._id;
 	delete tag._id;
-	delete tag.__v;
 
 	resolve(tag);
 });

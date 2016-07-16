@@ -4,6 +4,10 @@ import * as Limiter from 'ratelimiter';
 import authenticate from './authenticate';
 import config from './config';
 
+const env = process.env.NODE_ENV;
+const isProduction = env === 'production';
+const isDebug = !isProduction;
+
 const limiterDB = redis.createClient(
 	config.redis.port,
 	config.redis.host,
@@ -14,17 +18,29 @@ const limiterDB = redis.createClient(
 
 export default (endpoint: any, req: express.Request, res: express.Response) =>
 {
+	if (isDebug) {
+		console.log(`REQ: ${endpoint.name}`);
+	}
+
 	const limitKey = endpoint.hasOwnProperty('limitKey')
 		? endpoint.limitKey
 		: endpoint.name;
 
-	function response(x: any, y: any): void {
+	function reply(x: any, y: any): void {
 		if (typeof x === 'number') {
 			res.status(x).send({
 				error: y
 			});
+
+			if (isDebug) {
+				console.log(`REP: ERROR: ${x} ${y}`);
+			}
 		} else {
 			res.send(x);
+
+			if (isDebug) {
+				console.log(`REP: OK: 200 ${JSON.stringify(x)}`);
+			}
 		}
 	}
 
@@ -39,9 +55,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		minIntervalLimiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				response(500, 'something-happened');
+				reply(500, 'something-happened');
 			} else if (limit.remaining === 0) {
-				response(429, 'brief-interval-detected');
+				reply(429, 'brief-interval-detected');
 			} else {
 				if (endpoint.hasOwnProperty('limitDuration') && endpoint.hasOwnProperty('limitMax')) {
 					rateLimit(ctx);
@@ -63,9 +79,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		limiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				response(500, 'something-happened');
+				reply(500, 'something-happened');
 			} else if (limit.remaining === 0) {
-				response(429, 'rate-limit-exceeded');
+				reply(429, 'rate-limit-exceeded');
 			} else {
 				call(ctx);
 			}
@@ -75,10 +91,10 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 	function call(ctx: any): void {
 		try {
 			require(`${__dirname}/endpoints/${endpoint.name}`)(
-				req.body, response, ctx.app, ctx.user, ctx.isOfficial);
+				req.body, reply, ctx.app, ctx.user, ctx.isOfficial);
 		} catch (e) {
 			console.error(e);
-			response(500, 'something-happened');
+			reply(500, 'something-happened');
 		}
 	}
 
@@ -96,6 +112,6 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		}
 	}, err => {
 		console.error(err);
-		response(403, 'authentication-failed');
+		reply(403, 'authentication-failed');
 	});
 };

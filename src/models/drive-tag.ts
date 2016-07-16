@@ -1,10 +1,9 @@
-import {Schema, Document} from 'mongoose';
 import db from '../db';
 
-interface DriveTag extends Document {
+export interface DriveTag {
 	color:      string;
 	name:       string;
 	user:       string;
 }
 
-export default db.model<DriveTag>('DriveTag', schema, 'drive_tags');
+export default db.collection('drive_tags');

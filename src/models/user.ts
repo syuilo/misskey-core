@@ -1,7 +1,5 @@
-import {Schema, Document} from 'mongoose';
-import db from '../db';
-
-interface User extends Document {
+export interface User {
+	_id:             string;
 	avatar:          string;
 	banner:          string;
 	birthday:        Date;
@@ -23,4 +21,4 @@ interface User extends Document {
 	links:           string[];
 }
 
-export default db.model<User>('User', schema, 'users');
+export default (<any>global).db.collection('users');

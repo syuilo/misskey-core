@@ -12,12 +12,11 @@ const self = (
 	};
 
 	if (typeof folder === 'string') {
-		folder = await DriveFolder.findById(folder).lean().exec();
+		folder = await DriveFolder.findOne({_id: folder});
 	}
 
 	folder.id = folder._id;
 	delete folder._id;
-	delete folder.__v;
 
 	if (opts.includeParent && folder.parent) {
 		folder.parent = await self(folder.parent);

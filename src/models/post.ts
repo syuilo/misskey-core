@@ -1,7 +1,7 @@
-import {Document} from 'mongoose';
 import db from '../db';
 
-interface Post extends Document {
+export interface Post {
+	_id:           string;
 	created_at:    Date;
 	files:         string[];
 	next:          string;
@@ -14,4 +14,4 @@ interface Post extends Document {
 	user:          string;
 }
 
-export default db.model<Post>('Post', null, 'posts');
+export default db.collection('posts');

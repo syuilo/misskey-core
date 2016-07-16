@@ -2,23 +2,16 @@
 // DB
 //////////////////////////////////////////////////
 
-import * as mongoose from 'mongoose';
+import * as mongodb from 'mongodb';
 import config from './config';
 
-// Use native promises
-// SEE: http://mongoosejs.com/docs/promises.html
-(<any>mongoose).Promise = global.Promise;
+const client = mongodb.MongoClient;
 
-// init mongo connection
-const db = mongoose.createConnection(
-	config.mongo.uri, config.mongo.options);
-
-db.once('open', () => {
+client.connect(config.mongo.uri, config.mongo.options, (err, db) => {
+	if (err) {
+		console.log(err);
+	}
 	console.log('Connected to MongoDB');
-});
 
-db.on('error', (err: any) => {
-	console.error(`MongoDB connection error: ${err}`);
+	(<any>global).db = db;
 });
-
-export default db;
