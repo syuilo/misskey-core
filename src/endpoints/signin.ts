@@ -29,7 +29,7 @@ module.exports = async (params: any, reply: any, app: any) =>
 		return reply(400, 'password-is-required');
 	}
 
-	const user = await User.findOne({username}).lean().exec();
+	const user = await User.findOne({username});
 
 	if (user === null) {
 		return reply(404, 'user-not-found');
