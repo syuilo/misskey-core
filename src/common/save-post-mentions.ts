@@ -7,11 +7,11 @@ export default function(author: IUser, post: IPost, text: string): void {
 	extractMentions(text).then(users => {
 		users.forEach(user => {
 			PostMention.create({
-				user: user.id,
+				user: user._id,
 				post: post.id
 			}, (createErr: any, createdMention: IPostMention) => {
 				// 通知を作成
-				createNotification(null, user.id, 'mention', {
+				createNotification(null, user._id, 'mention', {
 					postId: post.id
 				});
 			});

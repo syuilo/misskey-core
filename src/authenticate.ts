@@ -18,8 +18,6 @@ export default (req: express.Request) =>
 		const user = await User
 			.findOne({_id: new mongo.ObjectID(id)});
 
-		user.id = user._id;
-
 		resolve({
 			app: null,
 			user: user,

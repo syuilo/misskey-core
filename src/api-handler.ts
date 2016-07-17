@@ -47,7 +47,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 	// 短い期間の方のリミット
 	function detectBriefInterval(ctx: any): void {
 		const minIntervalLimiter = new Limiter({
-			id: `${ctx.user.id}:${limitKey}:for-detect-brief-interval`,
+			id: `${ctx.user._id}:${limitKey}:for-detect-brief-interval`,
 			duration: endpoint.minInterval,
 			max: 1,
 			db: limiterDB
@@ -71,7 +71,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 	// 長い期間の方のリミット
 	function rateLimit(ctx: any): void {
 		const limiter = new Limiter({
-			id: `${ctx.user.id}:${limitKey}`,
+			id: `${ctx.user._id}:${limitKey}`,
 			duration: endpoint.limitDuration,
 			max: endpoint.limitMax,
 			db: limiterDB

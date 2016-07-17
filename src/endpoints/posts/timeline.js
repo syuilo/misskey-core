@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
@@ -10,22 +11,23 @@ import serialize from '../../serializers/post';
  * Get timeline
  *
  * @param {Object} params
- * @param {Object} res
+ * @param {Object} reply
  * @param {Object} app
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, res, app, user) =>
+module.exports = async (params, reply, app, user) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
+		// 1 ~ 100 まで
 		if (limit < 1) {
-			return res(400, 'invalid-limit-range');
+			return reply(400, 'invalid-limit-range');
 		} else if (limit > 100) {
-			return res(400, 'invalid-limit-range');
+			return reply(400, 'invalid-limit-range');
 		}
 	} else {
 		limit = 10;
@@ -34,43 +36,54 @@ module.exports = async (params, res, app, user) =>
 	const sinceId = params['since-id'] || null;
 	const maxId = params['max-id'] || null;
 
+	// 両方指定してたらエラー
+	if (sinceId !== null && maxId !== null) {
+		return reply(400, 'cannot-set-since-id-and-max-id');
+	}
+
 	// 自分がフォローしているユーザーの関係を取得
+	// SELECT followee
 	const following = await UserFollowing
-		.find({follower: user.id})
-		.lean()
-		.exec();
+		.find({follower: user._id}, {followee: true});
 
 	// 自分と自分がフォローしているユーザーのIDのリストを生成
 	const followingIds = following.length !== 0
-		? [...following.map(follow => follow.followee), user.id]
-		: [user.id];
+		? [...following.map(follow => follow.followee), user._id]
+		: [user._id];
 
-	// タイムライン取得用のクエリを生成
-	const sort = { created_at: -1 };
+	// クエリ構築
+	const sort = {
+		created_at: -1
+	};
 	const query = {
-		user: { $in: followingIds }
+		user: {
+			$in: followingIds
+		}
 	};
 	if (sinceId !== null) {
 		sort.created_at = 1;
-		query.cursor = { $gt: sinceId };
+		query._id = {
+			$gt: new mongo.ObjectID(sinceId)
+		};
 	} else if (maxId !== null) {
-		query.cursor = { $lt: maxId };
+		query._id = {
+			$lt: new mongo.ObjectID(maxId)
+		};
 	}
 
 	// クエリを発行してタイムラインを取得
 	const timeline = await Post
-		.find(query)
-		.sort(sort)
-		.limit(limit)
-		.lean()
-		.exec();
+		.find(query, {
+			limit: limit,
+			sort: sort
+		});
 
 	if (timeline.length === 0) {
-		return res([]);
+		return reply([]);
 	}
 
 	// serialize
-	res(timeline.map(async (post) => {
+	reply(timeline.map(async (post) => {
 		return await serialize(post);
 	}));
 };

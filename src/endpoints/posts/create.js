@@ -72,7 +72,7 @@ module.exports = async (params, reply, app, user) =>
 
 	// 添付ファイルがあれば添付ファイル取得
 	if (files !== null) {
-		files = await Promise.all(files.map(file => getDriveFile(user.id, file)));
+		files = await Promise.all(files.map(file => getDriveFile(user._id, file)));
 	}
 
 	// TODO
@@ -84,10 +84,11 @@ module.exports = async (params, reply, app, user) =>
 		files: files ? files.map(file => file.id) : null,
 		next: null,
 		prev: user.latest_post,
+		reaction_counts: [],
 		replies_count: 0,
 		reply_to: replyTo,
 		text: text,
-		user: user.id
+		user: user._id
 	});
 
 	const post = res.ops[0];
@@ -115,10 +116,10 @@ module.exports = async (params, reply, app, user) =>
 	}
 
 	// ユーザー情報更新
-	User.updateOne({_id: user.id}, {
+	User.updateOne({_id: user._id}, {
 		$set: user
 	});
 
 	// Publish to stream
-	event.publishPost(user.id, createdPost);
+	event.publishPost(user._id, createdPost);
 };
