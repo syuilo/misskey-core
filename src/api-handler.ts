@@ -27,7 +27,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		: endpoint.name;
 
 	function reply(x: any, y: any): void {
-		if (typeof x === 'number') {
+		if (x === undefined) {
+			res.sendStatus(204);
+		} else if (typeof x === 'number') {
 			res.status(x).send({
 				error: y
 			});
