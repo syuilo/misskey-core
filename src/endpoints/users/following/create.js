@@ -4,10 +4,10 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import User from '../../models/user';
-import Following from '../../models/following';
-import serialize from '../../serializers/user';
-import event from '../../event';
+import User from '../../../models/user';
+import Following from '../../../models/following';
+import serialize from '../../../serializers/following';
+import event from '../../../event';
 
 /**
  * Follow a user
