@@ -6,7 +6,7 @@
 import serialize from '../../serializers/user';
 
 /**
- * Update an account
+ * Update myself
  *
  * @param {Object} params
  * @param {Object} reply

@@ -4,13 +4,13 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import User from '../../../models/user';
-import Following from '../../../models/following';
-import serialize from '../../../serializers/following';
-import event from '../../../event';
+import User from '../../models/user';
+import Following from '../../models/following';
+import serialize from '../../serializers/following';
+import event from '../../event';
 
 /**
- * Follow a user
+ * Unfollow a user
  *
  * @param {Object} params
  * @param {Object} reply
@@ -23,7 +23,7 @@ module.exports = async (params, reply, app, user) =>
 	const follower = user;
 
 	// Init 'user_id' parameter
-	let userId = params.user_id;
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
 		return reply(400, 'user_id is required');
 	}
@@ -37,33 +37,29 @@ module.exports = async (params, reply, app, user) =>
 		return reply(404, 'user not found');
 	}
 
-	// Check arleady following
+	// Check not following
 	const exist = await Following.findOne({
 		follower: follower._id,
 		followee: followee._id
 	});
 
-	if (exist !== null) {
-		return reply(400, 'already following');
+	if (exist === null) {
+		return reply(400, 'already not following');
 	}
 
-	// Create following
-	const res = await Following.insert({
-		created_at: Date.now(),
-		follower: follower._id,
-		followee: followee._id
+	// Delete following
+	const res = await Following.deleteOne({
+		_id: exist._id
 	});
 
-	const following = res.ops[0];
-
-	follower.following_count++;
+	follower.following_count--;
 	following.follower = follower;
 
-	followee.followers_count++;
+	followee.followers_count--;
 	following.followee = followee;
 
 	// Send response
-	reply(await serialize(following));
+	reply();
 
 	// ユーザー情報更新
 	User.updateOne({_id: follower._id}, {
@@ -72,7 +68,4 @@ module.exports = async (params, reply, app, user) =>
 	User.updateOne({_id: followee._id}, {
 		$set: followee
 	});
-
-	// Publish to stream
-	event.publishFollow(followee._id, following);
 };

@@ -4,19 +4,17 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Post from '../../../models/post';
-import serialize from '../../../serializers/post';
+import Following from '../../models/following';
+import serialize from '../../serializers/following';
 
 /**
- * Get posts of a user
+ * Get following users of a user
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
- * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply) =>
 {
 	// Init 'user_id' parameter
 	const userId = params.user_id;
@@ -59,7 +57,7 @@ module.exports = async (params, reply, app, user) =>
 		created_at: -1
 	};
 	const query = {
-		user: user._id
+		follower: user._id
 	};
 	if (sinceId !== null) {
 		sort.created_at = 1;
@@ -73,17 +71,17 @@ module.exports = async (params, reply, app, user) =>
 	}
 
 	// クエリ発行
-	const posts = await Post
+	const following = await Following
 		.find(query, {}, {
 			limit: limit,
 			sort: sort
 		})
 		.toArray();
 
-	if (posts.length === 0) {
+	if (following.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(posts.map(async (post) => await serialize(post))));
+	reply(await Promise.all(following.map(async f => await serialize(f))));
 };

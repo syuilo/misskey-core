@@ -3,10 +3,10 @@
 /**
  * Module dependencies
  */
-import serialize from '../../serializers/user';
+import serialize from '../serializers/user';
 
 /**
- * Show an account
+ * Show myself
  *
  * @param {Object} params
  * @param {Object} reply
