@@ -11,6 +11,7 @@ import serialize from '../../serializers/post';
 //import registerHashtags from '../../core/register-hashtags';
 import getDriveFile from '../../common/get-drive-file';
 import event from '../../event';
+import es from '../../es';
 
 /**
  * 最大文字数
@@ -122,4 +123,20 @@ module.exports = async (params, reply, app, user) =>
 
 	// Publish to stream
 	event.publishPost(user._id, createdPost);
+
+	// Register to search database
+	es.index({
+		index: 'posts',
+		type: 'post',
+		id: post._id.toHexString(),
+		body: {
+			text: post.text
+		}
+	}, (error, response) => {
+		if (error) {
+			console.error(error);
+		} else {
+			console.log(response);
+		}
+	});
 };

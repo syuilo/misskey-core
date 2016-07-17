@@ -46,6 +46,10 @@ export interface IConfig {
 		port: number;
 		password: string;
 	};
+	elasticsearch: {
+		host: string;
+		port: number;
+	};
 	drive: {
 		url: string;
 	};

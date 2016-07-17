@@ -42,6 +42,7 @@
 		"./src/endpoints.ts",
 		"./src/endpoints/post-favorites/create.ts",
 		"./src/endpoints/signin.ts",
+		"./src/es.ts",
 		"./src/event.ts",
 		"./src/index.ts",
 		"./src/models/drive-file.ts",
