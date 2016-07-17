@@ -23,7 +23,7 @@ module.exports = async (params, reply, app, user) =>
 	const follower = user;
 
 	// Init 'user_id' parameter
-	let userId = params.user_id;
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
 		return reply(400, 'user_id is required');
 	}
