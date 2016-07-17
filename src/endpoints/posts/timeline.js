@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
+import Following from '../../models/following';
 import serialize from '../../serializers/post';
 
 /**
@@ -43,8 +44,9 @@ module.exports = async (params, reply, app, user) =>
 
 	// 自分がフォローしているユーザーの関係を取得
 	// SELECT followee
-	const following = await UserFollowing
-		.find({follower: user._id}, {followee: true});
+	const following = await Following
+		.find({follower: user._id}, {followee: true})
+		.toArray();
 
 	// 自分と自分がフォローしているユーザーのIDのリストを生成
 	const followingIds = following.length !== 0
@@ -73,17 +75,16 @@ module.exports = async (params, reply, app, user) =>
 
 	// クエリを発行してタイムラインを取得
 	const timeline = await Post
-		.find(query, {
+		.find(query, {}, {
 			limit: limit,
 			sort: sort
-		});
+		})
+		.toArray();
 
 	if (timeline.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(timeline.map(async (post) => {
-		return await serialize(post);
-	}));
+	reply(await Promise.all(timeline.map(async (post) => await serialize(post))));
 };
