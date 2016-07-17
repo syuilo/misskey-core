@@ -58,6 +58,7 @@
 		"./src/serializers/drive-file.ts",
 		"./src/serializers/drive-folder.ts",
 		"./src/serializers/drive-tag.ts",
+		"./src/serializers/following.ts",
 		"./src/serializers/post.ts",
 		"./src/serializers/user.ts",
 		"./src/server.ts"

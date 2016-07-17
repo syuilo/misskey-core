@@ -14,18 +14,12 @@ interface IEndpoint {
 
 export default <IEndpoint[]>[
 	{ name: 'signin', login: false },
-
 	{ name: 'username/available', login: false },
+	{ name: 'signup',   login: false },
 
-	{ name: 'account/create',          login: false },
-	{ name: 'account/show',            login: true },
-	{ name: 'account/name/update',     login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/url/update',      login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/avatar/update',   login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/banner/update',   login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/comment/update',  login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/location/update', login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'account/tags/update',     login: true, limitDuration: day, limitMax: 50 },
+	{ name: 'i/show',     login: true },
+	{ name: 'i/update',   login: true, limitDuration: day, limitMax: 50 },
+	{ name: 'i/timeline', login: true, limitDuration: 10 * minute, limitMax: 100 },
 
 	{ name: 'notifications/show',         login: true },
 	{ name: 'notifications/timeline',     login: true },
@@ -41,7 +35,6 @@ export default <IEndpoint[]>[
 	{ name: 'users/search',                login: false },
 	{ name: 'users/search-by-screen-name', login: false },
 
-	{ name: 'posts/timeline', login: true, limitDuration: 10 * minute, limitMax: 100 },
 	{ name: 'posts/user-timeline', login: false },
 	{ name: 'posts/mentions/show', login: true, limitDuration: 10 * minute, limitMax: 100 },
 	{ name: 'posts/mentions/delete-all', login: true },

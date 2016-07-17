@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import User from '../../models/user';
 import serialize from '../../serializers/post';
@@ -47,6 +48,20 @@ module.exports = async (params, reply, app, user) =>
 		text = null;
 	}
 
+	// Init 'reply_to' parameter
+	let replyTo = params.reply_to;
+	if (replyTo !== undefined && replyTo !== null) {
+		const replyToPost = await Post.findOne({_id: new mongo.ObjectId(replyTo)});
+
+		if (replyToPost === null) {
+			return reply(404, 'reply to post is not found');
+		} else if (replyToPost.hasOwnProperty('repost')) {
+			return reply(400, 'cannot reply to repost');
+		}
+	} else {
+		replyTo = null;
+	}
+
 	// Init 'files' parameter
 	let files = params.files;
 	if (files !== undefined && files !== null) {
@@ -75,9 +90,6 @@ module.exports = async (params, reply, app, user) =>
 	if (files !== null) {
 		files = await Promise.all(files.map(file => getDriveFile(user._id, file)));
 	}
-
-	// TODO
-	const replyTo = null;
 
 	// 投稿を作成
 	const res = await Post.insert({
