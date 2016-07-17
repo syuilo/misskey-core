@@ -41,7 +41,7 @@ module.exports = async (params, reply, app, user) =>
 		if (text.length === 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
-			return reply(400, 'too-long-text');
+			return reply(400, 'too long text');
 		}
 	} else {
 		text = null;
@@ -55,7 +55,7 @@ module.exports = async (params, reply, app, user) =>
 		if (files.length === 0) {
 			files = null;
 		} else if (files.length > maxFileLength) {
-			return reply(400, 'too-many-files');
+			return reply(400, 'too many files');
 		}
 
 		if (files !== null) {
@@ -68,7 +68,7 @@ module.exports = async (params, reply, app, user) =>
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (text === null && files === null) {
-		return reply(400, 'text-or-files-is-required');
+		return reply(400, 'text or files is required');
 	}
 
 	// 添付ファイルがあれば添付ファイル取得

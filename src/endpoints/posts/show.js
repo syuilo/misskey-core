@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
 
@@ -10,29 +11,28 @@ import serialize from '../../serializers/post';
  * Show a post
  *
  * @param {Object} params
- * @param {Object} res
+ * @param {Object} reply
  * @param {Object} app
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, res, app, user) =>
+module.exports = async (params, reply, app, user) =>
 {
-	const id = params['id'];
+	const postId = params.post_id;
 
-	if (id === undefined || id === null) {
-		return res(400, 'id-is-required');
+	if (postId === undefined || postId === null) {
+		return reply(400, 'post_id is required');
 	}
 
 	// Get post
-	const post = await Post
-		.findById(id)
-		.lean()
-		.exec();
+	const post = await Post.findOne({
+		_id: new mongo.ObjectId(postId)
+	});
 
 	if (post === null) {
-		return res(404, 'post-not-found');
+		return reply(404, 'post not found');
 	}
 
 	// serialize
-	res(await serialize(post));
+	reply(await serialize(post));
 };

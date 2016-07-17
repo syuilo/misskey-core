@@ -20,18 +20,18 @@ module.exports = async (params, reply, app) =>
 	// Init 'username' parameter
 	const username = params.username;
 	if (username === undefined || username === null || username === '') {
-		return reply(400, 'username-is-required');
+		return reply(400, 'username is required');
 	}
 
 	// Validate username
 	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
-		return reply(400, 'invalid-username');
+		return reply(400, 'invalid username');
 	}
 
 	// Init 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
-		return reply(400, 'password-is-required');
+		return reply(400, 'password is required');
 	}
 
 	const name = params.name || '名無し';
