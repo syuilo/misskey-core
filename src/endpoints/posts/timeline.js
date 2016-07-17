@@ -26,20 +26,20 @@ module.exports = async (params, reply, app, user) =>
 
 		// 1 ~ 100 まで
 		if (limit < 1) {
-			return reply(400, 'invalid-limit-range');
+			return reply(400, 'invalid limit range');
 		} else if (limit > 100) {
-			return reply(400, 'invalid-limit-range');
+			return reply(400, 'invalid limit range');
 		}
 	} else {
 		limit = 10;
 	}
 
-	const sinceId = params['since-id'] || null;
-	const maxId = params['max-id'] || null;
+	const sinceId = params.since_id || null;
+	const maxId = params.max_id || null;
 
 	// 両方指定してたらエラー
 	if (sinceId !== null && maxId !== null) {
-		return reply(400, 'cannot-set-since-id-and-max-id');
+		return reply(400, 'cannot set since_id and max_id');
 	}
 
 	// 自分がフォローしているユーザーの関係を取得
