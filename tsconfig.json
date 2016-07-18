@@ -42,7 +42,6 @@
 		"./src/db/mongodb.ts",
 		"./src/db/redis.ts",
 		"./src/endpoints.ts",
-		"./src/endpoints/signin.ts",
 		"./src/event.ts",
 		"./src/index.ts",
 		"./src/models/drive-file.ts",
