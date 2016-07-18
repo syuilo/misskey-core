@@ -12,11 +12,9 @@ import serialize from '../../serializers/post';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
- * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply) =>
 {
 	const postId = params.post_id;
 

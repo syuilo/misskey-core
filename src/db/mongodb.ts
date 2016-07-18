@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////
-// DB
+// CORE DB
 //////////////////////////////////////////////////
 
 import * as mongodb from 'mongodb';
-import config from './config';
+import config from '../config';
 
 const client = mongodb.MongoClient;
 

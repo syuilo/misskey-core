@@ -4,7 +4,7 @@
 
 import * as cluster from 'cluster';
 import * as elasticsearch from 'elasticsearch';
-import config from './config';
+import config from '../config';
 
 // init ElasticSearch connection
 const client = new elasticsearch.Client({

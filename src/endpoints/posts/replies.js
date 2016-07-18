@@ -4,11 +4,11 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Following from '../../models/following';
-import serialize from '../../serializers/following';
+import Post from '../../models/post';
+import serialize from '../../serializers/post';
 
 /**
- * Get following users of a user
+ * Show a replies of a post
  *
  * @param {Object} params
  * @param {Object} reply
@@ -16,10 +16,9 @@ import serialize from '../../serializers/following';
  */
 module.exports = async (params, reply) =>
 {
-	// Init 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
+	const postId = params.post_id;
+	if (postId === undefined || postId === null) {
+		return reply(400, 'post_id is required', 'EMPTY_QUERY');
 	}
 
 	// Init 'limit' parameter
@@ -45,11 +44,13 @@ module.exports = async (params, reply) =>
 		return reply(400, 'cannot set since and max');
 	}
 
-	// Lookup user
-	const user = await User.findOne({_id: new mongo.ObjectId(userId)});
+	// Lookup post
+	const post = await Post.findOne({
+		_id: new mongo.ObjectId(postId)
+	});
 
-	if (user === null) {
-		return reply(404, 'user not found');
+	if (post === null) {
+		return reply(404, 'post not found', 'POST_NOT_FOUND');
 	}
 
 	// クエリ構築
@@ -57,7 +58,7 @@ module.exports = async (params, reply) =>
 		created_at: -1
 	};
 	const query = {
-		follower: user._id
+		reply_to: post._id
 	};
 	if (since !== null) {
 		sort.created_at = 1;
@@ -71,17 +72,17 @@ module.exports = async (params, reply) =>
 	}
 
 	// クエリ発行
-	const following = await Following
+	const replies = await Post
 		.find(query, {}, {
 			limit: limit,
 			sort: sort
 		})
 		.toArray();
 
-	if (following.length === 0) {
+	if (replies.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(following.map(async f => await serialize(f))));
+	reply(await Promise.all(replies.map(async post => await serialize(post))));
 };

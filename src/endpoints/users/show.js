@@ -12,10 +12,9 @@ import serialize from '../../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, app) =>
+module.exports = async (params, reply) =>
 {
 	// Init 'user_id' parameter
 	let userId = params.user_id;
@@ -30,7 +29,7 @@ module.exports = async (params, reply, app) =>
 	}
 
 	if (userId === null && username === null) {
-		return reply(400, 'user_id or username is required');
+		return reply(400, 'user_id or username is required', 'EMPTY_QUERY');
 	}
 
 	// Lookup user

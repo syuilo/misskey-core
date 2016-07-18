@@ -10,11 +10,9 @@ import User from '../../models/user';
  *
  * @param {Object} params
  * @param {Object} res
- * @param {Object} app
- * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, res, app, user) =>
+module.exports = async (params, res) =>
 {
 	// Init 'username' parameter
 	const username = params.username;

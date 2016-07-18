@@ -12,11 +12,9 @@ import serialize from '../../serializers/post';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
- * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply) =>
 {
 	// Init 'user_id' parameter
 	const userId = params.user_id;
@@ -39,12 +37,12 @@ module.exports = async (params, reply, app, user) =>
 		limit = 10;
 	}
 
-	const sinceId = params.since_id || null;
-	const maxId = params.max_id || null;
+	const since = params.since || null;
+	const max = params.max || null;
 
 	// 両方指定してたらエラー
-	if (sinceId !== null && maxId !== null) {
-		return reply(400, 'cannot set since_id and max_id');
+	if (since !== null && max !== null) {
+		return reply(400, 'cannot set since and max');
 	}
 
 	// Lookup user
@@ -61,14 +59,14 @@ module.exports = async (params, reply, app, user) =>
 	const query = {
 		user: user._id
 	};
-	if (sinceId !== null) {
+	if (since !== null) {
 		sort.created_at = 1;
 		query._id = {
-			$gt: new mongo.ObjectID(sinceId)
+			$gt: new mongo.ObjectID(since)
 		};
-	} else if (maxId !== null) {
+	} else if (max !== null) {
 		query._id = {
-			$lt: new mongo.ObjectID(maxId)
+			$lt: new mongo.ObjectID(max)
 		};
 	}
 

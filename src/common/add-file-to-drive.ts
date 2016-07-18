@@ -55,13 +55,10 @@ export default (
 
 	// ドライブ使用量を取得するためにすべてのファイルを取得
 	const files = await DriveFile
-		.find({user: userId})
-		.select({
-			datasize: 1,
-			_id: 0
-		})
-		.lean()
-		.exec();
+		.find({user: userId}, {
+			datasize: true,
+			_id: false
+		});
 
 	// 現時点でのドライブ使用量を算出(byte)
 	const used = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
@@ -86,7 +83,7 @@ export default (
 	}
 
 	// DriveFileドキュメントを作成
-	const file = await DriveFile.create({
+	const file = await DriveFile.insert({
 		user: userId,
 		folder: folderId,
 		data: data,

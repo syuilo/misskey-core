@@ -3,12 +3,11 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import Following from '../../models/following';
-import serialize from '../../serializers/following';
+import Post from '../models/post';
+import serialize from '../serializers/post';
 
 /**
- * Get following users of a user
+ * Lists all posts
  *
  * @param {Object} params
  * @param {Object} reply
@@ -16,12 +15,6 @@ import serialize from '../../serializers/following';
  */
 module.exports = async (params, reply) =>
 {
-	// Init 'user_id' parameter
-	const userId = params.user_id;
-	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
-	}
-
 	// Init 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
@@ -45,20 +38,11 @@ module.exports = async (params, reply) =>
 		return reply(400, 'cannot set since and max');
 	}
 
-	// Lookup user
-	const user = await User.findOne({_id: new mongo.ObjectId(userId)});
-
-	if (user === null) {
-		return reply(404, 'user not found');
-	}
-
 	// クエリ構築
 	const sort = {
 		created_at: -1
 	};
-	const query = {
-		follower: user._id
-	};
+	const query = {};
 	if (since !== null) {
 		sort.created_at = 1;
 		query._id = {
@@ -71,17 +55,17 @@ module.exports = async (params, reply) =>
 	}
 
 	// クエリ発行
-	const following = await Following
+	const posts = await Post
 		.find(query, {}, {
 			limit: limit,
 			sort: sort
 		})
 		.toArray();
 
-	if (following.length === 0) {
+	if (posts.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(following.map(async f => await serialize(f))));
+	reply(await Promise.all(posts.map(async post => await serialize(post))));
 };

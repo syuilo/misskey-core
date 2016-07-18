@@ -3,7 +3,6 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
 import serializeUser from './user';
 const deepcopy = require('deepcopy');
 
@@ -12,18 +11,14 @@ const deepcopy = require('deepcopy');
  *
  * @param {Object} following
  * @param {Object} me?
- * @param {Object} options?
  * @return {Promise<Object>}
  */
 const self = (
 	following: any,
-	me?: any,
-	options?: {}
+	me?: any
 ) => new Promise<Object>(async (resolve, reject) =>
 {
 	let _following = deepcopy(following);
-
-	const opts = options || {};
 
 	delete _following._id;
 

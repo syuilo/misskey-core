@@ -38,8 +38,10 @@ import argv from './argv';
 import config from './config';
 import checkDependencies from './check-dependencies';
 
-require('./db');
+// Init mongo
+require('./db/mongodb');
 
+// Init babel
 require("babel-core/register");
 require("babel-polyfill");
 

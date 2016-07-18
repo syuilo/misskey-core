@@ -1,20 +1,11 @@
 import * as express from 'express';
-import * as redis from 'redis';
 import * as Limiter from 'ratelimiter';
 import authenticate from './authenticate';
-import config from './config';
+import limiterDB from './db/redis';
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
-
-const limiterDB = redis.createClient(
-	config.redis.port,
-	config.redis.host,
-	{
-		auth_pass: config.redis.password
-	}
-);
 
 export default (endpoint: any, req: express.Request, res: express.Response) =>
 {
@@ -26,16 +17,31 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		? endpoint.limitKey
 		: endpoint.name;
 
-	function reply(x: any, y: any): void {
+	function reply(x?: any, y?: any, z?: any): void {
 		if (x === undefined) {
 			res.sendStatus(204);
 		} else if (typeof x === 'number') {
-			res.status(x).send({
-				error: y
-			});
+			if (x === 500) {
+				res.status(500).send({
+					error: {
+						code: 'INTERNAL_ERROR'
+					}
+				});
 
-			if (isDebug) {
-				console.log(`REP: ERROR: ${x} ${y}`);
+				if (isDebug) {
+					console.log('REP: ERROR: INTERNAL');
+				}
+			} else {
+				res.status(x).send({
+					error: {
+						text: y,
+						code: z
+					}
+				});
+
+				if (isDebug) {
+					console.log(`REP: ERROR: ${x} ${y}`);
+				}
 			}
 		} else {
 			res.send(x);
@@ -57,9 +63,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		minIntervalLimiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				reply(500, 'something-happened');
+				reply(500);
 			} else if (limit.remaining === 0) {
-				reply(429, 'brief-interval-detected');
+				reply(429, 'brief interval detected', 'BRIEF_INTERVAL_DETECTED');
 			} else {
 				if (endpoint.hasOwnProperty('limitDuration') && endpoint.hasOwnProperty('limitMax')) {
 					rateLimit(ctx);
@@ -81,9 +87,9 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 		limiter.get((limitErr, limit) => {
 			if (limitErr !== null) {
-				reply(500, 'something-happened');
+				reply(500);
 			} else if (limit.remaining === 0) {
-				reply(429, 'rate-limit-exceeded');
+				reply(429, 'rate limit exceeded', 'RATE_LIMIT_EXCEEDED');
 			} else {
 				call(ctx);
 			}
@@ -96,7 +102,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 				req.body, reply, ctx.app, ctx.user, ctx.isOfficial);
 		} catch (e) {
 			console.error(e);
-			reply(500, 'something-happened');
+			reply(500);
 		}
 	}
 
@@ -114,6 +120,6 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		}
 	}, err => {
 		console.error(err);
-		reply(403, 'authentication-failed');
+		reply(403, 'authentication failed', 'AUTHENTICATION_FAILED');
 	});
 };
