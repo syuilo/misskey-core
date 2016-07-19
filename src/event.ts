@@ -18,16 +18,14 @@ class MisskeyEvent {
 		);
 	}
 
-	public publishPost(userId: string, post: IPost): void {
-		const postObj = JSON.stringify({
+	public publishPost(userId: string, post: any): void {
+		const message = JSON.stringify({
 			type: 'post',
-			value: {
-				id: post.id
-			}
+			value: post
 		});
 
 		// 自分のストリーム
-		this.publish(`user-stream:${userId}`, postObj);
+		this.publish(`user-stream:${userId}`, message);
 
 		// 自分のフォロワーのストリーム
 		Following
@@ -39,7 +37,7 @@ class MisskeyEvent {
 		.lean()
 		.exec((_: any, followings: IFollowing[]) => {
 			followings.forEach(following => {
-				this.publish(`user-stream:${following.follower}`, postObj);
+				this.publish(`user-stream:${following.follower}`, message);
 			});
 		});
 	}
