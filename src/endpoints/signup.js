@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as bcrypt from 'bcrypt';
+import rndstr from 'rndstr';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 
@@ -40,8 +41,12 @@ module.exports = async (params, reply, app) =>
 	const salt = bcrypt.genSaltSync(14);
 	const hash = bcrypt.hashSync(password, salt);
 
+	// Generate secret
+	const secret = rndstr('向日葵櫻子a-zA-Z0-9_|&%()[]{}<>\'".,!?:;$#@^\\~=/*+-', 64);
+
 	// Create account
 	const res = await User.insert({
+		_web: secret,
 		avatar: null,
 		banner: null,
 		birthday: null,
