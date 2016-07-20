@@ -42,7 +42,7 @@ module.exports = async (params, reply, app) =>
 	const hash = bcrypt.hashSync(password, salt);
 
 	// Generate secret
-	const secret = rndstr('向日葵櫻子a-zA-Z0-9_|&%()[]{}<>\'".,!?:;$#@^\\~=/*+-', 64);
+	const secret = rndstr('a-zA-Z0-9', 64);
 
 	// Create account
 	const res = await User.insert({
