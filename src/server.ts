@@ -28,7 +28,8 @@ const upload = multer({ dest: 'uploads/' });
 const app = express();
 app.disable('x-powered-by');
 app.locals.compileDebug = false;
-app.locals.cache = true;
+app.locals.cache = false;
+app.set('etag', false);
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/web/');
 
