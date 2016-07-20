@@ -1,3 +1,8 @@
 import * as mongodb from 'mongodb';
 
-export default (<mongodb.Db>(<any>global).db).collection('users');
+const collection = (<mongodb.Db>(<any>global).db).collection('users');
+
+collection.ensureIndex('username');
+collection.ensureIndex('_web');
+
+export default collection;

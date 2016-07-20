@@ -4,29 +4,31 @@ import User from './models/user';
 import config from './config';
 
 export default (req: express.Request) =>
-	new Promise<{ app: any, user: any, isOfficial: boolean }>(async (resolve, reject) =>
+	new Promise<{ app: any, user: any, isWeb: boolean }>(async (resolve, reject) =>
 {
 	if (req.body['_i']) {
 		const user = await User
 			.findOne({_web: req.body['_i']});
 
 		if (user === null) {
-			return reject('user not found');
+			reject('user not found');
+			return;
 		}
 
-		return resolve({
+		resolve({
 			app: null,
 			user: user,
-			isOfficial: true
+			isWeb: true
 		});
+		return;
 	}
 
 	if (!req.body['_web']) {
-		resolve({ app: null, user: null, isOfficial: false });
+		resolve({ app: null, user: null, isWeb: false });
 	} else if (req.body['_web'] !== config.apiPass) {
 		reject('incorrect key');
 	} else if (!req.body['_user']) {
-		resolve({ app: null, user: null, isOfficial: true });
+		resolve({ app: null, user: null, isWeb: true });
 	} else {
 		const id = req.body['_user'];
 
@@ -36,7 +38,7 @@ export default (req: express.Request) =>
 		resolve({
 			app: null,
 			user: user,
-			isOfficial: true
+			isWeb: true
 		});
 	}
 });

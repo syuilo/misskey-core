@@ -12,13 +12,11 @@ const deepcopy = require('deepcopy');
  * Serialize a user
  *
  * @param {Object} user
- * @param {Object} me?
  * @param {Object} options?
  * @return {Promise<Object>}
  */
 export default (
 	user: any,
-	me?: any,
 	options?: {
 		includeSecrets: boolean,
 		includeProfileImageIds: boolean

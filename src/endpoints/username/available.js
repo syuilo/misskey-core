@@ -25,9 +25,7 @@ module.exports = async (params, res) =>
 	}
 
 	const exist = await User
-		.count({username})
-		.limit(1)
-		.exec();
+		.count({username}, {limit: 1});
 
 	res({
 		available: exist === 0

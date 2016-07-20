@@ -14,11 +14,11 @@ import serialize from '../serializers/user';
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply, _, user, isOfficial) =>
+module.exports = async (params, reply, _, user, isWeb) =>
 {
 	// serialize
 	reply(await serialize(user, {
-		includeSecrets: isOfficial,
-		includeProfileImageIds: isOfficial
+		includeSecrets: isWeb,
+		includeProfileImageIds: isWeb
 	}));
 };

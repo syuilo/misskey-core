@@ -5,8 +5,8 @@
  */
 import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
-import User from '../../models/user';
-import serialize from '../../serializers/user';
+import User from '../models/user';
+import serialize from '../serializers/user';
 
 /**
  * Create an account
