@@ -20,12 +20,11 @@ const worker = cluster.worker;
 
 console.log(`Init ${worker.id} server...`);
 
-//////////////////////////////////////////////////
-// INIT SERVER
-
-const upload = multer({ dest: 'uploads/' });
-
+/**
+ * Init app
+ */
 const app = express();
+
 app.disable('x-powered-by');
 app.locals.compileDebug = false;
 app.locals.cache = false;
@@ -37,17 +36,24 @@ app.use(accesses.express());
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static resources
-app.use('/resources', express.static(__dirname + '/resources'));
-
-// CORS
+/**
+ * CORS
+ */
 app.use(cors());
+
+/**
+ * Statics
+ */
+app.use('/resources', express.static(__dirname + '/resources'));
 
 app.get('/', (req, res) => {
 	res.render('index');
 });
 
-// Register REST API handlers
+/**
+ * Routing
+ */
+const upload = multer({ dest: 'uploads/' });
 endpoints.forEach(endpoint => {
 	if (endpoint.withFile) {
 		app.post('/' + endpoint.name, upload.single('file'), handler);
@@ -60,35 +66,23 @@ endpoints.forEach(endpoint => {
 	}
 });
 
-//////////////////////////////////////////////////
-// LISTEN
-
-let server: http.Server | https.Server;
-let port: number;
-
-if (config.https.enable) {
-	port = config.bindPorts.https;
-	server = https.createServer({
+/**
+ * Create server
+ */
+const server = config.https.enable ?
+	https.createServer({
 		key: fs.readFileSync(config.https.keyPath),
 		cert: fs.readFileSync(config.https.certPath)
-	}, app);
+	}, app) :
+	http.createServer(app);
 
-	// 非TLSはリダイレクト
-	http.createServer((req, res) => {
-		res.writeHead(301, {
-			Location: config.url + req.url
-		});
-		res.end();
-	}).listen(config.bindPorts.http);
-} else {
-	port = config.bindPorts.http;
-	server = http.createServer(app);
-}
-
-server.listen(port, config.bindIp, () => {
-	const listenhost = server.address().address;
-	const listenport = server.address().port;
+/**
+ * Server listen
+ */
+server.listen(config.bindPort, config.bindIp, () => {
+	const h = server.address().address;
+	const p = server.address().port;
 
 	console.log(
-		`\u001b[1;32m${worker.id} is now listening at ${listenhost}:${listenport}\u001b[0m`);
+		`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
 });

@@ -54,16 +54,8 @@ export interface IConfig {
 		url: string;
 	};
 	apiPass: string;
-	port: {
-		internal: number;
-		http: number;
-		https: number;
-	};
-	bindPorts: {
-		internal: number;
-		http: number;
-		https: number;
-	};
+	port: number;
+	bindPort: number;
 	bindIp: string;
 	https: {
 		enable: boolean;

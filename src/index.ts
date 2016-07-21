@@ -33,7 +33,9 @@ Error.stackTraceLimit = Infinity;
  */
 import * as cluster from 'cluster';
 import * as accesses from 'accesses';
-import {logInfo, logWarn} from 'log-cool';
+import {logInfo, logWarn, logFailed} from 'log-cool';
+const Git = require('nodegit');
+const portUsed = require('tcp-port-used');
 import argv from './argv';
 import config from './config';
 import checkDependencies from './check-dependencies';
@@ -46,20 +48,45 @@ require("babel-core/register");
 require("babel-polyfill");
 
 const env = process.env.NODE_ENV;
+const isProduction = env === 'production';
+const isDebug = !isProduction;
 
 // Master
 if (cluster.isMaster) {
 	console.log('Welcome to Misskey!');
 
+	if (isDebug) {
+		logWarn('Productionモードではありません。本番環境で使用しないでください。');
+	}
+
+	master();
+}
+// Workers
+else {
+	worker();
+}
+
+/**
+ * Init master proccess
+ */
+async function master(): Promise<void> {
+	console.log('Welcome to Misskey!');
+
 	logInfo(`environment: ${env}`);
 	logInfo(`maintainer: ${config.maintainer}`);
+
+	// Get repository info
+	const repository = await Git.Repository.open(__dirname + '/../');
+	logInfo(`commit: ${(await repository.getHeadCommit()).sha()}`);
 
 	if (!argv.options.hasOwnProperty('skip-check-dependencies')) {
 		checkDependencies();
 	}
 
-	if (env !== 'production') {
-		logWarn('Productionモードではありません。本番環境で使用しないでください。');
+		// Check if a port is being used
+	if (await portUsed.check(config.port, '127.0.0.1')) {
+		logFailed(`Port: ${config.port} is already used!`);
+		process.exit();
 	}
 
 	// Count the machine's CPUs
@@ -76,8 +103,11 @@ if (cluster.isMaster) {
 		port: 617
 	});
 }
-// Workers
-else {
+
+/**
+ * Init worker proccess
+ */
+function worker(): void {
 	require('./server');
 }
 
