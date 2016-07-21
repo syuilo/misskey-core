@@ -4,7 +4,7 @@ import User from './models/user';
 import config from './config';
 
 export default (req: express.Request) =>
-	new Promise<{ app: any, user: any, isWeb: boolean }>(async (resolve, reject) =>
+	new Promise<{ app: any, user: any, isWeb: boolean }>(async (resolve, reject): Promise<void> =>
 {
 	if (req.body['_i']) {
 		const user = await User

@@ -15,6 +15,7 @@ import * as accesses from 'accesses';
 
 import config from './config';
 import endpoints from './endpoints';
+import streaming from './streaming';
 
 const worker = cluster.worker;
 
@@ -86,3 +87,8 @@ server.listen(config.bindPort, config.bindIp, () => {
 	console.log(
 		`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
 });
+
+/**
+ * Steaming
+ */
+streaming(server);

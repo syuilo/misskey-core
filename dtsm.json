@@ -54,6 +54,12 @@
     },
     "elasticsearch/elasticsearch.d.ts": {
       "ref": "95eb7b2527a28281cdbf480c0560744bc5190465"
+    },
+    "socket.io/socket.io.d.ts": {
+      "ref": "2aa973a605d0fc7ae4ea5c32653331a819e81f71"
+    },
+    "socket.io-redis/socket.io-redis.d.ts": {
+      "ref": "2aa973a605d0fc7ae4ea5c32653331a819e81f71"
     }
   }
 }

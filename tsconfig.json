@@ -60,6 +60,7 @@
 		"./src/serializers/following.ts",
 		"./src/serializers/post.ts",
 		"./src/serializers/user.ts",
-		"./src/server.ts"
+		"./src/server.ts",
+		"./src/streaming.ts"
 	]
 }

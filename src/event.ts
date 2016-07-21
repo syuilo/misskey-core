@@ -37,7 +37,7 @@ class MisskeyEvent {
 		.lean()
 		.exec((_: any, followings: IFollowing[]) => {
 			followings.forEach(following => {
-				this.publish(`user-stream:${following.follower}`, message);
+				this.publish(following.follower, message);
 			});
 		});
 	}
@@ -112,7 +112,7 @@ class MisskeyEvent {
 	}
 
 	private publish(channel: string, message: string): void {
-		this.redisConnection.publish(`misskey:${channel}`, message);
+		this.redisConnection.publish(`misskey#${channel}`, message);
 	}
 }
 

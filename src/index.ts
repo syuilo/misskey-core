@@ -70,8 +70,6 @@ else {
  * Init master proccess
  */
 async function master(): Promise<void> {
-	console.log('Welcome to Misskey!');
-
 	logInfo(`environment: ${env}`);
 	logInfo(`maintainer: ${config.maintainer}`);
 
