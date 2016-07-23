@@ -21,11 +21,11 @@ export default <IEndpoint[]>[
 
 	{ name: 'i',                      login: true },
 	{ name: 'i/update',               login: true, limitDuration: day, limitMax: 50 },
-	{ name: 'i/timeline',             login: true, limitDuration: 10 * minute, limitMax: 100 },
+	{ name: 'posts/timeline',             login: true, limitDuration: 10 * minute, limitMax: 100 },
 	{ name: 'i/notifications',        login: true },
 	{ name: 'i/notifications/delete', login: true },
 	{ name: 'i/notifications/clear',  login: true },
-	{ name: 'i/drive/files/create',      login: true, limitDuration: hour, limitMax: 100, withFile: true },
+	{ name: 'drive/files/create',      login: true, limitDuration: hour, limitMax: 100, withFile: true },
 	{ name: 'i/drive/files/show',        login: true },
 	{ name: 'i/drive/files',        login: true },
 	{ name: 'i/drive/files/delete',      login: true },

@@ -35,6 +35,7 @@ const self = (
 
 	_file.id = _file._id;
 	delete _file._id;
+	delete _file.data;
 
 	if (opts.includeTags && _file.tags) {
 		// Populate tags

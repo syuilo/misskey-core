@@ -110,7 +110,12 @@ module.exports = async (params, reply, app, user) =>
 	user.latest_post = post._id;
 	post.user = user;
 
-	reply(await serialize(post));
+	const postObj = await serialize(post);
+
+	reply(postObj);
+
+	// Publish to stream
+	event.publishPost(user._id, postObj);
 
 	// ハッシュタグ抽出
 	//const hashtags = extractHashtags(text);
@@ -133,9 +138,7 @@ module.exports = async (params, reply, app, user) =>
 		$set: user
 	});
 
-	// Publish to stream
-	event.publishPost(user._id, createdPost);
-
+/*
 	// Register to search database
 	es.index({
 		index: 'posts',
@@ -150,5 +153,5 @@ module.exports = async (params, reply, app, user) =>
 		} else {
 			console.log(response);
 		}
-	});
+	});*/
 };

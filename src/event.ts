@@ -1,44 +1,32 @@
-import * as redis from 'redis';
+const oi = require('socket.io-emitter');
 import Following from './models/following';
 import config from './config';
 
 class MisskeyEvent {
-	private redisConnection: any;
+	private io: any;
 
 	constructor() {
-		// super();
-
-		// Initialize Redis connection
-		this.redisConnection = redis.createClient(
-			config.redis.port,
-			config.redis.host,
-			{
-				auth_pass: config.redis.password
-			}
-		);
+		this.io = oi({
+			key: 'misskey',
+			host: config.redis.host,
+			port: config.redis.port
+		});
 	}
 
-	public publishPost(userId: string, post: any): void {
-		const message = JSON.stringify({
-			type: 'post',
-			value: post
-		});
-
+	public async publishPost(userId: string, post: any): Promise<void> {
 		// 自分のストリーム
-		this.publish(`user-stream:${userId}`, message);
+		this.io.to(userId).emit('post', post);
 
 		// 自分のフォロワーのストリーム
-		Following
-		.find({followee: userId})
-		.select({
-			follower: 1,
-			_id: 0
-		})
-		.lean()
-		.exec((_: any, followings: IFollowing[]) => {
-			followings.forEach(following => {
-				this.publish(following.follower, message);
-			});
+		const followers = await Following
+			.find({followee: userId}, {
+				follower: true,
+				_id: false
+			})
+			.toArray();
+
+		followers.forEach(following => {
+			this.io.to(following.follower).emit('post', post);
 		});
 	}
 

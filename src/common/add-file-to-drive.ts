@@ -1,7 +1,6 @@
 import * as crypto from 'crypto';
 import * as gm from 'gm';
 const fileType = require('file-type');
-const mimeType = require('mime-types');
 const prominence = require('prominence');
 import DriveFile from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
@@ -19,10 +18,9 @@ import DriveFolder from '../models/drive-folder';
  */
 export default (
 	userId: string,
-	fileName: string,
 	data: Buffer,
+	name: string = null,
 	comment: string = null,
-	type: string = null,
 	folderId: string = null,
 	force: boolean = false
 ) => new Promise<any>(async (resolve, reject) =>
@@ -30,14 +28,32 @@ export default (
 	// ファイルサイズ
 	const size = data.byteLength;
 
+	console.log(size);
+
 	// ファイルタイプ
-	type = fileType(data) || mimeType.lookup(fileName) || type || 'application/octet-stream';
+	let mime = 'application/octet-stream';
+	const type = fileType(data);
+	if (type !== null) {
+		mime = type.mime;
+
+		if (name === null) {
+			name = `untitled.${type.ext}`;
+		}
+	} else {
+		if (name === null) {
+			name = 'untitled';
+		}
+	}
+
+	console.log(type);
 
 	// ハッシュ生成
-	const hash: string = crypto
+	const hash = <string>crypto
 		.createHash('sha256')
 		.update(data)
 		.digest('hex');
+
+	console.log(hash);
 
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
@@ -58,22 +74,25 @@ export default (
 		.find({user: userId}, {
 			datasize: true,
 			_id: false
-		});
+		})
+		.toArray();
+
+	console.log(files);
 
 	// 現時点でのドライブ使用量を算出(byte)
-	const used = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
+	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
+
+	console.log(usage);
 
 	// 1GBを超える場合
-	if (used + size > 1073741824) {
+	if (usage + size > 1073741824) {
 		return reject('no-free-space');
 	}
 
 	// フォルダ指定時
 	if (folderId !== null) {
 		const folder = await DriveFolder
-			.findById(folderId)
-			.lean()
-			.exec();
+			.findOne({ _id: folderId });
 
 		if (folder === null) {
 			return reject('folder-not-found');
@@ -82,34 +101,35 @@ export default (
 		}
 	}
 
-	// DriveFileドキュメントを作成
-	const file = await DriveFile.insert({
-		user: userId,
-		folder: folderId,
-		data: data,
-		datasize: size,
-		type: type,
-		name: fileName,
-		comment: comment,
-		hash: hash
-	});
+	let properties: any = null;
 
 	// 画像だった場合
 	if (/^image\/.*$/.test(type)) {
 		// 幅と高さを取得してプロパティに保存しておく
-		const g = gm(data, fileName);
+		const g = gm(data, name);
 		const size = await prominence(g).size();
-		file.properties = {
+		properties = {
 			width: size.width,
 			height: size.height
 		};
 	}
 
-	file.save((saveErr, saved) => {
-		if (saveErr) {
-			console.error(saveErr);
-			return reject(saveErr);
-		}
-		resolve(saved);
+	console.log('createing...');
+
+	// DriveFileドキュメントを作成
+	const res = await DriveFile.insert({
+		user: userId,
+		folder: folderId,
+		data: data,
+		datasize: size,
+		type: mime,
+		name: name,
+		comment: comment,
+		hash: hash,
+		properties: properties
 	});
+
+	const file = res.ops[0];
+
+	resolve(file);
 });

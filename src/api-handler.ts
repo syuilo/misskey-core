@@ -98,8 +98,13 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 
 	function call(ctx: any): void {
 		try {
-			require(`${__dirname}/endpoints/${endpoint.name}`)(
-				req.body, reply, ctx.app, ctx.user, ctx.isWeb);
+			if (endpoint.withFile) {
+				require(`${__dirname}/endpoints/${endpoint.name}`)(
+					req.body, req.file, reply, ctx.app, ctx.user, ctx.isWeb);
+			} else {
+				require(`${__dirname}/endpoints/${endpoint.name}`)(
+					req.body, reply, ctx.app, ctx.user, ctx.isWeb);
+			}
 		} catch (e) {
 			console.error(e);
 			reply(500);

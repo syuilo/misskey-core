@@ -38,10 +38,8 @@ const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import argv from './argv';
 import config from './config';
+import initdb from './db/mongodb';
 import checkDependencies from './check-dependencies';
-
-// Init mongo
-require('./db/mongodb');
 
 // Init babel
 require("babel-core/register");
@@ -63,7 +61,11 @@ if (cluster.isMaster) {
 }
 // Workers
 else {
-	worker();
+	// Init mongo
+	initdb().then(db => {
+		(<any>global).db = db;
+		worker();
+	});
 }
 
 /**
