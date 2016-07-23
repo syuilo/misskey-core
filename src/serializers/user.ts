@@ -4,9 +4,9 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+const deepcopy = require('deepcopy');
 import User from '../models/user';
 import config from '../config';
-const deepcopy = require('deepcopy');
 
 /**
  * Serialize a user
