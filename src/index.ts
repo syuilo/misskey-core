@@ -5,7 +5,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 syuilo
+ * Copyright (c) 2014-2016 syuilo
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ Error.stackTraceLimit = Infinity;
 /**
  * Module dependencies
  */
+import * as os from 'os';
 import * as cluster from 'cluster';
 import * as accesses from 'accesses';
 import {logInfo, logWarn, logFailed} from 'log-cool';
@@ -75,6 +76,10 @@ async function master(): Promise<void> {
 	logInfo(`environment: ${env}`);
 	logInfo(`maintainer: ${config.maintainer}`);
 
+	logInfo(`MACHINE: ${os.hostname()}`);
+	logInfo(`MACHINE: CPU: ${os.cpus().length}core`);
+	logInfo(`MACHINE: MEM: ${(os.freemem() / 1024 / 1024 / 1024).toFixed(1)}GB`);
+
 	// Get repository info
 	const repository = await Git.Repository.open(__dirname + '/../');
 	logInfo(`commit: ${(await repository.getHeadCommit()).sha()}`);
@@ -90,7 +95,7 @@ async function master(): Promise<void> {
 	}
 
 	// Count the machine's CPUs
-	const cpuCount = require('os').cpus().length;
+	const cpuCount = os.cpus().length;
 
 	// Create a worker for each CPU
 	for (let i = 0; i < cpuCount; i++) {
