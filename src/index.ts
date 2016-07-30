@@ -76,9 +76,11 @@ async function master(): Promise<void> {
 	logInfo(`environment: ${env}`);
 	logInfo(`maintainer: ${config.maintainer}`);
 
+	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
+	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
 	logInfo(`MACHINE: ${os.hostname()}`);
 	logInfo(`MACHINE: CPU: ${os.cpus().length}core`);
-	logInfo(`MACHINE: MEM: ${(os.freemem() / 1024 / 1024 / 1024).toFixed(1)}GB`);
+	logInfo(`MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
 	// Get repository info
 	const repository = await Git.Repository.open(__dirname + '/../');
