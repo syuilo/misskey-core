@@ -5,6 +5,6 @@ export default redis.createClient(
 	config.redis.port,
 	config.redis.host,
 	{
-		auth_pass: config.redis.password
+		auth_pass: config.redis.pass
 	}
 );

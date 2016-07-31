@@ -81,7 +81,7 @@ const server = config.https.enable ?
 /**
  * Server listen
  */
-server.listen(config.bindPort, config.bindIp, () => {
+server.listen(config.port, config.bindIp, () => {
 	const h = server.address().address;
 	const p = server.address().port;
 

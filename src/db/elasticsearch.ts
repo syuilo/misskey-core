@@ -17,7 +17,7 @@ client.ping({
 	requestTimeout: Infinity,
 
 	// undocumented params are appended to the query string
-	hello: "elasticsearch!"
+	hello: 'elasticsearch!'
 }, error => {
 	if (error) {
 		console.error('elasticsearch cluster is down!');

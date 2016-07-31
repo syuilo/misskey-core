@@ -25,7 +25,7 @@ export default (req: express.Request) =>
 
 	if (!req.body['_web']) {
 		resolve({ app: null, user: null, isWeb: false });
-	} else if (req.body['_web'] !== config.apiPass) {
+	} else if (req.body['_web'] !== config.webSecret) {
 		reject('incorrect key');
 	} else if (!req.body['_user']) {
 		resolve({ app: null, user: null, isWeb: true });

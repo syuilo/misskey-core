@@ -98,15 +98,15 @@ async function master(): Promise<any> {
 	try {
 		conf = config();
 	} catch (e) {
-		if (e.code === 'ENOENT') {
-			logWarn('Config not found');
-			if (await yesno('Do you want write configuration now?', true)) {
-				configGenerator();
-				conf = config();
-			} else {
-				logFailed('Failed to load configuration');
-				return 1;
-			}
+		if (e.code !== 'ENOENT') {
+			logFailed('Failed to load configuration');
+			return 1;
+		}
+
+		logWarn('Config not found');
+		if (await yesno('Do you want setup now?', true)) {
+			await configGenerator();
+			conf = config();
 		} else {
 			logFailed('Failed to load configuration');
 			return 1;
