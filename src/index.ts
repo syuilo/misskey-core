@@ -53,12 +53,12 @@ const isDebug = !isProduction;
 
 // Master
 if (cluster.isMaster) {
-	master().then(status => {
-		if (status === 1) {
+	master().then(ok => {
+		if (ok) {
+			logDone('OK');
+		} else {
 			console.error('there was a problem starting');
 			process.exit();
-		} else {
-			logDone('OK');
 		}
 	});
 }
@@ -74,7 +74,7 @@ else {
 /**
  * Init master proccess
  */
-async function master(): Promise<any> {
+async function master(): Promise<boolean> {
 	console.log('Welcome to Misskey!');
 
 	// Get repository info
@@ -100,7 +100,7 @@ async function master(): Promise<any> {
 	} catch (e) {
 		if (e.code !== 'ENOENT') {
 			logFailed('Failed to load configuration');
-			return 1;
+			return false;
 		}
 
 		logWarn('Config not found');
@@ -109,7 +109,7 @@ async function master(): Promise<any> {
 			conf = config();
 		} else {
 			logFailed('Failed to load configuration');
-			return 1;
+			return false;
 		}
 	}
 
@@ -123,7 +123,7 @@ async function master(): Promise<any> {
 	// Check if a port is being used
 	if (await portUsed.check(conf.port, '127.0.0.1')) {
 		logFailed(`Port: ${conf.port} is already used!`);
-		return 1;
+		return false;
 	}
 
 	// Try to connect to MongoDB
@@ -132,7 +132,7 @@ async function master(): Promise<any> {
 		logDone('Success to connect to MongoDB');
 	} catch (e) {
 		logFailed(`MongoDB: ${e}`);
-		return 1;
+		return false;
 	}
 
 	// Count the machine's CPUs
@@ -142,6 +142,8 @@ async function master(): Promise<any> {
 	for (let i = 0; i < cpuCount; i++) {
 		cluster.fork();
 	}
+
+	return true;
 }
 
 /**
