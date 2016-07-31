@@ -41,6 +41,11 @@ export default async () => {
 		},
 		{
 			type: 'input',
+			name: 'drive_url',
+			message: 'Drive(misskey-file server)\'s url:'
+		},
+		{
+			type: 'input',
 			name: 'mongo_host',
 			message: 'MongoDB\'s host:',
 			default: 'localhost'
@@ -112,6 +117,9 @@ export default async () => {
 			cert: as.https_cert || null
 		},
 		webSecret: as.web_secret,
+		drive: {
+			url: as.drive_url
+		},
 		mongodb: {
 			host: as.mongo_host,
 			port: parseInt(as.mongo_port, 10),
