@@ -11,7 +11,6 @@ import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as cors from 'cors';
 import * as multer from 'multer';
-import * as accesses from 'accesses';
 
 import config from './config';
 import endpoints from './endpoints';
@@ -27,14 +26,14 @@ console.log(`Init ${worker.id} server...`);
 const app = express();
 
 app.disable('x-powered-by');
+
 app.locals.compileDebug = false;
 app.locals.cache = false;
+
 app.set('etag', false);
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/web/');
 
-app.use(accesses.express());
-app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 /**
@@ -45,15 +44,17 @@ app.use(cors());
 /**
  * Statics
  */
+app.use(favicon(`${__dirname}/resources/favicon.ico`));
 app.use('/resources', express.static(__dirname + '/resources'));
+
+/**
+ * Routing
+ */
 
 app.get('/', (req, res) => {
 	res.render('index');
 });
 
-/**
- * Routing
- */
 const upload = multer({ dest: 'uploads/' });
 endpoints.forEach(endpoint => {
 	if (endpoint.withFile) {

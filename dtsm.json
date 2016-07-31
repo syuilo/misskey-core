@@ -60,6 +60,12 @@
     },
     "socket.io-redis/socket.io-redis.d.ts": {
       "ref": "2aa973a605d0fc7ae4ea5c32653331a819e81f71"
+    },
+    "inquirer/inquirer.d.ts": {
+      "ref": "2a24bbb7ca4f13e52c7f6a0ab6144b565bf1ef55"
+    },
+    "chalk/chalk.d.ts": {
+      "ref": "2a24bbb7ca4f13e52c7f6a0ab6144b565bf1ef55"
     }
   }
 }

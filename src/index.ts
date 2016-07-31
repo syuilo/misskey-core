@@ -33,18 +33,19 @@ Error.stackTraceLimit = Infinity;
  */
 import * as os from 'os';
 import * as cluster from 'cluster';
-import * as accesses from 'accesses';
-import {logInfo, logWarn, logFailed} from 'log-cool';
+import {logInfo, logDone, logWarn, logFailed} from 'log-cool';
 const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import argv from './argv';
-import config from './config';
+import yesno from './utils/yesno';
+import config from './load-config';
+import configGenerator from './config-generator';
 import initdb from './db/mongodb';
 import checkDependencies from './check-dependencies';
 
 // Init babel
-require("babel-core/register");
-require("babel-polyfill");
+require('babel-core/register');
+require('babel-polyfill');
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -52,18 +53,19 @@ const isDebug = !isProduction;
 
 // Master
 if (cluster.isMaster) {
-	console.log('Welcome to Misskey!');
-
-	if (isDebug) {
-		logWarn('Productionモードではありません。本番環境で使用しないでください。');
-	}
-
-	master();
+	master().then(status => {
+		if (status === 1) {
+			console.error('there was a problem starting');
+			process.exit();
+		} else {
+			logDone('OK');
+		}
+	});
 }
 // Workers
 else {
 	// Init mongo
-	initdb().then(db => {
+	initdb(config()).then(db => {
 		(<any>global).db = db;
 		worker();
 	});
@@ -72,9 +74,18 @@ else {
 /**
  * Init master proccess
  */
-async function master(): Promise<void> {
+async function master(): Promise<any> {
+	console.log('Welcome to Misskey!');
+
+	// Get repository info
+	const repository = await Git.Repository.open(__dirname + '/../');
+	console.log(`commit: ${(await repository.getHeadCommit()).sha()}`);
+
+	if (isDebug) {
+		logWarn('Productionモードではありません。本番環境で使用しないでください。');
+	}
+
 	logInfo(`environment: ${env}`);
-	logInfo(`maintainer: ${config.maintainer}`);
 
 	const totalmem = (os.totalmem() / 1024 / 1024 / 1024).toFixed(1);
 	const freemem = (os.freemem() / 1024 / 1024 / 1024).toFixed(1);
@@ -82,18 +93,46 @@ async function master(): Promise<void> {
 	logInfo(`MACHINE: CPU: ${os.cpus().length}core`);
 	logInfo(`MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
-	// Get repository info
-	const repository = await Git.Repository.open(__dirname + '/../');
-	logInfo(`commit: ${(await repository.getHeadCommit()).sha()}`);
+	// Load config
+	let conf: any;
+	try {
+		conf = config();
+	} catch (e) {
+		if (e.code === 'ENOENT') {
+			logWarn('Config not found');
+			if (await yesno('Do you want write configuration now?', true)) {
+				configGenerator();
+				conf = config();
+			} else {
+				logFailed('Failed to load configuration');
+				return 1;
+			}
+		} else {
+			logFailed('Failed to load configuration');
+			return 1;
+		}
+	}
+
+	logDone('Success to load configuration');
+	logInfo(`maintainer: ${conf.maintainer}`);
 
 	if (!argv.options.hasOwnProperty('skip-check-dependencies')) {
 		checkDependencies();
 	}
 
-		// Check if a port is being used
-	if (await portUsed.check(config.port, '127.0.0.1')) {
-		logFailed(`Port: ${config.port} is already used!`);
-		process.exit();
+	// Check if a port is being used
+	if (await portUsed.check(conf.port, '127.0.0.1')) {
+		logFailed(`Port: ${conf.port} is already used!`);
+		return 1;
+	}
+
+	// Try to connect to MongoDB
+	try {
+		await initdb(conf);
+		logDone('Success to connect to MongoDB');
+	} catch (e) {
+		logFailed(`MongoDB: ${e}`);
+		return 1;
 	}
 
 	// Count the machine's CPUs
@@ -103,12 +142,6 @@ async function master(): Promise<void> {
 	for (let i = 0; i < cpuCount; i++) {
 		cluster.fork();
 	}
-
-	// Setup accesses from master proccess
-	accesses.serve({
-		appName: 'Misskey Core',
-		port: 617
-	});
 }
 
 /**
