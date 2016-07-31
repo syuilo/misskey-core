@@ -56,6 +56,16 @@ if (cluster.isMaster) {
 	master().then(ok => {
 		if (ok) {
 			logDone('OK');
+
+			console.log('\nStarting...\n');
+
+			// Count the machine's CPUs
+			const cpuCount = os.cpus().length;
+
+			// Create a worker for each CPU
+			for (let i = 0; i < cpuCount; i++) {
+				cluster.fork();
+			}
 		} else {
 			console.error('there was a problem starting');
 			process.exit();
@@ -80,6 +90,8 @@ async function master(): Promise<boolean> {
 	// Get repository info
 	const repository = await Git.Repository.open(__dirname + '/../');
 	console.log(`commit: ${(await repository.getHeadCommit()).sha()}`);
+
+	console.log('\nInitializing...\n');
 
 	if (isDebug) {
 		logWarn('Productionモードではありません。本番環境で使用しないでください。');
@@ -133,14 +145,6 @@ async function master(): Promise<boolean> {
 	} catch (e) {
 		logFailed(`MongoDB: ${e}`);
 		return false;
-	}
-
-	// Count the machine's CPUs
-	const cpuCount = os.cpus().length;
-
-	// Create a worker for each CPU
-	for (let i = 0; i < cpuCount; i++) {
-		cluster.fork();
 	}
 
 	return true;
