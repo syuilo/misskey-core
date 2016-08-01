@@ -2,6 +2,7 @@ export interface IConfig {
 	maintainer: string;
 	webSecret: string;
 	port: number;
+	internalPort: number;
 	bindIp: string;
 	https: {
 		enable: boolean;

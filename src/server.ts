@@ -89,6 +89,15 @@ server.listen(config.port, config.bindIp, () => {
 });
 
 /**
+ * Internal server
+ */
+http.createServer(app).listen(config.internalPort, () => {
+	const h = server.address().address;
+	const p = server.address().port;
+	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
+});
+
+/**
  * Steaming
  */
 streaming(server);
