@@ -7,6 +7,7 @@ export interface IConfig {
 		enable: boolean;
 		key: string;
 		cert: string;
+		ca: string;
 	};
 	drive: {
 		url: string;

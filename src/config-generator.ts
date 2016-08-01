@@ -36,6 +36,12 @@ export default async () => {
 		},
 		{
 			type: 'input',
+			name: 'https_ca',
+			message: 'Path of tls ca:',
+			when: ctx => ctx.https
+		},
+		{
+			type: 'input',
 			name: 'web_secret',
 			message: 'Web secret key:'
 		},
@@ -114,7 +120,8 @@ export default async () => {
 		https: {
 			enable: as.https,
 			key: as.https_key || null,
-			cert: as.https_cert || null
+			cert: as.https_cert || null,
+			ca: as.https_ca || null
 		},
 		webSecret: as.web_secret,
 		drive: {

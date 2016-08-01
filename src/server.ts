@@ -73,8 +73,9 @@ endpoints.forEach(endpoint => {
  */
 const server = config.https.enable ?
 	https.createServer({
-		key: fs.readFileSync(config.https.keyPath),
-		cert: fs.readFileSync(config.https.certPath)
+		key: fs.readFileSync(config.https.key),
+		cert: fs.readFileSync(config.https.cert),
+		ca: fs.readFileSync(config.https.ca)
 	}, app) :
 	http.createServer(app);
 
@@ -84,9 +85,7 @@ const server = config.https.enable ?
 server.listen(config.port, config.bindIp, () => {
 	const h = server.address().address;
 	const p = server.address().port;
-
-	console.log(
-		`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
+	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
 });
 
 /**
