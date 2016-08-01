@@ -19,6 +19,7 @@ module.exports = async (params, reply) =>
 
 	reply({
 		maintainer: config.maintainer,
-		commit: (await repository.getHeadCommit()).sha()
+		commit: (await repository.getHeadCommit()).sha(),
+		secure: config.https.enable
 	});
 };
