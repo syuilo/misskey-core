@@ -95,23 +95,26 @@ async function master(): Promise<void> {
 		process.exit(1);
 	}
 
+	const res = (t: string, c: string) =>
+		console.log(chalk.bold(`--> ${chalk[c](t)}\n`));
+
 	switch (state) {
 		// fatal error
 		case State.failed:
-			console.error('Fatal error occurred :(');
+			res('Fatal error occurred :(', 'red');
 			process.exit();
 			return;
 		// with warning(s)
 		case State.warn:
-			logWarn('Some warning(s) :|');
+			res('Some problem(s) :|', 'yellow');
 			break;
 		// np
 		case State.success:
-			logDone('OK :)');
+			res('OK :)', 'green');
 			break;
 	}
 
-	console.log('\nStarting...\n');
+	console.log('Starting...\n');
 
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
