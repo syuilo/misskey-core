@@ -50,7 +50,6 @@ app.use('/resources', express.static(__dirname + '/resources'));
 /**
  * Routing
  */
-
 app.get('/', (req, res) => {
 	res.render('index');
 });
@@ -92,7 +91,7 @@ server.listen(config.port, () => {
  * Internal server
  */
 const internalServer = http.createServer(app);
-internalServer.listen(config.internalPort, () => {
+internalServer.listen(config.internalPort, 'localhost', () => {
 	const h = internalServer.address().address;
 	const p = internalServer.address().port;
 	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
