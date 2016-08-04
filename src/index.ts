@@ -51,12 +51,20 @@ require('babel-polyfill');
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
+
+/**
+ * Initialize state
+ */
 enum State {
 	success,
 	warn,
 	failed
 }
 
+// Set process title
+process.title = 'Misskey Core';
+
+// Start app
 main();
 
 /**
