@@ -82,7 +82,7 @@ const server = config.https.enable ?
 /**
  * Server listen
  */
-server.listen(config.port, config.bindIp, () => {
+server.listen(config.port, () => {
 	const h = server.address().address;
 	const p = server.address().port;
 	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);

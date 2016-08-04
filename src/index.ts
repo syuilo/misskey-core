@@ -34,6 +34,7 @@ Error.stackTraceLimit = Infinity;
 import * as os from 'os';
 import * as cluster from 'cluster';
 import {logInfo, logDone, logWarn, logFailed} from 'log-cool';
+import * as chalk from 'chalk';
 const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import argv from './argv';
@@ -50,30 +51,73 @@ require('babel-polyfill');
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
-
-// Master
-if (cluster.isMaster) {
-	master().then(ok => {
-		if (ok) {
-			logDone('OK');
-
-			console.log('\nStarting...\n');
-
-			// Count the machine's CPUs
-			const cpuCount = os.cpus().length;
-
-			// Create a worker for each CPU
-			for (let i = 0; i < cpuCount; i++) {
-				cluster.fork();
-			}
-		} else {
-			console.error('there was a problem starting');
-			process.exit();
-		}
-	});
+enum State {
+	success,
+	warn,
+	failed
 }
-// Workers
-else {
+
+main();
+
+/**
+ * Init proccess
+ */
+function main(): void {
+	// Master
+	if (cluster.isMaster) {
+		master();
+	}
+	// Workers
+	else {
+		worker();
+	}
+}
+
+/**
+ * Init master proccess
+ */
+async function master(): Promise<void> {
+	let state: State;
+
+	try {
+		// initialize app
+		state = await init();
+	} catch (e) {
+		console.error(e);
+		process.exit(1);
+	}
+
+	switch (state) {
+		// fatal error
+		case State.failed:
+			console.error('Fatal error occurred :(');
+			process.exit();
+			return;
+		// with warning(s)
+		case State.warn:
+			logWarn('Some warning(s) :|');
+			break;
+		// np
+		case State.success:
+			logDone('OK :)');
+			break;
+	}
+
+	console.log('\nStarting...\n');
+
+	// Count the machine's CPUs
+	const cpuCount = os.cpus().length;
+
+	// Create a worker for each CPU
+	for (let i = 0; i < cpuCount; i++) {
+		cluster.fork();
+	}
+}
+
+/**
+ * Init worker proccess
+ */
+function worker(): void {
 	// Init mongo
 	initdb(config()).then(db => {
 		(<any>global).db = db;
@@ -82,19 +126,25 @@ else {
 }
 
 /**
- * Init master proccess
+ * Init app
  */
-async function master(): Promise<boolean> {
-	console.log('Welcome to Misskey!');
+async function init(): Promise<State> {
+	console.log('Welcome to Misskey!\n');
+
+	console.log(chalk.bold('Misskey Core <aoi>'));
+
+	let warn = false;
 
 	// Get repository info
 	const repository = await Git.Repository.open(__dirname + '/../');
-	console.log(`commit: ${(await repository.getHeadCommit()).sha()}`);
+	const commit = await repository.getHeadCommit();
+	console.log(`commit: ${commit.sha()}`);
+	console.log(`        ${commit.date()}`);
 
 	console.log('\nInitializing...\n');
 
 	if (isDebug) {
-		logWarn('Productionモードではありません。本番環境で使用しないでください。');
+		logWarn('It is not in the Production mode. Do not use in the Production environment.');
 	}
 
 	logInfo(`environment: ${env}`);
@@ -112,7 +162,7 @@ async function master(): Promise<boolean> {
 	} catch (e) {
 		if (e.code !== 'ENOENT') {
 			logFailed('Failed to load configuration');
-			return false;
+			return State.failed;
 		}
 
 		logWarn('Config not found');
@@ -121,7 +171,7 @@ async function master(): Promise<boolean> {
 			conf = config();
 		} else {
 			logFailed('Failed to load configuration');
-			return false;
+			return State.failed;
 		}
 	}
 
@@ -133,9 +183,9 @@ async function master(): Promise<boolean> {
 	}
 
 	// Check if a port is being used
-	if (await portUsed.check(conf.port, '127.0.0.1')) {
+	if (await portUsed.check(conf.port)) {
 		logFailed(`Port: ${conf.port} is already used!`);
-		return false;
+		return State.failed;
 	}
 
 	// Try to connect to MongoDB
@@ -144,17 +194,10 @@ async function master(): Promise<boolean> {
 		logDone('Success to connect to MongoDB');
 	} catch (e) {
 		logFailed(`MongoDB: ${e}`);
-		return false;
+		return State.failed;
 	}
 
-	return true;
-}
-
-/**
- * Init worker proccess
- */
-function worker(): void {
-	require('./server');
+	return warn ? State.warn : State.success;
 }
 
 // Listen new workers
