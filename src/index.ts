@@ -121,7 +121,12 @@ function worker(): void {
 	// Init mongo
 	initdb(config()).then(db => {
 		(<any>global).db = db;
-		worker();
+
+		// start server
+		require('./server');
+	}, err => {
+		console.error(err);
+		process.exit(0);
 	});
 }
 
