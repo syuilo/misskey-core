@@ -95,8 +95,6 @@ module.exports = async (params, reply, app, user) =>
 	const res = await Post.insert({
 		created_at: Date.now(),
 		files: files ? files.map(file => file.id) : null,
-		next: null,
-		prev: user.latest_post,
 		reaction_counts: [],
 		replies_count: 0,
 		reply_to: replyTo,
@@ -107,7 +105,6 @@ module.exports = async (params, reply, app, user) =>
 	const post = res.ops[0];
 
 	user.posts_count++;
-	user.latest_post = post._id;
 	post.user = user;
 
 	const postObj = await serialize(post);
@@ -125,13 +122,6 @@ module.exports = async (params, reply, app, user) =>
 
 	// メンションを抽出してデータベースに登録
 	//savePostMentions(user, post, post.text);
-
-	// 作成した投稿を前の投稿の次の投稿に設定する
-	if (user.latest_post !== null) {
-		Post.updateOne({_id: user.latest_post}, {
-			$set: { next: post._id }
-		});
-	}
 
 	// ユーザー情報更新
 	User.updateOne({_id: user._id}, {

@@ -42,7 +42,7 @@ module.exports = async (params, reply, app) =>
 	const hash = bcrypt.hashSync(password, salt);
 
 	// Generate secret
-	const secret = rndstr('a-zA-Z0-9', 64);
+	const secret = rndstr('a-zA-Z0-9', 32);
 
 	// Create account
 	const res = await User.insert({
@@ -58,8 +58,6 @@ module.exports = async (params, reply, app) =>
 		following_count: 0,
 		is_suspended: false,
 		is_verified: false,
-		lang: 'ja',
-		latest_post: null,
 		links: null,
 		location: null,
 		name: name,
