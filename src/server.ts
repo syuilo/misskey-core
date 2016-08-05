@@ -2,7 +2,6 @@
 // API SERVER
 //////////////////////////////////////////////////
 
-import * as cluster from 'cluster';
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
@@ -15,10 +14,6 @@ import * as multer from 'multer';
 import config from './config';
 import endpoints from './endpoints';
 import streaming from './streaming';
-
-const worker = cluster.worker;
-
-console.log(`Init ${worker.id} server...`);
 
 /**
  * Init app
@@ -78,13 +73,17 @@ const server = config.https.enable ?
 	}, app) :
 	http.createServer(app);
 
+let listeningFlag = false;
+
 /**
  * Server listen
  */
 server.listen(config.port, () => {
-	const h = server.address().address;
-	const p = server.address().port;
-	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
+	if (listeningFlag) {
+		process.send('listening');
+	} else {
+		listeningFlag = true;
+	}
 });
 
 /**
@@ -92,9 +91,11 @@ server.listen(config.port, () => {
  */
 const internalServer = http.createServer(app);
 internalServer.listen(config.internalPort, 'localhost', () => {
-	const h = internalServer.address().address;
-	const p = internalServer.address().port;
-	console.log(`\u001b[1;32m${worker.id} is now listening at ${h}:${p}\u001b[0m`);
+	if (listeningFlag) {
+		process.send('listening');
+	} else {
+		listeningFlag = true;
+	}
 });
 
 /**

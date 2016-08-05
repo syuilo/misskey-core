@@ -66,6 +66,7 @@
 		"./src/serializers/user.ts",
 		"./src/server.ts",
 		"./src/streaming.ts",
-		"./src/utils/yesno.ts"
+		"./src/utils/cli/progressbar.ts",
+		"./src/utils/cli/yesno.ts"
 	]
 }

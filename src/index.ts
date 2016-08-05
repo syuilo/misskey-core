@@ -38,7 +38,8 @@ import * as chalk from 'chalk';
 const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import argv from './argv';
-import yesno from './utils/yesno';
+import yesno from './utils/cli/yesno';
+import ProgressBar from './utils/cli/progressbar';
 import config from './load-config';
 import configGenerator from './config-generator';
 import initdb from './db/mongodb';
@@ -114,15 +115,43 @@ async function master(): Promise<void> {
 			break;
 	}
 
-	console.log('Starting...\n');
-
 	// Count the machine's CPUs
 	const cpuCount = os.cpus().length;
 
+	const progress = new ProgressBar(cpuCount, 'Starting workers');
+
 	// Create a worker for each CPU
 	for (let i = 0; i < cpuCount; i++) {
-		cluster.fork();
+		const worker = cluster.fork();
+		worker.on('message', (message: any) => {
+			if (message === 'listening') {
+				progress.increment();
+			}
+		});
 	}
+
+	// on all workers started
+	progress.on('complete', () => {
+		console.log(chalk.bold.green(`\nMisskey Core is now running.`));
+
+		// Listen new workers
+		cluster.on('fork', worker => {
+			console.log(`Process forked: ${worker.id}`);
+		});
+
+		// Listen online workers
+		cluster.on('online', worker => {
+			console.log(`Process is now online: ${worker.id}`);
+		});
+
+		// Listen for dying workers
+		cluster.on('exit', worker => {
+			// Replace the dead worker,
+			// we're not sentimental
+			console.log(`\u001b[1;31m[${worker.id}] died :(\u001b[0m`);
+			cluster.fork();
+		});
+	});
 }
 
 /**
@@ -215,24 +244,6 @@ async function init(): Promise<State> {
 
 	return warn ? State.warn : State.success;
 }
-
-// Listen new workers
-cluster.on('fork', worker => {
-	console.log(`Process forked: ${worker.id}`);
-});
-
-// Listen online workers
-cluster.on('online', worker => {
-	console.log(`Process is now online: ${worker.id}`);
-});
-
-// Listen for dying workers
-cluster.on('exit', worker => {
-	// Replace the dead worker,
-	// we're not sentimental
-	console.log(`\u001b[1;31m[${worker.id}] died :(\u001b[0m`);
-	cluster.fork();
-});
 
 // Dying away...
 process.on('exit', () => {
