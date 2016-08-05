@@ -44,6 +44,7 @@ import config from './load-config';
 import configGenerator from './config-generator';
 import initdb from './db/mongodb';
 import checkDependencies from './check-dependencies';
+import checkForUpdate from './check-for-update';
 
 // Init babel
 require('babel-core/register');
@@ -209,8 +210,14 @@ async function init(): Promise<State> {
 	logDone('Success to load configuration');
 	logInfo(`maintainer: ${conf.maintainer}`);
 
+	// Check dependencies
 	if (!argv.options.hasOwnProperty('skip-check-dependencies')) {
 		checkDependencies();
+	}
+
+	// Check for update
+	if (!argv.options.hasOwnProperty('skip-check-for-update')) {
+		await checkForUpdate();
 	}
 
 	// Check if a port is being used

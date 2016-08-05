@@ -29,6 +29,7 @@
 		"./src/argv.ts",
 		"./src/authenticate.ts",
 		"./src/check-dependencies.ts",
+		"./src/check-for-update.ts",
 		"./src/common/add-file-to-drive.ts",
 		"./src/common/create-notification.ts",
 		"./src/common/extract-hashtags.ts",
@@ -66,6 +67,7 @@
 		"./src/serializers/user.ts",
 		"./src/server.ts",
 		"./src/streaming.ts",
+		"./src/utils/cli/indicator.ts",
 		"./src/utils/cli/progressbar.ts",
 		"./src/utils/cli/yesno.ts"
 	]
