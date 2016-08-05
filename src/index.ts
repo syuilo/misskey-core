@@ -35,6 +35,7 @@ import * as os from 'os';
 import * as cluster from 'cluster';
 import {logInfo, logDone, logWarn, logFailed} from 'log-cool';
 import * as chalk from 'chalk';
+import * as del from 'del';
 const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import argv from './argv';
@@ -187,6 +188,9 @@ async function init(): Promise<State> {
 	logInfo(`MACHINE: CPU: ${os.cpus().length}core`);
 	logInfo(`MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
+	// Clean
+	await del(__dirname + '/../tmp/');
+
 	// Load config
 	let conf: any;
 	try {
@@ -217,7 +221,11 @@ async function init(): Promise<State> {
 
 	// Check for update
 	if (!argv.options.hasOwnProperty('skip-check-for-update')) {
-		await checkForUpdate();
+		const update = await checkForUpdate();
+
+		if (update === null) {
+			warn = true;
+		}
 	}
 
 	// Check if a port is being used

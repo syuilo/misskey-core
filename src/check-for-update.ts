@@ -4,7 +4,7 @@ const Git = require('nodegit');
 import Indicator from './utils/cli/indicator';
 const pkg = require('../package.json');
 
-export default async function(): Promise<void> {
+export default async function(): Promise<boolean> {
 	const i = new Indicator('[ WAIT ] Checking for update');
 
 	let remote: any;
@@ -14,8 +14,8 @@ export default async function(): Promise<void> {
 		remote = await Git.Clone(pkg.repository, __dirname + '/../tmp');
 	} catch (e) {
 		i.end();
-		logFailed('Something happened');
-		return;
+		logFailed(`Check for update: ${e}`);
+		return null;
 	}
 
 	const latest = await remote.getHeadCommit();
@@ -28,7 +28,9 @@ export default async function(): Promise<void> {
 
 	if (latest.sha() !== commit.sha()) {
 		logInfo(chalk.yellow(chalk.bold('New version available!') + `(${latest.sha()})`));
+		return true;
 	} else {
-		logDone('Up to date');
+		logDone('Check for update: Up to date');
+		return false;
 	}
 };

@@ -66,6 +66,9 @@
     },
     "chalk/chalk.d.ts": {
       "ref": "2a24bbb7ca4f13e52c7f6a0ab6144b565bf1ef55"
+    },
+    "del/del.d.ts": {
+      "ref": "e65947027120a0dc77723266906e4ce6c28bd725"
     }
   }
 }
