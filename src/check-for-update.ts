@@ -27,7 +27,7 @@ export default async function(): Promise<boolean> {
 	i.end();
 
 	if (latest.sha() !== commit.sha()) {
-		logInfo(chalk.yellow(chalk.bold('New version available!') + `(${latest.sha()})`));
+		logInfo(chalk.yellow(chalk.bold('New version available!') + ` (${latest.sha()})`));
 		return true;
 	} else {
 		logDone('Check for update: Up to date');

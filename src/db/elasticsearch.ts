@@ -1,7 +1,3 @@
-//////////////////////////////////////////////////
-// SEARCH DB
-//////////////////////////////////////////////////
-
 import * as cluster from 'cluster';
 import * as elasticsearch from 'elasticsearch';
 import config from '../config';

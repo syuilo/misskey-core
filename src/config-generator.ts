@@ -4,7 +4,7 @@ import * as inquirer from 'inquirer';
 import {IConfig} from './iconfig';
 import {configPath, configDirPath} from './meta';
 
-export default async () => {
+export default async function(): Promise<void> {
 	const as = await inquirer.prompt([
 		{
 			type: 'input',
