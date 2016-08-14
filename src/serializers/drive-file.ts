@@ -23,15 +23,19 @@ const self = (
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
-	let _file = deepcopy(file);
-
 	const opts = options || {
 		includeTags: true
 	};
 
-	// Populate the file if file is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(_file)) {
-		_file = await DriveFile.findOne({_id: _file});
+	let _file: any;
+
+	// Populate the file if 'file' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
+		_file = await DriveFile.findOne({_id: file});
+	} else if (typeof file === 'string') {
+		_file = await DriveFile.findOne({_id: new mongo.ObjectID(file)});
+	} else {
+		_file = deepcopy(file);
 	}
 
 	_file.id = _file._id;

@@ -17,11 +17,15 @@ const self = (
 	tag: any
 ) => new Promise<Object>(async (resolve, reject) =>
 {
-	let _tag = deepcopy(tag);
+	let _tag: any;
 
-	// Populate the tag if tag is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(_tag)) {
-		_tag = await DriveTag.findOne({_id: _tag});
+	// Populate the tag if 'tag' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(tag)) {
+		_tag = await DriveTag.findOne({_id: tag});
+	} else if (typeof tag === 'string') {
+		_tag = await DriveTag.findOne({_id: new mongo.ObjectID(tag)});
+	} else {
+		_tag = deepcopy(tag);
 	}
 
 	_tag.id = _tag._id;

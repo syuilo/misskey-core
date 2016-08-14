@@ -23,16 +23,20 @@ export default (
 	}
 ) => new Promise<any>(async (resolve, reject) =>
 {
-	let _user = deepcopy(user);
-
 	const opts = options || {
 		includeSecrets: false,
 		includeProfileImageIds: false
 	};
 
-	// Populate the user if user is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(_user)) {
-		_user = await User.findOne({_id: _user});
+	let _user: any;
+
+	// Populate the user if 'user' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
+		_user = await User.findOne({_id: user});
+	} else if (typeof user === 'string') {
+		_user = await User.findOne({_id: new mongo.ObjectID(user)});
+	} else {
+		_user = deepcopy(user);
 	}
 
 	_user.id = _user._id;

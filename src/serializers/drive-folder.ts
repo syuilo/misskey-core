@@ -21,15 +21,19 @@ const self = (
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
-	let _folder = deepcopy(folder);
-
 	const opts = options || {
 		includeParent: true
 	};
 
-	// Populate the folder if folder is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(_folder)) {
-		_folder = await DriveFolder.findOne({_id: _folder});
+	let _folder: any;
+
+	// Populate the folder if 'folder' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(folder)) {
+		_folder = await DriveFolder.findOne({_id: folder});
+	} else if (typeof folder === 'string') {
+		_folder = await DriveFolder.findOne({_id: new mongo.ObjectID(folder)});
+	} else {
+		_folder = deepcopy(folder);
 	}
 
 	_folder.id = _folder._id;

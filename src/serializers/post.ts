@@ -25,15 +25,19 @@ const self = (
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
-	let _post = deepcopy(post);
-
 	const opts = options || {
 		serializeReplyTo: true
 	};
 
-	// Populate the post if post is ID
-	if (mongo.ObjectID.prototype.isPrototypeOf(_post)) {
-		_post = await Post.findOne({_id: _post});
+	let _post: any;
+
+	// Populate the post if 'post' is ID
+	if (mongo.ObjectID.prototype.isPrototypeOf(post)) {
+		_post = await Post.findOne({_id: post});
+	} else if (typeof post === 'string') {
+		_post = await Post.findOne({_id: new mongo.ObjectID(post)});
+	} else {
+		_post = deepcopy(post);
 	}
 
 	_post.id = _post._id;
