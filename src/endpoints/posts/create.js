@@ -51,7 +51,7 @@ module.exports = async (params, reply, app, user) =>
 	// Init 'reply_to' parameter
 	let replyTo = params.reply_to;
 	if (replyTo !== undefined && replyTo !== null) {
-		const replyToPost = await Post.findOne({_id: new mongo.ObjectId(replyTo)});
+		const replyToPost = await Post.findOne({_id: new mongo.ObjectID(replyTo)});
 
 		if (replyToPost === null) {
 			return reply(404, 'reply to post is not found');

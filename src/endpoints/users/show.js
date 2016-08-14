@@ -34,7 +34,7 @@ module.exports = async (params, reply) =>
 
 	// Lookup user
 	const user = userId !== null
-		? await User.findOne({_id: new mongo.ObjectId(userId)})
+		? await User.findOne({_id: new mongo.ObjectID(userId)})
 		: await User.findOne({username});
 
 	if (user === null) {

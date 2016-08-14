@@ -46,7 +46,7 @@ module.exports = async (params, reply) =>
 
 	// Lookup post
 	const post = await Post.findOne({
-		_id: new mongo.ObjectId(postId)
+		_id: new mongo.ObjectID(postId)
 	});
 
 	if (post === null) {
