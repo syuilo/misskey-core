@@ -14,61 +14,61 @@
   },
   "dependencies": {
     "express/express.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "body-parser/body-parser.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "cors/cors.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "gm/gm.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "multer/multer.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "redis/redis.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "serve-favicon/serve-favicon.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "js-yaml/js-yaml.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "shelljs/shelljs.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "argv/argv.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "ratelimiter/ratelimiter.d.ts": {
-      "ref": "77b1b1709315b03b9b1b67c589d599bebeeef2ee"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "mongodb/mongodb.d.ts": {
-      "ref": "7499bb5e447c09b582f479ab9f9143d0c9af59fc"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "bcrypt/bcrypt.d.ts": {
-      "ref": "7499bb5e447c09b582f479ab9f9143d0c9af59fc"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "elasticsearch/elasticsearch.d.ts": {
-      "ref": "95eb7b2527a28281cdbf480c0560744bc5190465"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "socket.io/socket.io.d.ts": {
-      "ref": "2aa973a605d0fc7ae4ea5c32653331a819e81f71"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "socket.io-redis/socket.io-redis.d.ts": {
-      "ref": "2aa973a605d0fc7ae4ea5c32653331a819e81f71"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "inquirer/inquirer.d.ts": {
-      "ref": "2a24bbb7ca4f13e52c7f6a0ab6144b565bf1ef55"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "chalk/chalk.d.ts": {
-      "ref": "2a24bbb7ca4f13e52c7f6a0ab6144b565bf1ef55"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
     "del/del.d.ts": {
-      "ref": "e65947027120a0dc77723266906e4ce6c28bd725"
+      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     }
   }
 }
