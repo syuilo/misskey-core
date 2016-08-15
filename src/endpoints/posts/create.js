@@ -35,6 +35,29 @@ const maxFileLength = 4;
  */
 module.exports = async (params, reply, app, user) =>
 {
+	// Init 'repost' parameter
+	const repost = params.repost;
+	if (repost !== undefined && repost !== null) {
+		const repostee = await Post.findOne({_id: new mongo.ObjectID(repost)});
+
+		if (repostee === null) {
+			return reply(404, 'repostee is not found');
+		} else if (repostee.hasOwnProperty('repost')) {
+			return reply(400, 'cannot repost from repost');
+		}
+
+		// Repostを作成
+		const res = await Post.insert({
+			created_at: Date.now(),
+			repost: repostee._id,
+			user: user._id
+		});
+
+		const post = res.ops[0];
+
+		return created(post);
+	}
+
 	// Init 'text' parameter
 	let text = params.text;
 	if (text !== undefined && text !== null) {
@@ -50,12 +73,13 @@ module.exports = async (params, reply, app, user) =>
 
 	// Init 'reply_to' parameter
 	let replyTo = params.reply_to;
+	let replyToEntity = null;
 	if (replyTo !== undefined && replyTo !== null) {
-		const replyToPost = await Post.findOne({_id: new mongo.ObjectID(replyTo)});
+		replyToEntity = await Post.findOne({_id: new mongo.ObjectID(replyTo)});
 
-		if (replyToPost === null) {
+		if (replyToEntity === null) {
 			return reply(404, 'reply to post is not found');
-		} else if (replyToPost.hasOwnProperty('repost')) {
+		} else if (replyToEntity.hasOwnProperty('repost')) {
 			return reply(400, 'cannot reply to repost');
 		}
 	} else {
@@ -97,51 +121,55 @@ module.exports = async (params, reply, app, user) =>
 		files: files ? files.map(file => file.id) : null,
 		reaction_counts: [],
 		replies_count: 0,
-		reply_to: replyTo,
+		reply_to: replyToEntity._id || null,
 		text: text,
 		user: user._id
 	});
 
 	const post = res.ops[0];
 
-	user.posts_count++;
-	post.user = user;
+	created(post);
 
-	const postObj = await serialize(post);
+	async function created(post) {
+		user.posts_count++;
+		post.user = user;
 
-	reply(postObj);
+		const postObj = await serialize(post);
 
-	// Publish to stream
-	event.publishPost(user._id, postObj);
+		reply(postObj);
 
-	// ハッシュタグ抽出
-	//const hashtags = extractHashtags(text);
+		// Publish to stream
+		event.publishPost(user._id, postObj);
 
-	// ハッシュタグをデータベースに登録
-	//registerHashtags(user, hashtags);
+		// ハッシュタグ抽出
+		//const hashtags = extractHashtags(text);
 
-	// メンションを抽出してデータベースに登録
-	//savePostMentions(user, post, post.text);
+		// ハッシュタグをデータベースに登録
+		//registerHashtags(user, hashtags);
 
-	// ユーザー情報更新
-	User.updateOne({_id: user._id}, {
-		$set: user
-	});
+		// メンションを抽出してデータベースに登録
+		//savePostMentions(user, post, post.text);
 
-/*
-	// Register to search database
-	es.index({
-		index: 'posts',
-		type: 'post',
-		id: post._id.toHexString(),
-		body: {
-			text: post.text
-		}
-	}, (error, response) => {
-		if (error) {
-			console.error(error);
-		} else {
-			console.log(response);
-		}
-	});*/
+		// ユーザー情報更新
+		User.updateOne({_id: user._id}, {
+			$set: user
+		});
+
+	/*
+		// Register to search database
+		es.index({
+			index: 'posts',
+			type: 'post',
+			id: post._id.toHexString(),
+			body: {
+				text: post.text
+			}
+		}, (error, response) => {
+			if (error) {
+				console.error(error);
+			} else {
+				console.log(response);
+			}
+		});*/
+	}
 };
