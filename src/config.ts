@@ -1,4 +1,4 @@
-import {IConfig} from './iconfig';
+import { IConfig } from './iconfig';
 import load from './load-config';
 
 let conf: IConfig;

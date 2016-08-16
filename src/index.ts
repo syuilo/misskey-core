@@ -33,7 +33,7 @@ Error.stackTraceLimit = Infinity;
  */
 import * as os from 'os';
 import * as cluster from 'cluster';
-import {logInfo, logDone, logWarn, logFailed} from 'log-cool';
+import { logInfo, logDone, logWarn, logFailed } from 'log-cool';
 import * as chalk from 'chalk';
 import * as del from 'del';
 const Git = require('nodegit');
