@@ -64,7 +64,9 @@ module.exports = async (params, reply, user, app) =>
 
 	// クエリ発行
 	const files = await DriveFile
-		.find(query, {}, {
+		.find(query, {
+			data: false
+		}, {
 			limit: limit,
 			sort: sort
 		})
