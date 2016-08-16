@@ -28,6 +28,11 @@ module.exports = async (params, reply, user, app) =>
 		return reply(400, 'user_id is required');
 	}
 
+	// 自分自身
+	if (userId === user._id.toString()) {
+		return reply(400, 'followee is yourself');
+	}
+
 	// Get followee
 	const followee = await User.findOne({
 		_id: new mongo.ObjectID(userId)
