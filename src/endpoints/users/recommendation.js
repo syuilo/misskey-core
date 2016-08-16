@@ -3,13 +3,11 @@
 /**
  * Module dependencies
  */
-import * as mongo from 'mongodb';
-import Post from '../../models/post';
-import Following from '../../models/following';
-import serialize from '../../serializers/post';
+import User from '../../models/user';
+import serialize from '../../serializers/user';
 
 /**
- * Get timeline of myself
+ * Get recommended users
  *
  * @param {Object} params
  * @param {Object} reply
@@ -42,26 +40,11 @@ module.exports = async (params, reply, user, app) =>
 		return reply(400, 'cannot set since and max');
 	}
 
-	// 自分がフォローしているユーザーの関係を取得
-	// SELECT followee
-	const following = await Following
-		.find({follower: user._id}, {followee: true})
-		.toArray();
-
-	// 自分と自分がフォローしているユーザーのIDのリストを生成
-	const followingIds = following.length !== 0
-		? [...following.map(follow => follow.followee), user._id]
-		: [user._id];
-
 	// クエリ構築
 	const sort = {
 		created_at: -1
 	};
-	const query = {
-		user: {
-			$in: followingIds
-		}
-	};
+	const query = {};
 	if (since !== null) {
 		sort.created_at = 1;
 		query._id = {
@@ -74,17 +57,17 @@ module.exports = async (params, reply, user, app) =>
 	}
 
 	// クエリ発行
-	const timeline = await Post
+	const users = await User
 		.find(query, {}, {
 			limit: limit,
 			sort: sort
 		})
 		.toArray();
 
-	if (timeline.length === 0) {
+	if (users.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(timeline.map(async post => await serialize(post))));
+	reply(await Promise.all(users.map(async user => await serialize(user))));
 };

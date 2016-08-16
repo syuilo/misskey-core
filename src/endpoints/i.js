@@ -10,11 +10,11 @@ import serialize from '../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @param {Object} user
+ * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, _, user, isWeb) =>
+module.exports = async (params, reply, user, _, isWeb) =>
 {
 	// serialize
 	reply(await serialize(user, {

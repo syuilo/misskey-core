@@ -14,11 +14,11 @@ import event from '../../event';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @param {Object} user
+ * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply, user, app) =>
 {
 	const follower = user;
 

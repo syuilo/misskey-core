@@ -100,10 +100,10 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		try {
 			if (endpoint.withFile) {
 				require(`${__dirname}/endpoints/${endpoint.name}`)(
-					req.body, req.file, reply, ctx.app, ctx.user, ctx.isWeb);
+					req.body, req.file, reply, ctx.user, ctx.app, ctx.isWeb);
 			} else {
 				require(`${__dirname}/endpoints/${endpoint.name}`)(
-					req.body, reply, ctx.app, ctx.user, ctx.isWeb);
+					req.body, reply, ctx.user, ctx.app, ctx.isWeb);
 			}
 		} catch (e) {
 			console.error(e);

@@ -10,11 +10,11 @@ import serialize from '../../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @param {Object} user
+ * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply, user, app) =>
 {
 	// Init 'name' parameter
 	const name = params.name;

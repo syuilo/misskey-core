@@ -15,8 +15,8 @@ import create from '../../../common/add-file-to-drive';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @param {Object} user
+ * @param {Object} app
  * @return {void}
  */
 module.exports = async (params, file, reply, app, user) =>

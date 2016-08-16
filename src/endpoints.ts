@@ -40,10 +40,12 @@ export default <IEndpoint[]>[
 	{ name: 'i/drive/tags/update',       login: true },
 	{ name: 'i/drive/tags/delete',       login: true },
 
-	{ name: 'users/show',      login: false },
-	{ name: 'users/posts',     login: false },
-	{ name: 'users/following', login: false },
-	{ name: 'users/followers', login: false },
+	{ name: 'users',                login: false },
+	{ name: 'users/show',           login: false },
+	{ name: 'users/posts',          login: false },
+	{ name: 'users/following',      login: false },
+	{ name: 'users/followers',      login: false },
+	{ name: 'users/recommendation', login: true },
 
 	{ name: 'following/create', login: true, limitDuration: hour, limitMax: 100  },
 	{ name: 'following/delete', login: true, limitDuration: hour, limitMax: 100 },

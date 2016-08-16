@@ -29,11 +29,11 @@ const maxFileLength = 4;
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} app
  * @param {Object} user
+ * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, app, user) =>
+module.exports = async (params, reply, user, app) =>
 {
 	// Init 'repost' parameter
 	const repost = params.repost;
