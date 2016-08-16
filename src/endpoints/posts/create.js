@@ -121,7 +121,7 @@ module.exports = async (params, reply, user, app) =>
 		files: files ? files.map(file => file.id) : null,
 		reaction_counts: [],
 		replies_count: 0,
-		reply_to: replyToEntity._id || null,
+		reply_to: replyToEntity !== null ? replyToEntity._id : null,
 		text: text,
 		user: user._id
 	});
