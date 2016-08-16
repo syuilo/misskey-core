@@ -46,7 +46,7 @@ export default (
 		}
 	}
 
-	console.log(type);
+	console.log(mime);
 
 	// ハッシュ生成
 	const hash = <string>crypto
@@ -105,7 +105,7 @@ export default (
 	let properties: any = null;
 
 	// 画像だった場合
-	if (/^image\/.*$/.test(type)) {
+	if (/^image\/.*$/.test(mime)) {
 		// 幅と高さを取得してプロパティに保存しておく
 		const g = gm(data, name);
 		const size = await prominence(g).size();
