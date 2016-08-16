@@ -119,6 +119,7 @@ export default (
 
 	// DriveFileドキュメントを作成
 	const res = await DriveFile.insert({
+		created_at: Date.now(),
 		user: userId,
 		folder: folderId,
 		data: data,
