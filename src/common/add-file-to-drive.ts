@@ -1,3 +1,4 @@
+import * as mongodb from 'mongodb';
 import * as crypto from 'crypto';
 import * as gm from 'gm';
 const fileType = require('file-type');
@@ -17,7 +18,7 @@ import DriveFolder from '../models/drive-folder';
  * @return 追加したファイルオブジェクト
  */
 export default (
-	userId: string,
+	userId: mongodb.ObjectID,
 	data: Buffer,
 	name: string = null,
 	comment: string = null,

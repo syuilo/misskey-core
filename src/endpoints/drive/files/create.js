@@ -14,20 +14,21 @@ import create from '../../../common/add-file-to-drive';
  * Create a file
  *
  * @param {Object} params
+ * @param {Object} file
  * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, file, reply, app, user) =>
+module.exports = async (params, file, reply, user, app) =>
 {
 	// Init 'name' parameter
-	let name = params.name;
+	let name = file.originalname;
 	if (name !== undefined && name !== null) {
 		name = name.trim();
 		if (name.length === 0) {
 			name = null;
-		} else if (name.length > maxTextLength) {
+		} else if (name.length > 100) {
 			return reply(400, 'too long name');
 		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
 			return reply(400, 'invalid name');
