@@ -4,11 +4,11 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import DriveFile from '../../models/drive-file';
-import serialize from '../../serializers/drive-file';
+import DriveFolder from '../../models/drive-folder';
+import serialize from '../../serializers/drive-folder';
 
 /**
- * Get drive files
+ * Get drive folders
  *
  * @param {Object} params
  * @param {Object} reply
@@ -69,7 +69,7 @@ module.exports = async (params, reply, user, app) =>
 	}
 
 	// クエリ発行
-	const files = await DriveFile
+	const folders = await DriveFolder
 		.find(query, {
 			data: false
 		}, {
@@ -78,10 +78,10 @@ module.exports = async (params, reply, user, app) =>
 		})
 		.toArray();
 
-	if (files.length === 0) {
+	if (folders.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(files.map(async file => await serialize(file))));
+	reply(await Promise.all(folders.map(async folder => await serialize(folder))));
 };

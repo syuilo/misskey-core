@@ -22,7 +22,7 @@ const self = (
 ) => new Promise<Object>(async (resolve, reject) =>
 {
 	const opts = options || {
-		includeParent: true
+		includeParent: false
 	};
 
 	let _folder: any;
@@ -39,9 +39,11 @@ const self = (
 	_folder.id = _folder._id;
 	delete _folder._id;
 
-	if (opts.includeParent && _folder.parent) {
+	if (opts.includeParent && _folder.folder) {
 		// Populate parent folder
-		_folder.parent = await self(_folder.parent);
+		_folder.folder = await self(_folder.folder, {
+			includeParent: true
+		});
 	}
 
 	resolve(_folder);

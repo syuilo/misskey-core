@@ -22,6 +22,9 @@ import create from '../../../common/add-file-to-drive';
  */
 module.exports = async (params, file, reply, user, app) =>
 {
+	const buffer = fs.readFileSync(file.path);
+	fs.unlink(file.path);
+
 	// Init 'name' parameter
 	let name = file.originalname;
 	if (name !== undefined && name !== null) {
@@ -37,10 +40,17 @@ module.exports = async (params, file, reply, user, app) =>
 		name = null;
 	}
 
-	const buffer = fs.readFileSync(file.path);
-	fs.unlink(file.path);
+	// Init 'folder' parameter
+	let folder = params.folder;
+	if (folder === undefined || folder === null) {
+		folder = null;
+	} else {
+		folder = new mongo.ObjectID(folder);
+	}
 
-	const driveFile = await create(user._id, buffer, name);
+	// Create file
+	const driveFile = await create(user._id, buffer, name, null, folder);
 
+	// Response
 	reply(await serialize(driveFile));
 };

@@ -22,7 +22,7 @@ export default (
 	data: Buffer,
 	name: string = null,
 	comment: string = null,
-	folderId: string = null,
+	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => new Promise<any>(async (resolve, reject) =>
 {
@@ -91,13 +91,14 @@ export default (
 	}
 
 	// フォルダ指定時
+	let folder: any = null;
 	if (folderId !== null) {
-		const folder = await DriveFolder
+		folder = await DriveFolder
 			.findOne({ _id: folderId });
 
 		if (folder === null) {
 			return reject('folder-not-found');
-		} else if (folder.user !== userId) {
+		} else if (folder.user.toString() !== userId.toString()) {
 			return reject('folder-not-found');
 		}
 	}
@@ -121,7 +122,7 @@ export default (
 	const res = await DriveFile.insert({
 		created_at: Date.now(),
 		user: userId,
-		folder: folderId,
+		folder: folder !== null ? folder._id : null,
 		data: data,
 		datasize: size,
 		type: mime,
