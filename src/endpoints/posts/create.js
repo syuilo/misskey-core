@@ -12,7 +12,7 @@ import serialize from '../../serializers/post';
 //import registerHashtags from '../../core/register-hashtags';
 import getDriveFile from '../../common/get-drive-file';
 import event from '../../event';
-import es from '../../db/elasticsearch';
+//import es from '../../db/elasticsearch';
 
 /**
  * 最大文字数

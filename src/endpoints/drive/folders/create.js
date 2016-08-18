@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import DriveFolder from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
+import event from '../../../event';
 
 /**
  * Create drive folder
@@ -69,6 +70,12 @@ module.exports = async (params, reply, user) =>
 
 	const folder = res.ops[0];
 
-	// Send response
-	reply(await serialize(folder));
+	// Serialize
+	const folderObj = await serialize(folder);
+
+	// Response
+	reply(folderObj);
+
+	// Publish to stream
+	event.driveFolderCreated(user._id, folderObj);
 };

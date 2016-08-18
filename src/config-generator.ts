@@ -5,7 +5,7 @@ import {IConfig} from './iconfig';
 import {configPath, configDirPath} from './meta';
 
 export default async function(): Promise<void> {
-	const as = await inquirer.prompt([
+	const as: any = await inquirer.prompt([
 		{
 			type: 'input',
 			name: 'maintainer',
@@ -31,19 +31,19 @@ export default async function(): Promise<void> {
 			type: 'input',
 			name: 'https_key',
 			message: 'Path of tls key:',
-			when: ctx => ctx.https
+			when: (ctx: any) => ctx.https
 		},
 		{
 			type: 'input',
 			name: 'https_cert',
 			message: 'Path of tls cert:',
-			when: ctx => ctx.https
+			when: (ctx: any) => ctx.https
 		},
 		{
 			type: 'input',
 			name: 'https_ca',
 			message: 'Path of tls ca:',
-			when: ctx => ctx.https
+			when: (ctx: any) => ctx.https
 		},
 		{
 			type: 'input',
