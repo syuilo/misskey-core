@@ -34,6 +34,10 @@ class MisskeyEvent {
 		this.io.to(userId).emit('drive_file_created', file);
 	}
 
+	public async driveFileUpdated(userId: string, file: any): Promise<void> {
+		this.io.to(userId).emit('drive_file_updated', file);
+	}
+
 	public async driveFolderCreated(userId: string, folder: any): Promise<void> {
 		this.io.to(userId).emit('drive_folder_created', folder);
 	}

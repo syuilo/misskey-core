@@ -43,7 +43,7 @@ module.exports = async (params, reply, user, app) =>
 
 	// Init 'folder' parameter
 	let folder = params.folder;
-	if (folder === undefined || folder === null) {
+	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;
 	} else {
 		folder = new mongo.ObjectID(folder);
