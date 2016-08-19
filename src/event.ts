@@ -41,6 +41,10 @@ class MisskeyEvent {
 	public async driveFolderCreated(userId: string, folder: any): Promise<void> {
 		this.io.to(userId).emit('drive_folder_created', folder);
 	}
+
+	public async driveFolderUpdated(userId: string, folder: any): Promise<void> {
+		this.io.to(userId).emit('drive_folder_updated', folder);
+	}
 }
 
 export default new MisskeyEvent();
