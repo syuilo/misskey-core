@@ -29,8 +29,6 @@ export default (
 	// ファイルサイズ
 	const size = data.byteLength;
 
-	console.log(size);
-
 	// ファイルタイプ
 	let mime = 'application/octet-stream';
 	const type = fileType(data);
@@ -46,15 +44,11 @@ export default (
 		}
 	}
 
-	console.log(mime);
-
 	// ハッシュ生成
 	const hash = <string>crypto
 		.createHash('sha256')
 		.update(data)
 		.digest('hex');
-
-	console.log(hash);
 
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
@@ -72,18 +66,14 @@ export default (
 
 	// ドライブ使用量を取得するためにすべてのファイルを取得
 	const files = await DriveFile
-		.find({user: userId}, {
+		.find({ user: userId }, {
 			datasize: true,
 			_id: false
 		})
 		.toArray();
 
-	console.log(files);
-
 	// 現時点でのドライブ使用量を算出(byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
-
-	console.log(usage);
 
 	// 1GBを超える場合
 	if (usage + size > 1073741824) {
@@ -94,11 +84,12 @@ export default (
 	let folder: any = null;
 	if (folderId !== null) {
 		folder = await DriveFolder
-			.findOne({ _id: folderId });
+			.findOne({
+				_id: folderId,
+				user: userId
+			});
 
 		if (folder === null) {
-			return reject('folder-not-found');
-		} else if (folder.user.toString() !== userId.toString()) {
 			return reject('folder-not-found');
 		}
 	}
@@ -116,8 +107,6 @@ export default (
 		};
 	}
 
-	console.log('createing...');
-
 	// DriveFileドキュメントを作成
 	const res = await DriveFile.insert({
 		created_at: Date.now(),
@@ -134,5 +123,5 @@ export default (
 
 	const file = res.ops[0];
 
-	resolve(file);
+	return file;
 });

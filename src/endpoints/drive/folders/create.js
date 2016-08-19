@@ -51,11 +51,12 @@ module.exports = async (params, reply, user) =>
 	let parent = null;
 	if (parentId !== null) {
 		parent = await DriveFolder
-			.findOne({ _id: parentId });
+			.findOne({
+				_id: parentId,
+				user: user._id
+			});
 
 		if (parent === null) {
-			return reject('folder-not-found');
-		} else if (parent.user.toString() !== user._id.toString()) {
 			return reject('folder-not-found');
 		}
 	}

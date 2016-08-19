@@ -24,11 +24,12 @@ module.exports = async (params, reply, user) =>
 	}
 
 	const folder = await DriveFolder
-		.findOne({ _id: new mongo.ObjectID(folderId) });
+		.findOne({
+			_id: new mongo.ObjectID(folderId),
+			user: user._id
+		});
 
 	if (folder === null) {
-		return reply(404, 'folder-not-found');
-	} else if (folder.user.toString() !== user._id.toString()) {
 		return reply(404, 'folder-not-found');
 	}
 

@@ -26,12 +26,11 @@ module.exports = async (params, reply, user) =>
 
 	const folder = await DriveFolder
 		.findOne({
-			_id: new mongo.ObjectID(folderId)
+			_id: new mongo.ObjectID(folderId),
+			user: user._id
 		});
 
 	if (folder === null) {
-		return reply(404, 'folder-not-found');
-	} else if (folder.user.toString() !== user._id.toString()) {
 		return reply(404, 'folder-not-found');
 	}
 
@@ -47,11 +46,12 @@ module.exports = async (params, reply, user) =>
 			folder.folder = null;
 		} else {
 			parent = await DriveFolder
-				.findOne({ _id: parentId });
+				.findOne({
+					_id: parentId,
+					user: user._id
+				});
 
 			if (parent === null) {
-				return reply(404, 'parent-folder-not-found');
-			} else if (parent.user.toString() !== user._id.toString()) {
 				return reply(404, 'parent-folder-not-found');
 			}
 

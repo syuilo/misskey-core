@@ -27,14 +27,13 @@ module.exports = async (params, reply, user) =>
 
 	const file = await DriveFile
 		.findOne({
-			_id: new mongo.ObjectID(fileId)
+			_id: new mongo.ObjectID(fileId),
+			user: user._id
 		}, {
 			data: false
 		});
 
 	if (file === null) {
-		return reply(404, 'file-not-found');
-	} else if (file.user.toString() !== user._id.toString()) {
 		return reply(404, 'file-not-found');
 	}
 
