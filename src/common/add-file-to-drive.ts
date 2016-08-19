@@ -123,5 +123,5 @@ export default (
 
 	const file = res.ops[0];
 
-	return file;
+	resolve(file);
 });
