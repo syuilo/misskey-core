@@ -3,6 +3,8 @@
 /**
  * Module dependencies
  */
+import * as mongo from 'mongodb';
+import User from '../../models/user';
 import serialize from '../../serializers/user';
 
 /**
@@ -11,30 +13,28 @@ import serialize from '../../serializers/user';
  * @param {Object} params
  * @param {Object} reply
  * @param {Object} user
- * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, user, app) =>
+module.exports = async (params, reply, user) =>
 {
 	// Init 'name' parameter
 	const name = params.name;
 	if (name !== undefined && name !== null) {
-		if (name.length > 30) {
-			reply(400, 'too long name');
+		if (name.length > 50) {
+			return reply(400, 'too long name');
 		}
+
+		user.name = name;
 	}
 
 	// Init 'avatar' parameter
 	const avatar = params.avatar;
 	if (avatar !== undefined && avatar !== null) {
-		// TODO: validation
+		user.avatar = new mongo.ObjectID(avatar);
 	}
 
-	User.updateOne({_id: user._id}, {
-		$set: {
-			name: name || user.name,
-			avatar: avatar || user.avatar,
-		}
+	await User.updateOne({ _id: user._id }, {
+		$set: user
 	});
 
 	// serialize
