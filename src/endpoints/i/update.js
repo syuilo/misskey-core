@@ -27,6 +27,26 @@ module.exports = async (params, reply, user) =>
 		user.name = name;
 	}
 
+	// Init 'location' parameter
+	const location = params.location;
+	if (location !== undefined && location !== null) {
+		if (location.length > 50) {
+			return reply(400, 'too long location');
+		}
+
+		user.location = location;
+	}
+
+	// Init 'bio' parameter
+	const bio = params.bio;
+	if (bio !== undefined && bio !== null) {
+		if (bio.length > 500) {
+			return reply(400, 'too long bio');
+		}
+
+		user.bio = bio;
+	}
+
 	// Init 'avatar' parameter
 	const avatar = params.avatar;
 	if (avatar !== undefined && avatar !== null) {
