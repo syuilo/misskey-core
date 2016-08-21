@@ -17,15 +17,13 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		? endpoint.limitKey
 		: endpoint.name;
 
-	function reply(x?: any, y?: any, z?: any): void {
+	function reply(x?: any, y?: any): void {
 		if (x === undefined) {
 			res.sendStatus(204);
 		} else if (typeof x === 'number') {
 			if (x === 500) {
 				res.status(500).send({
-					error: {
-						code: 'INTERNAL_ERROR'
-					}
+					error: 'INTERNAL_ERROR'
 				});
 
 				if (isDebug) {
@@ -33,10 +31,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 				}
 			} else {
 				res.status(x).send({
-					error: {
-						text: y,
-						code: z
-					}
+					error: y
 				});
 
 				if (isDebug) {
@@ -65,7 +60,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 			if (limitErr !== null) {
 				reply(500);
 			} else if (limit.remaining === 0) {
-				reply(429, 'brief interval detected', 'BRIEF_INTERVAL_DETECTED');
+				reply(429, 'BRIEF_REQUEST_INTERVAL');
 			} else {
 				if (endpoint.hasOwnProperty('limitDuration') && endpoint.hasOwnProperty('limitMax')) {
 					rateLimit(ctx);
@@ -89,7 +84,7 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 			if (limitErr !== null) {
 				reply(500);
 			} else if (limit.remaining === 0) {
-				reply(429, 'rate limit exceeded', 'RATE_LIMIT_EXCEEDED');
+				reply(429, 'RATE_LIMIT_EXCEEDED');
 			} else {
 				call(ctx);
 			}
@@ -125,6 +120,6 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 		}
 	}, err => {
 		console.error(err);
-		reply(403, 'authentication failed', 'AUTHENTICATION_FAILED');
+		reply(403, 'AUTHENTICATION_FAILED');
 	});
 };
