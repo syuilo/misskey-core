@@ -55,12 +55,6 @@
     "elasticsearch/elasticsearch.d.ts": {
       "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
-    "socket.io/socket.io.d.ts": {
-      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
-    },
-    "socket.io-redis/socket.io-redis.d.ts": {
-      "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
-    },
     "inquirer/inquirer.d.ts": {
       "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
     },
@@ -69,6 +63,9 @@
     },
     "del/del.d.ts": {
       "ref": "67557f18a898462614ed14063a54ca33a1cfab12"
+    },
+    "websocket/websocket.d.ts": {
+      "ref": "55c3e254e151847b8d37ca09b1a566ad4a48a66a"
     }
   }
 }

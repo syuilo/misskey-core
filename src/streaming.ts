@@ -1,47 +1,49 @@
-import * as socketio from 'socket.io';
-import * as redis from 'socket.io-redis';
+import * as websocket from 'websocket';
+import * as redis from 'redis';
 import User from './models/user';
 import config from './config';
 
 export default function (server: any): void {
 
 	/**
-	 * Init streaming server
+	 * Init websocket server
 	 */
-	const io = socketio(server);
+	const ws = new websocket.server({
+		httpServer: server
+	});
 
-	/**
-	 * Connect to Redis
-	 */
-	io.adapter(redis({
-		key: 'misskey',
-		host: config.redis.host,
-		port: config.redis.port
-	}));
+	ws.on('request', request => {
+		const connection = request.accept();
 
-	/**
-	 * Authentication
-	 */
-	io.on('connection', socket => {
-		socket.auth = false;
+		// Connect to Redis
+		const subscriber = redis.createClient(
+			config.redis.port, config.redis.host);
 
-		socket.on('authentication', async (data: any) => {
-			const webtoken = data._i;
+		connection.on('message', async (data) => {
+			const msg = JSON.parse(data.utf8Data);
 
+			// Get user data
 			const user = await User
-				.findOne({_web: webtoken});
+				.findOne({ _web: msg.i });
 
 			if (user === null) {
-				socket.emit('unauthorized', {message: 'Authentication failed'}, () => {
-					socket.disconnect();
-				});
+				connection.close();
 				return;
 			}
 
-			socket.client.user = user;
-			socket.auth = true;
-			socket.join(user._id);
-			socket.emit('authenticated', true);
+			connection.send('authenticated');
+
+			// Subscribe Home stream channel
+			subscriber.subscribe(`misskey:user-stream:${user._id}`);
+			subscriber.on('message', (_: any, data: any) => {
+				connection.send(data);
+			});
+		});
+
+		connection.on('close', () => {
+			console.log('CLOSED');
+			subscriber.unsubscribe();
+			subscriber.quit();
 		});
 	});
 }
