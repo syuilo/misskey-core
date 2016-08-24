@@ -38,7 +38,10 @@ module.exports = async (params, reply, user, app) =>
 	// Init 'repost' parameter
 	const repost = params.repost;
 	if (repost !== undefined && repost !== null) {
-		const repostee = await Post.findOne({_id: new mongo.ObjectID(repost)});
+		// Get repostee
+		const repostee = await Post.findOne({
+			_id: new mongo.ObjectID(repost)
+		});
 
 		if (repostee === null) {
 			return reply(404, 'repostee is not found');
@@ -54,6 +57,13 @@ module.exports = async (params, reply, user, app) =>
 		});
 
 		const post = res.ops[0];
+
+		// Update repostee status
+		Post.updateOne({ _id: repostee._id }, {
+			$set: {
+				repost_count: repostee.repost_count + 1 || 1
+			}
+		});
 
 		return created(post);
 	}
@@ -75,7 +85,9 @@ module.exports = async (params, reply, user, app) =>
 	let replyTo = params.reply_to;
 	let replyToEntity = null;
 	if (replyTo !== undefined && replyTo !== null) {
-		replyToEntity = await Post.findOne({_id: new mongo.ObjectID(replyTo)});
+		replyToEntity = await Post.findOne({
+			_id: new mongo.ObjectID(replyTo)
+		});
 
 		if (replyToEntity === null) {
 			return reply(404, 'reply to post is not found');
@@ -118,15 +130,22 @@ module.exports = async (params, reply, user, app) =>
 	// 投稿を作成
 	const res = await Post.insert({
 		created_at: Date.now(),
-		files: files ? files.map(file => file.id) : null,
-		reaction_counts: [],
-		replies_count: 0,
-		reply_to: replyToEntity !== null ? replyToEntity._id : null,
+		files: files ? files.map(file => file.id) : undefined,
+		reply_to: replyToEntity !== null ? replyToEntity._id : undefined,
 		text: text,
 		user: user._id
 	});
 
 	const post = res.ops[0];
+
+	// Update replyee status
+	if (replyToEntity !== null) {
+		Post.updateOne({ _id: replyToEntity._id }, {
+			$set: {
+				replies_count: replyToEntity.replies_count + 1 || 1
+			}
+		});
+	}
 
 	created(post);
 
@@ -151,7 +170,7 @@ module.exports = async (params, reply, user, app) =>
 		//savePostMentions(user, post, post.text);
 
 		// ユーザー情報更新
-		User.updateOne({_id: user._id}, {
+		User.updateOne({ _id: user._id }, {
 			$set: user
 		});
 

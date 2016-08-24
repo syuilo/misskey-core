@@ -55,8 +55,6 @@ module.exports = async (params, reply, app) =>
 		email: null,
 		followers_count: 0,
 		following_count: 0,
-		is_suspended: false,
-		is_verified: false,
 		links: null,
 		location: null,
 		name: name,

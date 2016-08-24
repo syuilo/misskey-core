@@ -33,7 +33,7 @@ const self = (
 
 	// Populate the post if 'post' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(post)) {
-		_post = await Post.findOne({_id: post});
+		_post = await Post.findOne({ _id: post });
 	} else if (typeof post === 'string') {
 		_post = await Post.findOne({_id: new mongo.ObjectID(post)});
 	} else {
