@@ -25,6 +25,7 @@ export default <IEndpoint[]>[
 	{ name: 'i/notifications',        login: true },
 	{ name: 'i/notifications/delete', login: true },
 	{ name: 'i/notifications/clear',  login: true },
+	{ name: 'drive/stream',        login: true },
 	{ name: 'drive/files',        login: true },
 	{ name: 'drive/files/create',      login: true, limitDuration: hour, limitMax: 100, withFile: true },
 	{ name: 'drive/files/show',        login: true },
