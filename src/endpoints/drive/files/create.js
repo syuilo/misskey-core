@@ -52,7 +52,7 @@ module.exports = async (params, file, reply, user, app) =>
 	}
 
 	// Create file
-	const driveFile = await create(user._id, buffer, name, null, folder);
+	const driveFile = await create(user, buffer, name, null, folder);
 
 	// Serialize
 	const fileObj = await serialize(driveFile);

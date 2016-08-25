@@ -8,7 +8,7 @@ import DriveFolder from '../models/drive-folder';
 
 /**
  * ドライブにファイルを追加します
- * @param userId ユーザーID
+ * @param user ユーザー
  * @param fileName ファイル名
  * @param data 内容
  * @param comment ファイルの説明
@@ -18,7 +18,7 @@ import DriveFolder from '../models/drive-folder';
  * @return 追加したファイルオブジェクト
  */
 export default (
-	userId: mongodb.ObjectID,
+	user: any,
 	data: Buffer,
 	name: string = null,
 	comment: string = null,
@@ -53,7 +53,7 @@ export default (
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
 		const much = await DriveFile.findOne({
-			user: userId,
+			user: user._id,
 			hash: hash,
 			datasize: size
 		});
@@ -66,7 +66,7 @@ export default (
 
 	// ドライブ使用量を取得するためにすべてのファイルを取得
 	const files = await DriveFile
-		.find({ user: userId }, {
+		.find({ user: user._id }, {
 			datasize: true,
 			_id: false
 		})
@@ -75,8 +75,8 @@ export default (
 	// 現時点でのドライブ使用量を算出(byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
 
-	// 1GBを超える場合
-	if (usage + size > 1073741824) {
+	// 容量を超える場合
+	if (usage + size > user.drive_capacity) {
 		return reject('no-free-space');
 	}
 
@@ -110,7 +110,7 @@ export default (
 	// DriveFileドキュメントを作成
 	const res = await DriveFile.insert({
 		created_at: Date.now(),
-		user: userId,
+		user: user._id,
 		folder: folder !== null ? folder._id : null,
 		data: data,
 		datasize: size,

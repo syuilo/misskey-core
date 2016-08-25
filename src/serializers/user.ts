@@ -18,12 +18,14 @@ import config from '../config';
 export default (
 	user: any,
 	options?: {
+		includePrivates: boolean,
 		includeSecrets: boolean,
 		includeProfileImageIds: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) =>
 {
 	const opts = options || {
+		includePrivates: false,
 		includeSecrets: false,
 		includeProfileImageIds: false
 	};
@@ -44,6 +46,9 @@ export default (
 
 	// Remove private properties
 	delete _user.password;
+	if (!opts.includePrivates) {
+		delete _user.drive_capacity;
+	}
 	if (!opts.includeSecrets) {
 		delete _user._web;
 		delete _user.email;

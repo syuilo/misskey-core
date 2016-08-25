@@ -60,6 +60,7 @@ module.exports = async (params, reply, app) =>
 		name: name,
 		password: hash,
 		posts_count: 0,
+		drive_capacity: 1073741824, // 1GB
 		username: username
 	});
 

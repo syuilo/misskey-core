@@ -50,10 +50,11 @@ export default <IEndpoint[]>[
 	{ name: 'users/followers',      login: false },
 	{ name: 'users/recommendation', login: true },
 
-	{ name: 'favorites/create', login: true, limitDuration: hour, limitMax: 100  },
+	{ name: 'favorites', login: true },
+	{ name: 'favorites/create', login: true, limitDuration: hour, limitMax: 100 },
 	{ name: 'favorites/delete', login: true, limitDuration: hour, limitMax: 100 },
 
-	{ name: 'following/create', login: true, limitDuration: hour, limitMax: 100  },
+	{ name: 'following/create', login: true, limitDuration: hour, limitMax: 100 },
 	{ name: 'following/delete', login: true, limitDuration: hour, limitMax: 100 },
 
 	{ name: 'posts/show',    login: false },
