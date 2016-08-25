@@ -15,10 +15,9 @@ import event from '../../event';
  * @param {Object} params
  * @param {Object} reply
  * @param {Object} user
- * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, reply, user, app) =>
+module.exports = async (params, reply, user) =>
 {
 	const follower = user;
 
