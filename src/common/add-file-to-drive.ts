@@ -86,7 +86,7 @@ export default (
 		folder = await DriveFolder
 			.findOne({
 				_id: folderId,
-				user: userId
+				user: user._id
 			});
 
 		if (folder === null) {
