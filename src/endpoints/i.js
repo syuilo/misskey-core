@@ -19,7 +19,7 @@ module.exports = async (params, reply, user, _, isWeb) =>
 {
 	// serialize
 	reply(await serialize(user, {
-		includePrivates: true
+		includePrivates: true,
 		includeSecrets: isWeb,
 		includeProfileImageIds: isWeb
 	}));
