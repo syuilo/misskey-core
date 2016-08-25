@@ -25,6 +25,7 @@ export default <IEndpoint[]>[
 	{ name: 'i/notifications',        login: true },
 	{ name: 'i/notifications/delete', login: true },
 	{ name: 'i/notifications/clear',  login: true },
+	{ name: 'drive',        login: true },
 	{ name: 'drive/stream',        login: true },
 	{ name: 'drive/files',        login: true },
 	{ name: 'drive/files/create',      login: true, limitDuration: hour, limitMax: 100, withFile: true },
@@ -48,6 +49,9 @@ export default <IEndpoint[]>[
 	{ name: 'users/following',      login: false },
 	{ name: 'users/followers',      login: false },
 	{ name: 'users/recommendation', login: true },
+
+	{ name: 'favorites/create', login: true, limitDuration: hour, limitMax: 100  },
+	{ name: 'favorites/delete', login: true, limitDuration: hour, limitMax: 100 },
 
 	{ name: 'following/create', login: true, limitDuration: hour, limitMax: 100  },
 	{ name: 'following/delete', login: true, limitDuration: hour, limitMax: 100 },
