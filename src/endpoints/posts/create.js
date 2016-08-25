@@ -7,10 +7,12 @@ import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import User from '../../models/user';
 import serialize from '../../serializers/post';
+import serializeFile from '../../serializers/drive-file';
 //import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
 import getDriveFile from '../../common/get-drive-file';
+import createFile from '../../common/add-file-to-drive';
 import event from '../../event';
 //import es from '../../db/elasticsearch';
 
@@ -74,6 +76,8 @@ module.exports = async (params, reply, user, app) =>
 		text = text.trim();
 		if (text.length === 0) {
 			text = null;
+		} else if (text[0] === '$') {
+			return command(text);
 		} else if (text.length > maxTextLength) {
 			return reply(400, 'too long text');
 		}
@@ -190,5 +194,26 @@ module.exports = async (params, reply, user, app) =>
 				console.log(response);
 			}
 		});*/
+	}
+
+	async function command(text) {
+		const separator = ' ';
+		const cmd = text.substr(1, text.indexOf(separator) - 1);
+		const arg = text.substr(text.indexOf(separator) + 1);
+
+		switch (cmd) {
+			case 'write':
+				// Create file
+				const file = await createFile(user, new Buffer(arg), Date.now() + '.txt', null, null);
+				// Serialize
+				const fileObj = await serializeFile(file);
+				// Publish to stream
+				event.driveFileCreated(user._id, fileObj);
+				reply();
+				break;
+			default:
+				reply(400, 'unknown command');
+				break;
+		}
 	}
 };
