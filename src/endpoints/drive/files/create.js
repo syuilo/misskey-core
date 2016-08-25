@@ -9,7 +9,6 @@ import File from '../../../models/drive-file';
 import User from '../../../models/user';
 import serialize from '../../../serializers/drive-file';
 import create from '../../../common/add-file-to-drive';
-import event from '../../../event';
 
 /**
  * Create a file
@@ -58,7 +57,4 @@ module.exports = async (params, file, reply, user) =>
 
 	// Response
 	reply(fileObj);
-
-	// Publish to stream
-	event.driveFileCreated(user._id, fileObj);
 };

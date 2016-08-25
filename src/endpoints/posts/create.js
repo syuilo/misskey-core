@@ -7,13 +7,11 @@ import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import User from '../../models/user';
 import serialize from '../../serializers/post';
-import serializeFile from '../../serializers/drive-file';
 //import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
 import getDriveFile from '../../common/get-drive-file';
 import createFile from '../../common/add-file-to-drive';
-import event from '../../event';
 //import es from '../../db/elasticsearch';
 
 /**
@@ -204,11 +202,7 @@ module.exports = async (params, reply, user, app) =>
 		switch (cmd) {
 			case 'write':
 				// Create file
-				const file = await createFile(user, new Buffer(arg), Date.now() + '.txt', null, null);
-				// Serialize
-				const fileObj = await serializeFile(file);
-				// Publish to stream
-				event.driveFileCreated(user._id, fileObj);
+				await createFile(user, new Buffer(arg), Date.now() + '.txt', null, null);
 				reply();
 				break;
 			default:
