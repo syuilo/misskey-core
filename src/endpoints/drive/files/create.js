@@ -18,10 +18,9 @@ import event from '../../../event';
  * @param {Object} file
  * @param {Object} reply
  * @param {Object} user
- * @param {Object} app
  * @return {void}
  */
-module.exports = async (params, file, reply, user, app) =>
+module.exports = async (params, file, reply, user) =>
 {
 	const buffer = fs.readFileSync(file.path);
 	fs.unlink(file.path);
