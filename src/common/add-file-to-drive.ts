@@ -7,9 +7,11 @@ import DriveFile from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
+import es from '../db/elasticsearch';
 
 /**
  * ドライブにファイルを追加します
+ *
  * @param user ユーザー
  * @param fileName ファイル名
  * @param data 内容
@@ -132,4 +134,20 @@ export default (
 
 	// Publish to stream
 	event.driveFileCreated(user._id, fileObj);
+
+	// Register to search database
+	es.index({
+		index: 'drive_files',
+		type: 'file',
+		id: file._id.toString(),
+		body: {
+			name: file.name
+		}
+	}, (error, response) => {
+		if (error) {
+			console.error(error);
+		} else {
+			console.log(response);
+		}
+	});
 });

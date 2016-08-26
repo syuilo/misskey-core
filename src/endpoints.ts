@@ -62,6 +62,7 @@ export default <IEndpoint[]>[
 	{ name: 'posts/create',  login: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second, limitKey: 'post' },
 	{ name: 'posts/repost',  login: true, limitDuration: hour, limitMax: 120, minInterval: 0.5 * second, limitKey: 'post' },
 	{ name: 'posts/reposts', login: false },
+	{ name: 'posts/search', login: false },
 
 	{ name: 'talks/history/show', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talks/messages/unread/count', login: true },

@@ -12,7 +12,8 @@ import serialize from '../../serializers/post';
 //import registerHashtags from '../../core/register-hashtags';
 import getDriveFile from '../../common/get-drive-file';
 import createFile from '../../common/add-file-to-drive';
-//import es from '../../db/elasticsearch';
+import event from '../../event';
+import es from '../../db/elasticsearch';
 
 /**
  * 最大文字数
@@ -176,22 +177,17 @@ module.exports = async (params, reply, user, app) =>
 			$set: user
 		});
 
-	/*
 		// Register to search database
-		es.index({
-			index: 'posts',
-			type: 'post',
-			id: post._id.toHexString(),
-			body: {
-				text: post.text
-			}
-		}, (error, response) => {
-			if (error) {
-				console.error(error);
-			} else {
-				console.log(response);
-			}
-		});*/
+		if (post.text != null) {
+			es.index({
+				index: 'posts',
+				type: 'post',
+				id: post._id.toString(),
+				body: {
+					text: post.text
+				}
+			});
+		}
 	}
 
 	async function command(text) {
