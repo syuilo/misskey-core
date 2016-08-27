@@ -12,10 +12,12 @@ import serialize from '../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} user
  * @param {Object} app
+ * @param {Boolean} isWeb
  * @return {void}
  */
-module.exports = async (params, reply, app) =>
+module.exports = async (params, reply, _1, _2, isWeb) =>
 {
 	// Init 'username' parameter
 	const username = params.username;
@@ -29,7 +31,7 @@ module.exports = async (params, reply, app) =>
 		return reply(400, 'password is required', 'INVALID_QUERY');
 	}
 
-	const user = await User.findOne({username});
+	const user = await User.findOne({ username });
 
 	if (user === null) {
 		return reply(404, 'user not found', 'USER_NOT_FOUND');
@@ -42,6 +44,10 @@ module.exports = async (params, reply, app) =>
 			return reply(400, 'incorrect password', 'INCORRECT_PASSWORD');
 		}
 
-		reply(await serialize(user));
+		reply(await serialize(user, {
+			includePrivates: true,
+			includeSecrets: isWeb,
+			includeProfileImageIds: isWeb
+		}));
 	});
 };
