@@ -12,5 +12,9 @@ An api server of Misskey.
   * Java
 * GraphicsMagick
 
+## Related repositories
+* [misskey-web](https://github.com/syuilo/misskey-web) ... Web client Implementation
+* [misskey-file](https://github.com/syuilo/misskey-file) ... Drive file server
+
 ## License
 [MIT](LICENSE)
