@@ -33,9 +33,13 @@ const self = (
 
 	// Populate the post if 'post' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(post)) {
-		_post = await Post.findOne({ _id: post });
+		_post = await Post.findOne({
+			_id: post
+		});
 	} else if (typeof post === 'string') {
-		_post = await Post.findOne({_id: new mongo.ObjectID(post)});
+		_post = await Post.findOne({
+			_id: new mongo.ObjectID(post)
+		});
 	} else {
 		_post = deepcopy(post);
 	}
@@ -48,9 +52,9 @@ const self = (
 
 	if (_post.files) {
 		// Populate files
-		_post.files = await (<string[]>_post.files).map(async (file) => {
-			return await serializeDriveFile(file);
-		});
+		_post.files = await Promise.all(_post.files.map(async (file: any) =>
+			await serializeDriveFile(file)
+		));
 	}
 
 	if (_post.reply_to && opts.serializeReplyTo) {

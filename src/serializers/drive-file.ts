@@ -31,9 +31,17 @@ const self = (
 
 	// Populate the file if 'file' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(file)) {
-		_file = await DriveFile.findOne({_id: file});
+		_file = await DriveFile.findOne({
+			_id: file
+		}, {
+			data: false
+		});
 	} else if (typeof file === 'string') {
-		_file = await DriveFile.findOne({_id: new mongo.ObjectID(file)});
+		_file = await DriveFile.findOne({
+			_id: new mongo.ObjectID(file)
+		}, {
+			data: false
+		});
 	} else {
 		_file = deepcopy(file);
 	}
@@ -46,9 +54,9 @@ const self = (
 
 	if (opts.includeTags && _file.tags) {
 		// Populate tags
-		_file.tags = await (<string[]>_file.tags).map(async (tag) => {
-			return await serializeDriveTag(tag);
-		});
+		_file.tags = await _file.tags.map(async (tag: any) =>
+			await serializeDriveTag(tag)
+		);
 	}
 
 	resolve(_file);

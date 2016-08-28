@@ -6,11 +6,11 @@
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import User from '../../models/user';
+import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/post';
 //import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
-import getDriveFile from '../../common/get-drive-file';
 import createFile from '../../common/add-file-to-drive';
 import event from '../../event';
 import es from '../../db/elasticsearch';
@@ -103,6 +103,7 @@ module.exports = async (params, reply, user, app) =>
 
 	// Init 'files' parameter
 	let files = params.files;
+	let fileEntities = [];
 	if (files !== undefined && files !== null) {
 		files = files.split(',');
 
@@ -116,6 +117,24 @@ module.exports = async (params, reply, user, app) =>
 			// 重複チェック
 			files = files.filter((x, i, self) => self.indexOf(x) === i);
 		}
+
+		// Check file entities
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+
+			const entity = await DriveFile.findOne({
+				_id: new mongo.ObjectID(file),
+				user: user._id
+			}, {
+				data: false
+			});
+
+			if (entity === null) {
+				return reply(400, 'file not found');
+			} else {
+				fileEntities.push(entity);
+			}
+		}
 	} else {
 		files = null;
 	}
@@ -125,15 +144,10 @@ module.exports = async (params, reply, user, app) =>
 		return reply(400, 'text or files is required');
 	}
 
-	// 添付ファイルがあれば添付ファイル取得
-	if (files !== null) {
-		files = await Promise.all(files.map(file => getDriveFile(user._id, file)));
-	}
-
 	// 投稿を作成
 	const res = await Post.insert({
 		created_at: Date.now(),
-		files: files ? files.map(file => file.id) : undefined,
+		files: files ? fileEntities.map(file => file._id) : undefined,
 		reply_to: replyToEntity !== null ? replyToEntity._id : undefined,
 		text: text,
 		user: user._id

@@ -34,9 +34,13 @@ export default (
 
 	// Populate the user if 'user' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(user)) {
-		_user = await User.findOne({_id: user});
+		_user = await User.findOne({
+			_id: user
+		});
 	} else if (typeof user === 'string') {
-		_user = await User.findOne({_id: new mongo.ObjectID(user)});
+		_user = await User.findOne({
+			_id: new mongo.ObjectID(user)
+		});
 	} else {
 		_user = deepcopy(user);
 	}
