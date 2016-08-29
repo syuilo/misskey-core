@@ -29,17 +29,17 @@ const maxTextLength = 500;
 module.exports = async (params, reply, user) =>
 {
 	// Init 'user' parameter
-	let user = params.user;
-	if (user !== undefined && user !== null) {
-		user = await User.findOne({
-			_id: new mongo.ObjectID(user),
+	let recipient = params.user;
+	if (recipient !== undefined && recipient !== null) {
+		recipient = await User.findOne({
+			_id: new mongo.ObjectID(recipient),
 		});
 
-		if (user === null) {
+		if (recipient === null) {
 			return reply(400, 'user not found');
 		}
 	} else {
-		user = null;
+		recipient = null;
 	}
 
 	// Init 'group' parameter
@@ -57,12 +57,12 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// ユーザーの指定がないかつグループの指定もなかったらエラー
-	if (user === null && group === null) {
+	if (recipient === null && group === null) {
 		return reply(400, 'user or group is required');
 	}
 
 	// ユーザーとグループ両方指定してたらエラー
-	if (user !== null && group !== null) {
+	if (recipient !== null && group !== null) {
 		return reply(400, 'need translate');
 	}
 
