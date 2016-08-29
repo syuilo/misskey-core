@@ -32,7 +32,7 @@ export default (
 
 	let _message: any;
 
-	// Populate the post if 'message' is ID
+	// Populate the message if 'message' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(message)) {
 		_message = await Message.findOne({
 			_id: message
