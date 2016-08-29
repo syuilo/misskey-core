@@ -49,11 +49,12 @@ module.exports = async (params, reply, user) =>
 			file.folder = null;
 		} else {
 			folder = await DriveFolder
-				.findOne({ _id: folderId });
+				.findOne({
+					_id: folderId,
+					user: user._id
+				});
 
 			if (folder === null) {
-				return reject('folder-not-found');
-			} else if (folder.user.toString() !== user._id.toString()) {
 				return reject('folder-not-found');
 			}
 
