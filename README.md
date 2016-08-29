@@ -7,7 +7,8 @@ Misskey Core
 
 An api server of *Misskey*.
 
-## Required
+Required
+--------
 * Node.js
   * Python (2.7x)
 * MongoDB
@@ -16,12 +17,14 @@ An api server of *Misskey*.
   * Java
 * GraphicsMagick
 
-## Repositories
+Repositories
+------------
 * **misskey-core** ... :round_pushpin: This repository
 * [misskey-web](https://github.com/syuilo/misskey-web) ... Web client Implementation
 * [misskey-file](https://github.com/syuilo/misskey-file) ... Drive file server
 
-## License
+License
+-------
 [MIT](LICENSE)
 
 [mit]:                http://opensource.org/licenses/MIT
