@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Message from '../../models/talk-message';
 import Group from '../../models/talk-group';
+import History from '../../models/talk-history';
 import User from '../../models/user';
 import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/talk-message';
@@ -112,8 +113,10 @@ module.exports = async (params, reply, user) =>
 
 	const message = res.ops[0];
 
+	// Serialize
 	const messageObj = await serialize(message);
 
+	// Reponse
 	reply(messageObj);
 
 	// Publish to stream
@@ -128,6 +131,52 @@ module.exports = async (params, reply, user) =>
 			body: {
 				text: message.text
 			}
+		});
+	}
+
+	// 履歴を作成しておく(対人)
+	if (recipient) {
+		// 自分
+		History.updateOne({
+			user: user._id,
+			partner: recipient._id,
+		}, {
+			updated_at: Date.now(),
+			user: user._id,
+			partner: recipient._id,
+			message: message._id
+		}, {
+			upsert: true
+		});
+
+		// 相手
+		History.updateOne({
+			user: recipient._id,
+			partner: user._id,
+		}, {
+			updated_at: Date.now(),
+			user: recipient._id,
+			partner: user._id,
+			message: message._id
+		}, {
+			upsert: true
+		});
+	}
+
+	// 履歴を作成しておく(グループ)
+	if (group) {
+		group.members.forEach(member => {
+			History.updateOne({
+				user: member,
+				group: group._id,
+			}, {
+				updated_at: Date.now(),
+				user: member._id,
+				group: group._id,
+				message: message._id
+			}, {
+				upsert: true
+			});
 		});
 	}
 };
