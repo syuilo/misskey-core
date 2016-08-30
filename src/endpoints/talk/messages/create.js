@@ -139,7 +139,7 @@ module.exports = async (params, reply, user) =>
 		// 自分
 		History.updateOne({
 			user: user._id,
-			partner: recipient._id,
+			partner: recipient._id
 		}, {
 			updated_at: Date.now(),
 			user: user._id,
@@ -152,7 +152,7 @@ module.exports = async (params, reply, user) =>
 		// 相手
 		History.updateOne({
 			user: recipient._id,
-			partner: user._id,
+			partner: user._id
 		}, {
 			updated_at: Date.now(),
 			user: recipient._id,
@@ -168,7 +168,7 @@ module.exports = async (params, reply, user) =>
 		group.members.forEach(member => {
 			History.updateOne({
 				user: member,
-				group: group._id,
+				group: group._id
 			}, {
 				updated_at: Date.now(),
 				user: member._id,
