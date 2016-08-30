@@ -37,9 +37,9 @@ module.exports = async (params, reply, user) =>
 	const from = (page - 1) * size;
 
 	es.search({
-		index: 'users',
+		index: 'misskey',
+		type: 'user',
 		body: {
-			fields: [],
 			size: size,
 			from: from,
 			query: {
@@ -62,7 +62,7 @@ module.exports = async (params, reply, user) =>
 		const users = await User
 			.find({
 				_id: {
-					$in: response.hits.hits.map(hit => hit._id)
+					$in: response.hits.hits.map(hit => new mongo.ObjectID(hit._id))
 				}
 			})
 			.toArray();
