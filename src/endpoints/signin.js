@@ -54,7 +54,9 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 
 		Signin.insert({
 			created_at: Date.now(),
-			user: user._id
+			user: user._id,
+			ip: params.ip,
+			ua: params.ua
 		});
 
 		//event.

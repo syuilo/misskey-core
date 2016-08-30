@@ -107,7 +107,15 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 	}
 
 	authenticate(req).then(ctx => {
+		if (endpoint.webOnly && !ctx.isWeb) {
+			return reply(403, 'ACCESS_DENIED');
+		}
+
 		if (endpoint.login) {
+			if (ctx.user === null) {
+				return reply(401, 'PLZ_SIGNIN');
+			}
+
 			if (endpoint.hasOwnProperty('minInterval')) {
 				detectBriefInterval(ctx);
 			} else if (endpoint.hasOwnProperty('limitDuration') && endpoint.hasOwnProperty('limitMax')) {

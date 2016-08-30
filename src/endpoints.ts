@@ -10,12 +10,13 @@ interface IEndpoint {
 	limitMax?: number;
 	minInterval?: number;
 	withFile?: boolean;
+	webOnly?: boolean;
 }
 
 export default <IEndpoint[]>[
 	{ name: 'meta',   login: false },
-	{ name: 'signin', login: false },
-	{ name: 'signup', login: false },
+	{ name: 'signin', login: false, webOnly: true },
+	{ name: 'signup', login: false, webOnly: true },
 
 	{ name: 'username/available', login: false },
 
