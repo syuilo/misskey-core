@@ -132,8 +132,8 @@ module.exports = async (params, reply, user) =>
 	// Register to search database
 	if (message.text) {
 		es.index({
-			index: 'talk_messages',
-			type: 'message',
+			index: 'misskey',
+			type: 'talk_message',
 			id: message._id.toString(),
 			body: {
 				text: message.text
