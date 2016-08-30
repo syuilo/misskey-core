@@ -68,6 +68,6 @@ module.exports = async (params, reply, user) =>
 			.toArray();
 
 		// serialize
-		reply(await Promise.all(timeline.map(async post => await serialize(post))));
+		reply(await Promise.all(posts.map(async post => await serialize(post))));
 	});
 };
