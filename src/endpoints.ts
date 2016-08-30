@@ -49,6 +49,7 @@ export default <IEndpoint[]>[
 
 	{ name: 'users',                login: false },
 	{ name: 'users/show',           login: false },
+	{ name: 'users/search',         login: false },
 	{ name: 'users/posts',          login: false },
 	{ name: 'users/following',      login: false },
 	{ name: 'users/followers',      login: false },

@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
 import User from '../models/user';
 import serialize from '../serializers/user';
+import es from '../db/elasticsearch';
 
 /**
  * Create an account
@@ -67,5 +68,16 @@ module.exports = async (params, reply, app) =>
 
 	const account = res.ops[0];
 
+	// Response
 	reply(await serialize(account));
+
+	// Create search index
+	es.index({
+		index: 'users',
+		type: 'user',
+		id: account._id.toString(),
+		body: {
+			username: username
+		}
+	});
 };
