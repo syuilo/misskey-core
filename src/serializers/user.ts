@@ -55,6 +55,7 @@ export default (
 	}
 	if (!opts.includeSecrets) {
 		delete _user._web;
+		delete _user._webdata;
 		delete _user.email;
 	}
 

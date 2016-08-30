@@ -19,8 +19,10 @@ export default <IEndpoint[]>[
 
 	{ name: 'username/available', login: false },
 
-	{ name: 'i',                      login: true },
-	{ name: 'i/update',               login: true, limitDuration: day, limitMax: 50 },
+	{ name: 'i',             login: true },
+	{ name: 'i/update',      login: true, limitDuration: day, limitMax: 50 },
+	{ name: 'i/appdata/get', login: true },
+	{ name: 'i/appdata/set', login: true },
 
 	{ name: 'notifications',        login: true },
 	{ name: 'notifications/delete', login: true },
