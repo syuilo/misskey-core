@@ -6,11 +6,33 @@ Linux
 
 ``` shell
 curl -XPOST localhost:9200/misskey -d '{
+	"settings": {
+		"analysis": {
+			"analyzer": {
+				"bigram": {
+					"tokenizer": "bigram_tokenizer"
+				}
+			},
+			"tokenizer": {
+				"bigram_tokenizer": {
+					"type": "nGram",
+					"min_gram": 2,
+					"max_gram": 2,
+					"token_chars": [
+						"letter",
+						"digit"
+					]
+				}
+			}
+		}
+	},
 	"mappings": {
 		"user": {
 			"properties": {
 				"username": {
-					"type": "string"
+					"type": "string",
+					"index": "analyzed",
+					"analyzer": "bigram"
 				},
 				"name": {
 					"type": "string",
@@ -42,11 +64,33 @@ Windows
 
 ``` shell
 .\curl -XPOST localhost:9200/misskey -d '{
+	\"settings\": {
+		\"analysis\": {
+			\"analyzer\": {
+				\"bigram\": {
+					\"tokenizer\": \"bigram_tokenizer\"
+				}
+			},
+			\"tokenizer\": {
+				\"bigram_tokenizer\": {
+					\"type\": \"nGram\",
+					\"min_gram\": 2,
+					\"max_gram\": 2,
+					\"token_chars\": [
+						\"letter\",
+						\"digit\"
+					]
+				}
+			}
+		}
+	},
 	\"mappings\": {
 		\"user\": {
 			\"properties\": {
 				\"username\": {
-					\"type\": \"string\"
+					\"type\": \"string\",
+					\"index\": \"analyzed\",
+					\"analyzer\": \"bigram\"
 				},
 				\"name\": {
 					\"type\": \"string\",

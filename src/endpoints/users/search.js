@@ -52,6 +52,7 @@ module.exports = async (params, reply, user) =>
 		}
 	}, async (error, response) => {
 		if (error) {
+			console.error(error);
 			return reply(500);
 		}
 
