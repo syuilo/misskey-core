@@ -33,7 +33,9 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 		return reply(400, 'password is required');
 	}
 
-	const user = await User.findOne({ username });
+	const user = await User.findOne({
+		username_lower: username.toLowerCase()
+	});
 
 	if (user === null) {
 		return reply(404, 'user not found');

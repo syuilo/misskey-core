@@ -20,12 +20,16 @@ module.exports = async (params, res) =>
 		return res(400, 'username-is-required');
 	}
 
-	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
+	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
 		return res(400, 'invalid-username');
 	}
 
 	const exist = await User
-		.count({username}, {limit: 1});
+		.count({
+			username_lower: username.toLowerCase()
+		}, {
+			limit: 1
+		});
 
 	res({
 		available: exist === 0

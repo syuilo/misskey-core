@@ -47,6 +47,7 @@ export default (
 
 	_user.id = _user._id;
 	delete _user._id;
+	delete _user.username_lower;
 
 	// Remove private properties
 	delete _user.password;

@@ -25,7 +25,7 @@ module.exports = async (params, reply, app) =>
 	}
 
 	// Validate username
-	if (!/^[a-z0-9\-]{3,20}$/.test(username)) {
+	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
 		return reply(400, 'invalid username');
 	}
 
@@ -61,7 +61,8 @@ module.exports = async (params, reply, app) =>
 		password: hash,
 		posts_count: 0,
 		drive_capacity: 1073741824, // 1GB
-		username: username
+		username: username,
+		username_lower: username.toLowerCase()
 	});
 
 	const account = res.ops[0];
