@@ -137,11 +137,12 @@ export default (
 
 	// Register to search database
 	es.index({
-		index: 'drive_files',
-		type: 'file',
+		index: 'misskey',
+		type: 'drive_file',
 		id: file._id.toString(),
 		body: {
-			name: file.name
+			name: file.name,
+			user: user._id.toString()
 		}
 	}, (error, response) => {
 		if (error) {
