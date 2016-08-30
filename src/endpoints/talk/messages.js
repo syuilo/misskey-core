@@ -86,7 +86,7 @@ module.exports = async (params, reply, user) =>
 		return reply(400, 'cannot set since and max');
 	}
 
-	const query = {};
+	let query;
 
 	const sort = {
 		created_at: -1
