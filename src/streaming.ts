@@ -41,7 +41,6 @@ export default function (server: any): void {
 		});
 
 		connection.on('close', () => {
-			console.log('CLOSED');
 			subscriber.unsubscribe();
 			subscriber.quit();
 		});
