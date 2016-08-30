@@ -73,7 +73,7 @@ module.exports = async (params, reply, app) =>
 
 	// Create search index
 	es.index({
-		index: 'users',
+		index: 'misskey',
 		type: 'user',
 		id: account._id.toString(),
 		body: {

@@ -4,8 +4,8 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Post from '../../models/post';
-import serialize from '../../serializers/post';
+import User from '../../models/user';
+import serialize from '../../serializers/user';
 import es from '../../db/elasticsearch';
 
 const size = 10;
@@ -37,14 +37,14 @@ module.exports = async (params, reply, user) =>
 	const from = (page - 1) * size;
 
 	es.search({
-		index: 'misskey',
-		type: 'post',
+		index: 'users',
 		body: {
+			fields: [],
 			size: size,
 			from: from,
 			query: {
 				simple_query_string: {
-					fields: ['text'],
+					fields: ['username', 'name', 'bio'],
 					query: query,
 					default_operator: 'and'
 				}
@@ -59,15 +59,15 @@ module.exports = async (params, reply, user) =>
 			return reply([]);
 		}
 
-		const posts = await Post
+		const users = await User
 			.find({
 				_id: {
-					$in: response.hits.hits.map(hit => new mongo.ObjectID(hit._id))
+					$in: response.hits.hits.map(hit => hit._id)
 				}
 			})
 			.toArray();
 
 		// serialize
-		reply(await Promise.all(posts.map(async post => await serialize(post))));
+		reply(await Promise.all(users.map(async user => await serialize(user))));
 	});
 };

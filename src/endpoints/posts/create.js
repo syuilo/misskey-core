@@ -101,29 +101,29 @@ module.exports = async (params, reply, user, app) =>
 		replyTo = null;
 	}
 
-	// Init 'files' parameter
-	let files = params.files;
-	let fileEntities = [];
-	if (files !== undefined && files !== null) {
-		files = files.split(',');
+	// Init 'images' parameter
+	let images = params.images;
+	let files = [];
+	if (images !== undefined && images !== null) {
+		images = images.split(',');
 
-		if (files.length === 0) {
-			files = null;
-		} else if (files.length > maxFileLength) {
-			return reply(400, 'too many files');
+		if (images.length === 0) {
+			images = null;
+		} else if (images.length > maxFileLength) {
+			return reply(400, 'too many images');
 		}
 
-		if (files !== null) {
+		if (images !== null) {
 			// 重複チェック
-			files = files.filter((x, i, self) => self.indexOf(x) === i);
+			images = images.filter((x, i, self) => self.indexOf(x) === i);
 		}
 
 		// Check file entities
-		for (let i = 0; i < files.length; i++) {
-			const file = files[i];
+		for (let i = 0; i < images.length; i++) {
+			const image = images[i];
 
 			const entity = await DriveFile.findOne({
-				_id: new mongo.ObjectID(file),
+				_id: new mongo.ObjectID(image),
 				user: user._id
 			}, {
 				data: false
@@ -132,7 +132,7 @@ module.exports = async (params, reply, user, app) =>
 			if (entity === null) {
 				return reply(400, 'file not found');
 			} else {
-				fileEntities.push(entity);
+				files.push(entity);
 			}
 		}
 	} else {
@@ -147,7 +147,7 @@ module.exports = async (params, reply, user, app) =>
 	// 投稿を作成
 	const res = await Post.insert({
 		created_at: Date.now(),
-		files: files ? fileEntities.map(file => file._id) : undefined,
+		images: images ? files.map(file => file._id) : undefined,
 		reply_to: replyToEntity !== null ? replyToEntity._id : undefined,
 		text: text,
 		user: user._id
@@ -194,7 +194,7 @@ module.exports = async (params, reply, user, app) =>
 		// Register to search database
 		if (post.text != null) {
 			es.index({
-				index: 'posts',
+				index: 'misskey',
 				type: 'post',
 				id: post._id.toString(),
 				body: {
