@@ -11,7 +11,7 @@ import es from '../../db/elasticsearch';
 const size = 10;
 
 /**
- * Search a post
+ * Search a user
  *
  * @param {Object} params
  * @param {Object} reply
