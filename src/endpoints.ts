@@ -70,11 +70,11 @@ export default <IEndpoint[]>[
 	{ name: 'posts/timeline',             login: true, limitDuration: 10 * minute, limitMax: 100 },
 
 	{ name: 'talk/history', login: true, limitDuration: hour, limitMax: 1000 },
+	{ name: 'talk/messages', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talk/messages/unread/count', login: true },
 	{ name: 'talk/messages/create', login: true, limitDuration: hour, limitMax: 120, minInterval: second },
 	{ name: 'talk/messages/show', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talk/messages/read', login: true },
-	{ name: 'talk/messages/stream', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talk/messages/delete', login: true, limitDuration: hour, limitMax: 100 },
 	{ name: 'talk/group/create', login: true, limitDuration: day, limitMax: 30 },
 	{ name: 'talk/group/show', login: true },
