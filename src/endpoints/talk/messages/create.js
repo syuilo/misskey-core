@@ -32,7 +32,7 @@ module.exports = async (params, reply, user) =>
 	let recipient = params.user;
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
-			_id: new mongo.ObjectID(recipient),
+			_id: new mongo.ObjectID(recipient)
 		});
 
 		if (recipient === null) {
@@ -46,11 +46,18 @@ module.exports = async (params, reply, user) =>
 	let group = params.group;
 	if (group !== undefined && group !== null) {
 		group = await Group.findOne({
-			_id: new mongo.ObjectID(group),
+			_id: new mongo.ObjectID(group)
 		});
 
 		if (group === null) {
 			return reply(400, 'group not found');
+		}
+
+		// このグループのメンバーじゃなかったらreject
+		if (group.members
+				.map(member => member.toString())
+				.indexOf(user._id.toString()) === -1) {
+			return reply(403, 'access denied');
 		}
 	} else {
 		group = null;
