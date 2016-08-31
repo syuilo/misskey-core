@@ -1,5 +1,6 @@
 import * as redis from 'redis';
 import Following from './models/following';
+import TalkGroup from './models/talk-group';
 import config from './config';
 
 class MisskeyEvent {
@@ -37,6 +38,25 @@ class MisskeyEvent {
 		followers.forEach(following => {
 			this.userstream(following.follower, 'post', post);
 		});
+	}
+
+	public async publishTalkMessage(messageRaw: any, messageObj: any): Promise<void> {
+		// 自分のストリーム
+		this.userstream(messageRaw.user, 'talk_message', messageObj);
+
+		if (messageRaw.recipient) {
+			// 相手のストリーム
+			this.userstream(messageRaw.recipient, 'talk_message', messageObj);
+		} else if (messageRaw.group) {
+			const group = await TalkGroup.findOne({
+				_id: messageRaw.group
+			});
+
+			// メンバーのストリーム
+			group.members.forEach(member => {
+				this.userstream(member, 'talk_message', messageObj);
+			});
+		}
 	}
 
 	public async driveFileCreated(userId: string, file: any): Promise<void> {
