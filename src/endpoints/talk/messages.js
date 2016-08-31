@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Message from '../../models/talk-message';
 import Group from '../../models/talk-group';
+import User from '../../models/user';
 import serialize from '../../serializers/talk-message';
 
 /**
