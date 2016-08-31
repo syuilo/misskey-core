@@ -4,14 +4,14 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Message from '../../models/talk-message';
-import Group from '../../models/talk-group';
-import History from '../../models/talk-history';
-import User from '../../models/user';
-import DriveFile from '../../models/drive-file';
-import serialize from '../../serializers/talk-message';
-import event from '../../event';
-import es from '../../db/elasticsearch';
+import Message from '../../../models/talk-message';
+import Group from '../../../models/talk-group';
+import History from '../../../models/talk-history';
+import User from '../../../models/user';
+import DriveFile from '../../../models/drive-file';
+import serialize from '../../../serializers/talk-message';
+import event from '../../../event';
+import es from '../../../db/elasticsearch';
 
 /**
  * 最大文字数
@@ -127,7 +127,7 @@ module.exports = async (params, reply, user) =>
 	reply(messageObj);
 
 	// Publish to stream
-	event.publishTalkMessage(user._id, messageObj);
+	event.publishTalkMessage(message, messageObj);
 
 	// Register to search database
 	if (message.text) {
