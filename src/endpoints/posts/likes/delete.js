@@ -4,11 +4,12 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Favorite from '../../models/favorite';
-import Post from '../../models/post';
+import Like from '../../../models/like';
+import Post from '../../../models/post';
+//import event from '../../../event';
 
 /**
- * Favorite a post
+ * Unlike a post
  *
  * @param {Object} params
  * @param {Object} reply
@@ -23,7 +24,7 @@ module.exports = async (params, reply, user) =>
 		return reply(400, 'post is required');
 	}
 
-	// Get favoritee
+	// Get likee
 	const post = await Post.findOne({
 		_id: new mongo.ObjectID(postId)
 	});
@@ -32,25 +33,28 @@ module.exports = async (params, reply, user) =>
 		return reply(404, 'post not found');
 	}
 
-	// Check arleady favorited
-	const exist = await Favorite.findOne({
+	// Check arleady liked
+	const exist = await Like.findOne({
 		post: post._id,
 		user: user._id
 	});
 
-	if (exist !== null) {
-		return reply(400, 'already favorited');
+	if (exist === null) {
+		return reply(400, 'already not liked');
 	}
 
-	// Create favorite
-	const res = await Favorite.insert({
-		created_at: Date.now(),
-		post: post._id,
-		user: user._id
+	// Delete like
+	const res = await Like.deleteOne({
+		_id: exist._id
 	});
-
-	const favorite = res.ops[0];
 
 	// Send response
 	reply();
+
+	// Decrement likes count
+	Post.updateOne({ _id: post._id }, {
+		$inc: {
+			likes_count: -1
+		}
+	});
 };

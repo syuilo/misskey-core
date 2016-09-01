@@ -37,36 +37,20 @@ const maxFileLength = 4;
 module.exports = async (params, reply, user, app) =>
 {
 	// Init 'repost' parameter
-	const repost = params.repost;
+	let repost = params.repost;
 	if (repost !== undefined && repost !== null) {
 		// Get repostee
-		const repostee = await Post.findOne({
+		repost = await Post.findOne({
 			_id: new mongo.ObjectID(repost)
 		});
 
-		if (repostee === null) {
+		if (repost === null) {
 			return reply(404, 'repostee is not found');
-		} else if (repostee.hasOwnProperty('repost')) {
+		} else if (repost.repost && !repost.text && !repost.images) {
 			return reply(400, 'cannot repost from repost');
 		}
-
-		// Repostを作成
-		const res = await Post.insert({
-			created_at: Date.now(),
-			repost: repostee._id,
-			user: user._id
-		});
-
-		const post = res.ops[0];
-
-		// Update repostee status
-		Post.updateOne({ _id: repostee._id }, {
-			$set: {
-				repost_count: repostee.repost_count + 1 || 1
-			}
-		});
-
-		return created(post);
+	} else {
+		repost = null;
 	}
 
 	// Init 'text' parameter
@@ -86,15 +70,14 @@ module.exports = async (params, reply, user, app) =>
 
 	// Init 'reply_to' parameter
 	let replyTo = params.reply_to;
-	let replyToEntity = null;
 	if (replyTo !== undefined && replyTo !== null) {
-		replyToEntity = await Post.findOne({
+		replyTo = await Post.findOne({
 			_id: new mongo.ObjectID(replyTo)
 		});
 
-		if (replyToEntity === null) {
+		if (replyTo === null) {
 			return reply(404, 'reply to post is not found');
-		} else if (replyToEntity.hasOwnProperty('repost')) {
+		} else if (replyTo.hasOwnProperty('repost')) {
 			return reply(400, 'cannot reply to repost');
 		}
 	} else {
@@ -148,60 +131,67 @@ module.exports = async (params, reply, user, app) =>
 	const res = await Post.insert({
 		created_at: Date.now(),
 		images: images ? files.map(file => file._id) : undefined,
-		reply_to: replyToEntity !== null ? replyToEntity._id : undefined,
+		reply_to: replyTo ? replyTo._id : undefined,
+		repost: repost ? repost._id : undefined,
 		text: text,
 		user: user._id
 	});
 
 	const post = res.ops[0];
 
+	// Serialize
+	const postObj = await serialize(post);
+
+	// Reponse
+	reply(postObj);
+
+	// Publish to stream
+	event.publishPost(user._id, postObj);
+
+	// ハッシュタグ抽出
+	//const hashtags = extractHashtags(text);
+
+	// ハッシュタグをデータベースに登録
+	//registerHashtags(user, hashtags);
+
+	// メンションを抽出してデータベースに登録
+	//savePostMentions(user, post, post.text);
+
+	// ユーザー情報更新
+	User.updateOne({ _id: user._id }, {
+		$inc: {
+			posts_count: 1
+		}
+	});
+
 	// Update replyee status
-	if (replyToEntity !== null) {
-		Post.updateOne({ _id: replyToEntity._id }, {
-			$set: {
-				replies_count: replyToEntity.replies_count + 1 || 1
+	if (replyTo) {
+		Post.updateOne({ _id: replyTo._id }, {
+			$inc: {
+				replies_count: 1
 			}
 		});
 	}
 
-	created(post);
-
-	async function created(post) {
-		user.posts_count++;
-		post.user = user;
-
-		const postObj = await serialize(post);
-
-		reply(postObj);
-
-		// Publish to stream
-		event.publishPost(user._id, postObj);
-
-		// ハッシュタグ抽出
-		//const hashtags = extractHashtags(text);
-
-		// ハッシュタグをデータベースに登録
-		//registerHashtags(user, hashtags);
-
-		// メンションを抽出してデータベースに登録
-		//savePostMentions(user, post, post.text);
-
-		// ユーザー情報更新
-		User.updateOne({ _id: user._id }, {
-			$set: user
+	if (repost) {
+		// Update repostee status
+		Post.updateOne({ _id: repost._id }, {
+			$inc: {
+				repost_count: 1
+			}
 		});
+	}
 
-		// Register to search database
-		if (post.text != null) {
-			es.index({
-				index: 'misskey',
-				type: 'post',
-				id: post._id.toString(),
-				body: {
-					text: post.text
-				}
-			});
-		}
+	// Register to search database
+	if (post.text != null) {
+		es.index({
+			index: 'misskey',
+			type: 'post',
+			id: post._id.toString(),
+			body: {
+				text: post.text
+			}
+		});
 	}
 
 	async function command(text) {

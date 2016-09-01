@@ -55,20 +55,18 @@ export default <IEndpoint[]>[
 	{ name: 'users/followers',      login: false },
 	{ name: 'users/recommendation', login: true },
 
-	{ name: 'favorites', login: true },
-	{ name: 'favorites/create', login: true, limitDuration: hour, limitMax: 100 },
-	{ name: 'favorites/delete', login: true, limitDuration: hour, limitMax: 100 },
-
 	{ name: 'following/create', login: true, limitDuration: hour, limitMax: 100 },
 	{ name: 'following/delete', login: true, limitDuration: hour, limitMax: 100 },
 
 	{ name: 'posts/show',    login: false },
 	{ name: 'posts/replies', login: false },
 	{ name: 'posts/create',  login: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second, limitKey: 'post' },
-	{ name: 'posts/repost',  login: true, limitDuration: hour, limitMax: 120, minInterval: 0.5 * second, limitKey: 'post' },
 	{ name: 'posts/reposts', login: false },
 	{ name: 'posts/search', login: false },
 	{ name: 'posts/timeline',             login: true, limitDuration: 10 * minute, limitMax: 100 },
+	{ name: 'posts/likes', login: true },
+	{ name: 'posts/likes/create', login: true, limitDuration: hour, limitMax: 100 },
+	{ name: 'posts/likes/delete', login: true, limitDuration: hour, limitMax: 100 },
 
 	{ name: 'talk/history', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talk/messages', login: true, limitDuration: hour, limitMax: 1000 },
