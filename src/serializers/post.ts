@@ -50,9 +50,9 @@ const self = (
 	// Populate user
 	_post.user = await serializeUser(_post.user, me);
 
-	if (_post.files) {
-		// Populate files
-		_post.files = await Promise.all(_post.files.map(async (file: any) =>
+	if (_post.images) {
+		// Populate images
+		_post.images = await Promise.all(_post.images.map(async (file) =>
 			await serializeDriveFile(file)
 		));
 	}
