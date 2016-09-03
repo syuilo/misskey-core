@@ -59,6 +59,10 @@ class MisskeyEvent {
 		}
 	}
 
+	public async notification(notification: any): Promise<void> {
+		this.userstream(notification.user, 'notification', notification);
+	}
+
 	public async driveFileCreated(userId: string, file: any): Promise<void> {
 		this.userstream(userId, 'drive_file_created', file);
 	}

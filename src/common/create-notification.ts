@@ -2,22 +2,21 @@ import Notification from '../models/notification';
 import event from '../event';
 
 export default (
-	app: any,
 	userId: string,
 	type: string,
 	content: any
-) => new Promise<any>((resolve, reject) => {
-	Notification.create({
-		app: app !== null ? app.id : null,
+) => new Promise<any>(async (resolve, reject) => {
+
+	const res = await Notification.insert({
+		created_at: Date.now(),
 		user: userId,
 		type: type,
 		content: content
-	}, (createErr, createdNotification) => {
-		if (createErr !== null) {
-			reject(createErr);
-		} else {
-			resolve(createdNotification);
-			event.publishNotification(createdNotification);
-		}
 	});
+
+	const notification = res.ops[0];
+
+	resolve(notification);
+
+	event.notification(notification);
 });
