@@ -41,7 +41,7 @@ module.exports = async (params, reply, user) =>
 	}
 
 	const query = {
-		user: user._id
+		i: user._id
 	};
 
 	const sort = {
