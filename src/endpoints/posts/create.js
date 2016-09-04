@@ -118,9 +118,9 @@ module.exports = async (params, reply, user, app) =>
 		files = null;
 	}
 
-	// テキストが無いかつ添付ファイルも無かったらエラー
-	if (text === null && files === null) {
-		return reply(400, 'text or images is required');
+	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
+	if (text === null && files === null && repost === null) {
+		return reply(400, 'text, images or repost is required');
 	}
 
 	// 投稿を作成
