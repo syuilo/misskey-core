@@ -45,8 +45,10 @@ export default (
 		_user = deepcopy(user);
 	}
 
+	// Rename _id to id
 	_user.id = _user._id;
 	delete _user._id;
+
 	delete _user.username_lower;
 
 	// Remove private properties

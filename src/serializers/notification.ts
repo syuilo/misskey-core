@@ -32,19 +32,27 @@ export default (notification: any) => new Promise<Object>(async (resolve, reject
 		_notification = deepcopy(notification);
 	}
 
-	const i = _notification.i;
-
+	// Rename _id to id
 	_notification.id = _notification._id;
 	delete _notification._id;
+
+	const i = _notification.i;
 	delete _notification.i;
 
 	switch (_notification.type) {
+
+	case 'follow':
+		// Populate user
+		_notification.user = await serializeUser(_notification.user, i);
+		break;
+
 	case 'like':
 		// Populate user
 		_notification.user = await serializeUser(_notification.user, i);
 		// Populate post
 		_notification.post = await serializePost(_notification.post, i);
 		break;
+	
 	default:
 		console.error(`Unknown type: ${_notification.type}`);
 		break;

@@ -5,6 +5,7 @@ import Following from './models/following';
 import TalkGroup from './models/talk-group';
 import serializeUser from './serializers/user';
 import serializePost from './serializers/post';
+import serializeNotification from './serializers/notification';
 import config from './config';
 
 class MisskeyEvent {
@@ -23,7 +24,7 @@ class MisskeyEvent {
 		}));
 	}
 
-	private userstream(userId: string, type: string, message: Object): void {
+	private userstream(userId: string | mongo.ObjectID, type: string, message: Object): void {
 		this.publish(`user-stream:${userId}`, type, message);
 	}
 
@@ -71,8 +72,14 @@ class MisskeyEvent {
 		});
 	}
 
+	public async follow(follower: mongo.ObjectID, followee: mongo.ObjectID): Promise<void> {
+		this.userstream(followee, 'follow', {
+			user: await serializeUser(follower)
+		});
+	}
+
 	public async notify(notification: any): Promise<void> {
-		this.userstream(notification.i, 'notification', notification);
+		this.userstream(notification.i, 'notification', await serializeNotification(notification));
 	}
 
 	public async driveFileCreated(userId: string, file: any): Promise<void> {

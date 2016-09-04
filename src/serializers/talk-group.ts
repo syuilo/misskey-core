@@ -43,6 +43,7 @@ export default (
 		_group = deepcopy(group);
 	}
 
+	// Rename _id to id
 	_group.id = _group._id;
 	delete _group._id;
 

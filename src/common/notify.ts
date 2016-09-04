@@ -1,6 +1,5 @@
 import * as mongo from 'mongodb';
 import Notification from '../models/notification';
-import serialize from '../serializers/notification';
 import event from '../event';
 
 export default (
@@ -19,5 +18,5 @@ export default (
 
 	resolve(notification);
 
-	event.notify(await serialize(notification));
+	event.notify(notification);
 });

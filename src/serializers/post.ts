@@ -44,6 +44,7 @@ const self = (
 		_post = deepcopy(post);
 	}
 
+	// Rename _id to id
 	_post.id = _post._id;
 	delete _post._id;
 

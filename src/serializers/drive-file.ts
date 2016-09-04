@@ -46,8 +46,10 @@ const self = (
 		_file = deepcopy(file);
 	}
 
+	// Rename _id to id
 	_file.id = _file._id;
 	delete _file._id;
+
 	delete _file.data;
 
 	_file.url = config.drive.url + '/' + _file.id + '/' + _file.name;

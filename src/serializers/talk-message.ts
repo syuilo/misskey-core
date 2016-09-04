@@ -45,6 +45,7 @@ export default (
 		_message = deepcopy(message);
 	}
 
+	// Rename _id to id
 	_message.id = _message._id;
 	delete _message._id;
 

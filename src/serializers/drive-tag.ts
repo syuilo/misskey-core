@@ -28,6 +28,7 @@ const self = (
 		_tag = deepcopy(tag);
 	}
 
+	// Rename _id to id
 	_tag.id = _tag._id;
 	delete _tag._id;
 

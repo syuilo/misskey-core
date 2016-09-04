@@ -36,6 +36,7 @@ const self = (
 		_folder = deepcopy(folder);
 	}
 
+	// Rename _id to id
 	_folder.id = _folder._id;
 	delete _folder._id;
 

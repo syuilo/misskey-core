@@ -6,7 +6,7 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import Following from '../../models/following';
-import serialize from '../../serializers/following';
+import notify from '../../common/notify';
 import event from '../../event';
 
 /**
@@ -52,31 +52,34 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// Create following
-	const res = await Following.insert({
+	await Following.insert({
 		created_at: Date.now(),
 		follower: follower._id,
 		followee: followee._id
 	});
 
-	const following = res.ops[0];
-
-	follower.following_count++;
-	following.follower = follower;
-
-	followee.followers_count++;
-	following.followee = followee;
-
 	// Send response
-	reply(await serialize(following));
+	reply();
 
-	// ユーザー情報更新
-	User.updateOne({_id: follower._id}, {
-		$set: follower
+	// Increment following count
+	User.updateOne({ _id: follower._id }, {
+		$inc: {
+			following_count: 1
+		}
 	});
-	User.updateOne({_id: followee._id}, {
-		$set: followee
+
+	// Increment followers count
+	User.updateOne({ _id: followee._id }, {
+		$inc: {
+			followers_count: 1
+		}
 	});
 
 	// Publish to stream
-	event.publishFollow(followee._id, following);
+	event.follow(follower._id, followee._id);
+
+	// Notify
+	notify(followee._id, 'follow', {
+		user: follower._id
+	});
 };
