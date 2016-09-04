@@ -132,8 +132,8 @@ export default (
 	// Serialize
 	const fileObj = await serialize(file);
 
-	// Publish to stream
-	event.driveFileCreated(user._id, fileObj);
+	// Publish drive_file_created event
+	event(user._id, 'drive_file_created', fileObj);
 
 	// Register to search database
 	es.index({

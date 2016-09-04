@@ -6,12 +6,14 @@
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import User from '../../models/user';
+import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/post';
 //import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
 import createFile from '../../common/add-file-to-drive';
+import notify from '../../common/notify';
 import event from '../../event';
 import es from '../../db/elasticsearch';
 
@@ -141,19 +143,22 @@ module.exports = async (params, reply, user, app) =>
 	// Reponse
 	reply(postObj);
 
-	// Publish to stream
-	event.publishPost(user._id, postObj);
+	// 自分のストリーム
+	event(user._id, 'post', postObj);
 
-	// ハッシュタグ抽出
-	//const hashtags = extractHashtags(text);
+	const followers = await Following
+		.find({ followee: user._id }, {
+			follower: true,
+			_id: false
+		})
+		.toArray();
 
-	// ハッシュタグをデータベースに登録
-	//registerHashtags(user, hashtags);
+	// 自分のフォロワーのストリーム
+	followers.forEach(following => {
+		event(following.follower, 'post', postObj);
+	});
 
-	// メンションを抽出してデータベースに登録
-	//savePostMentions(user, post, post.text);
-
-	// ユーザー情報更新
+	// Increment my posts count
 	User.updateOne({ _id: user._id }, {
 		$inc: {
 			posts_count: 1
@@ -176,6 +181,14 @@ module.exports = async (params, reply, user, app) =>
 				repost_count: 1
 			}
 		});
+
+		// Publish event
+		event(repost.user, 'repost', postObj);
+
+		// Notify
+		notify(repost.user, 'repost', {
+			post: post._id
+		});
 	}
 
 	// Register to search database
@@ -189,6 +202,15 @@ module.exports = async (params, reply, user, app) =>
 			}
 		});
 	}
+
+	// ハッシュタグ抽出
+	//const hashtags = extractHashtags(text);
+
+	// ハッシュタグをデータベースに登録
+	//registerHashtags(user, hashtags);
+
+	// メンションを抽出してデータベースに登録
+	//savePostMentions(user, post, post.text);
 
 	async function command(text) {
 		const separator = ' ';

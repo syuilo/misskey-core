@@ -72,6 +72,6 @@ module.exports = async (params, reply, user) =>
 	// Response
 	reply(fileObj);
 
-	// Publish to stream
-	event.driveFileUpdated(user._id, fileObj);
+	// Publish drive_file_updated event
+	event(user._id, 'drive_file_updated', fileObj);
 };

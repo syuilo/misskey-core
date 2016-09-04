@@ -87,6 +87,6 @@ module.exports = async (params, reply, user) =>
 	// Response
 	reply(folderObj);
 
-	// Publish to stream
-	event.driveFolderUpdated(user._id, folderObj);
+	// Publish drive_folder_updated event
+	event(user._id, 'drive_folder_updated', folderObj);
 };

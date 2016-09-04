@@ -8,6 +8,8 @@ import Like from '../../../models/like';
 import Post from '../../../models/post';
 import notify from '../../../common/notify';
 import event from '../../../event';
+import serializeUser from '../../../serializers/user';
+import serializePost from '../../../serializers/post';
 
 /**
  * Like a post
@@ -61,8 +63,12 @@ module.exports = async (params, reply, user) =>
 	// Send response
 	reply();
 
-	// Publish to stream
-	event.like(user._id, post._id);
+	// Increment likes count
+	Post.updateOne({ _id: post._id }, {
+		$inc: {
+			likes_count: 1
+		}
+	});
 
 	// Notify
 	notify(post.user, 'like', {
@@ -70,10 +76,9 @@ module.exports = async (params, reply, user) =>
 		post: post._id
 	});
 
-	// Increment likes count
-	Post.updateOne({ _id: post._id }, {
-		$inc: {
-			likes_count: 1
-		}
+	// Publish like event
+	event(post.user, 'like', {
+		user: await serializeUser(user),
+		post: await serializePost(post, post.user)
 	});
 };

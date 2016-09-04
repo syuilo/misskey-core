@@ -8,6 +8,7 @@ import User from '../../models/user';
 import Following from '../../models/following';
 import notify from '../../common/notify';
 import event from '../../event';
+import serializeUser from '../../serializers/user';
 
 /**
  * Follow a user
@@ -75,8 +76,10 @@ module.exports = async (params, reply, user) =>
 		}
 	});
 
-	// Publish to stream
-	event.follow(follower._id, followee._id);
+	// Publish follow event
+	event(followee._id, 'follow', {
+		user: await serializeUser(follower)
+	});
 
 	// Notify
 	notify(followee._id, 'follow', {

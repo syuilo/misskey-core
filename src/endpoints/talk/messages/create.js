@@ -126,8 +126,22 @@ module.exports = async (params, reply, user) =>
 	// Reponse
 	reply(messageObj);
 
-	// Publish to stream
-	event.publishTalkMessage(message, messageObj);
+	// 自分のストリーム
+	event(message.user, 'talk_message', messageObj);
+
+	if (message.recipient) {
+		// 相手のストリーム
+		event(message.recipient, 'talk_message', messageObj);
+	} else if (message.group) {
+		const group = await Group.findOne({
+			_id: message.group
+		});
+
+		// メンバーのストリーム
+		group.members.forEach(member => {
+			event(member, 'talk_message', messageObj);
+		});
+	}
 
 	// Register to search database
 	if (message.text) {

@@ -1,6 +1,7 @@
 import * as mongo from 'mongodb';
 import Notification from '../models/notification';
 import event from '../event';
+import serialize from '../serializers/notification';
 
 export default (
 	i: mongo.ObjectID,
@@ -8,6 +9,7 @@ export default (
 	content: any
 ) => new Promise<any>(async (resolve, reject) => {
 
+	// Create notification
 	const res = await Notification.insert(Object.assign({
 		created_at: Date.now(),
 		i: i,
@@ -18,5 +20,6 @@ export default (
 
 	resolve(notification);
 
-	event.notify(notification);
+	// Publish notification event
+	event(notification.i, 'notification', await serialize(notification));
 });
