@@ -1,6 +1,10 @@
+import * as mongo from 'mongodb';
 import * as redis from 'redis';
+import Post from './models/post';
 import Following from './models/following';
 import TalkGroup from './models/talk-group';
+import serializeUser from './serializers/user';
+import serializePost from './serializers/post';
 import config from './config';
 
 class MisskeyEvent {
@@ -59,8 +63,16 @@ class MisskeyEvent {
 		}
 	}
 
-	public async notification(notification: any): Promise<void> {
-		this.userstream(notification.user, 'notification', notification);
+	public async like(userId: mongo.ObjectID, postId: mongo.ObjectID): Promise<void> {
+		const post = await Post.findOne({ _id: postId });
+		this.userstream(post.user, 'like', {
+			user: await serializeUser(userId),
+			post: await serializePost(post, post.user)
+		});
+	}
+
+	public async notify(notification: any): Promise<void> {
+		this.userstream(notification.i, 'notification', notification);
 	}
 
 	public async driveFileCreated(userId: string, file: any): Promise<void> {

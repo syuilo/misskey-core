@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
+import notify from '../../../common/notify';
 import event from '../../../event';
 
 /**
@@ -61,7 +62,13 @@ module.exports = async (params, reply, user) =>
 	reply();
 
 	// Publish to stream
-	event.publishLike(user._id, post._id);
+	event.like(user._id, post._id);
+
+	// Notify
+	notify(post.user, 'like', {
+		user: user._id,
+		post: post._id
+	});
 
 	// Increment likes count
 	Post.updateOne({ _id: post._id }, {
