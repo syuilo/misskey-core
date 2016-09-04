@@ -90,16 +90,12 @@ module.exports = async (params, reply, user, app) =>
 	if (images !== undefined && images !== null) {
 		images = images.split(',');
 
-		if (images.length === 0) {
-			images = null;
-		} else if (images.length > maxFileLength) {
+		if (images.length > maxFileLength) {
 			return reply(400, 'too many images');
 		}
 
-		if (images !== null) {
-			// 重複チェック
-			images = images.filter((x, i, self) => self.indexOf(x) === i);
-		}
+		// 重複チェック
+		images = images.filter((x, i, self) => self.indexOf(x) === i);
 
 		// Check file entities
 		for (let i = 0; i < images.length; i++) {
