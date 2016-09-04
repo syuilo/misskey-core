@@ -53,6 +53,11 @@ export default (notification: any) => new Promise<Object>(async (resolve, reject
 		_notification.post = await serializePost(_notification.post, i);
 		break;
 	
+	case 'repost':
+		// Populate post
+		_notification.post = await serializePost(_notification.post, i);
+		break;
+	
 	default:
 		console.error(`Unknown type: ${_notification.type}`);
 		break;
