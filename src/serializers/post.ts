@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import Post from '../models/post';
+import Like from '../models/like';
 import serializeUser from './user';
 import serializeDriveFile from './drive-file';
 const deepcopy = require('deepcopy');
@@ -21,12 +22,14 @@ const self = (
 	post: any,
 	me: any,
 	options?: {
-		serializeReplyTo: boolean
+		serializeReplyTo: boolean,
+		includeIsLiked: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
 	const opts = options || {
-		serializeReplyTo: true
+		serializeReplyTo: true,
+		includeIsLiked: false
 	};
 
 	let _post: any;
@@ -61,13 +64,26 @@ const self = (
 	if (_post.reply_to && opts.serializeReplyTo) {
 		// Populate reply to post
 		_post.reply_to = await self(_post.reply_to, me, {
-			serializeReplyTo: false
+			serializeReplyTo: false,
+			includeIsLiked: false
 		});
 	}
 
 	if (_post.repost) {
 		// Populate repost
-		_post.repost = await self(_post.repost, me);
+		_post.repost = await self(_post.repost, me, opts);
+	}
+
+	if (me && opts.includeIsLiked) {
+		const liked = await Like
+			.count({
+				user: me._id,
+				post: post._id
+			}, {
+				limit: 1
+			});
+
+		_post.is_liked = liked === 1;
 	}
 
 	resolve(_post);

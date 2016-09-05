@@ -12,9 +12,10 @@ import serialize from '../../serializers/post';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, user) =>
 {
 	const postId = params.post_id;
 
@@ -32,5 +33,8 @@ module.exports = async (params, reply) =>
 	}
 
 	// serialize
-	reply(await serialize(post));
+	reply(await serialize(post, user, {
+		serializeReplyTo: true,
+		includeIsLiked: true
+	}));
 };
