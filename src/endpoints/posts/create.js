@@ -38,23 +38,6 @@ const maxFileLength = 4;
  */
 module.exports = async (params, reply, user, app) =>
 {
-	// Init 'repost' parameter
-	let repost = params.repost;
-	if (repost !== undefined && repost !== null) {
-		// Get repostee
-		repost = await Post.findOne({
-			_id: new mongo.ObjectID(repost)
-		});
-
-		if (repost === null) {
-			return reply(404, 'repostee is not found');
-		} else if (repost.repost && !repost.text && !repost.images) {
-			return reply(400, 'cannot repost from repost');
-		}
-	} else {
-		repost = null;
-	}
-
 	// Init 'text' parameter
 	let text = params.text;
 	if (text !== undefined && text !== null) {
@@ -68,22 +51,6 @@ module.exports = async (params, reply, user, app) =>
 		}
 	} else {
 		text = null;
-	}
-
-	// Init 'reply_to' parameter
-	let replyTo = params.reply_to;
-	if (replyTo !== undefined && replyTo !== null) {
-		replyTo = await Post.findOne({
-			_id: new mongo.ObjectID(replyTo)
-		});
-
-		if (replyTo === null) {
-			return reply(404, 'reply to post is not found');
-		} else if (replyTo.hasOwnProperty('repost')) {
-			return reply(400, 'cannot reply to repost');
-		}
-	} else {
-		replyTo = null;
 	}
 
 	// Init 'images' parameter
@@ -103,6 +70,7 @@ module.exports = async (params, reply, user, app) =>
 		for (let i = 0; i < images.length; i++) {
 			const image = images[i];
 
+			// Get drive file
 			const entity = await DriveFile.findOne({
 				_id: new mongo.ObjectID(image),
 				user: user._id
@@ -118,6 +86,63 @@ module.exports = async (params, reply, user, app) =>
 		}
 	} else {
 		files = null;
+	}
+
+	// Init 'repost' parameter
+	let repost = params.repost;
+	if (repost !== undefined && repost !== null) {
+		// Get repostee
+		repost = await Post.findOne({
+			_id: new mongo.ObjectID(repost)
+		});
+
+		if (repost === null) {
+			return reply(404, 'repostee is not found');
+		} else if (repost.repost && !repost.text && !repost.images) {
+			return reply(400, 'cannot repost from repost');
+		}
+
+		// Get recently post
+		const latestPost = await Post.findOne({
+			user: user._id
+		}, {}, {
+			sort: {
+				_id: -1
+			}
+		});
+
+		// 直近と同じRepost対象かつ引用じゃなかったらエラー
+		if (latestPost &&
+				latestPost.repost &&
+				latestPost.repost.toString() === repost._id.toString() &&
+				text === null && files === null) {
+			return reply(400, '二重Repostです(NEED TRANSLATE)');
+		}
+
+		// 直近がRepost対象かつ引用じゃなかったらエラー
+		if (latestPost &&
+				latestPost._id.toString() === repost._id.toString() &&
+				text === null && files === null) {
+			return reply(400, '二重Repostです(NEED TRANSLATE)');
+		}
+	} else {
+		repost = null;
+	}
+
+	// Init 'reply_to' parameter
+	let replyTo = params.reply_to;
+	if (replyTo !== undefined && replyTo !== null) {
+		replyTo = await Post.findOne({
+			_id: new mongo.ObjectID(replyTo)
+		});
+
+		if (replyTo === null) {
+			return reply(404, 'reply to post is not found');
+		} else if (replyTo.hasOwnProperty('repost')) {
+			return reply(400, 'cannot reply to repost');
+		}
+	} else {
+		replyTo = null;
 	}
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
@@ -175,13 +200,6 @@ module.exports = async (params, reply, user, app) =>
 	}
 
 	if (repost) {
-		// Update repostee status
-		Post.updateOne({ _id: repost._id }, {
-			$inc: {
-				repost_count: 1
-			}
-		});
-
 		// Publish event
 		event(repost.user, 'repost', postObj);
 
@@ -189,6 +207,21 @@ module.exports = async (params, reply, user, app) =>
 		notify(repost.user, 'repost', {
 			post: post._id
 		});
+
+		// 今までで同じ投稿をRepostしているか
+		const existRepost = await Post.findOne({
+			user: user._id,
+			repost: repost._id
+		});
+
+		if (existRepost === null) {
+			// Update repostee status
+			Post.updateOne({ _id: repost._id }, {
+				$inc: {
+					repost_count: 1
+				}
+			});
+		}
 	}
 
 	// Register to search database
