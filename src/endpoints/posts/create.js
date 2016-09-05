@@ -211,7 +211,10 @@ module.exports = async (params, reply, user, app) =>
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
 			user: user._id,
-			repost: repost._id
+			repost: repost._id,
+			_id: {
+				$ne: post._id
+			}
 		});
 
 		if (existRepost === null) {
