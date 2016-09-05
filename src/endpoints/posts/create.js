@@ -138,7 +138,10 @@ module.exports = async (params, reply, user, app) =>
 
 		if (replyTo === null) {
 			return reply(404, 'reply to post is not found');
-		} else if (replyTo.hasOwnProperty('repost')) {
+		}
+
+		// 返信対象が引用でないRepostだったらエラー
+		if (replyTo.repost && !replyTo.text && !replyTo.images) {
 			return reply(400, 'cannot reply to repost');
 		}
 	} else {
