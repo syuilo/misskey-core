@@ -47,6 +47,8 @@ const self = (
 		_post = deepcopy(post);
 	}
 
+	const id = _post._id;
+
 	// Rename _id to id
 	_post.id = _post._id;
 	delete _post._id;
@@ -74,11 +76,12 @@ const self = (
 		_post.repost = await self(_post.repost, me, opts);
 	}
 
+	// Check is liked
 	if (me && opts.includeIsLiked) {
 		const liked = await Like
 			.count({
 				user: me._id,
-				post: post._id
+				post: id
 			}, {
 				limit: 1
 			});
