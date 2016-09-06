@@ -24,6 +24,7 @@ module.exports = async (params, reply, user) =>
 		return reply(400, 'folder is required');
 	}
 
+	// Get folder
 	const folder = await DriveFolder
 		.findOne({
 			_id: new mongo.ObjectID(folderId),
@@ -45,6 +46,7 @@ module.exports = async (params, reply, user) =>
 		if (parentId === 'null') {
 			folder.folder = null;
 		} else {
+			// Get parent folder
 			parent = await DriveFolder
 				.findOne({
 					_id: parentId,
@@ -55,6 +57,7 @@ module.exports = async (params, reply, user) =>
 				return reply(404, 'parent-folder-not-found');
 			}
 
+			// 再帰しないかチェック
 			async function checkCircle(f) {
 				f = await DriveFolder.findOne({ _id: f }, { _id: true, folder: true });
 				if (f._id.toString() === folder._id.toString()) {
@@ -67,7 +70,6 @@ module.exports = async (params, reply, user) =>
 			}
 
 			if (parent.folder !== null) {
-				console.log(await checkCircle(parent.folder));
 				if (await checkCircle(parent.folder)) {
 					return reply(400, 'detected-circular-definition');
 				}
@@ -77,6 +79,7 @@ module.exports = async (params, reply, user) =>
 		}
 	}
 
+	// Update
 	DriveFolder.updateOne({ _id: folder._id }, {
 		$set: folder
 	});
