@@ -60,5 +60,7 @@ module.exports = async (params, reply) =>
 	}
 
 	// serialize
-	reply(await Promise.all(favorites.map(async favorite => await serialize(favorite.post))));
+	reply(await Promise.all(favorites.map(async favorite =>
+		await serialize(favorite.post)
+	)));
 };
