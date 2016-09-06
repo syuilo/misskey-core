@@ -25,7 +25,7 @@ export default <IEndpoint[]>[
 	{ name: 'i/appdata/get', login: true },
 	{ name: 'i/appdata/set', login: true },
 
-	{ name: 'notifications',        login: true },
+	{ name: 'i/notifications',        login: true },
 	{ name: 'notifications/delete', login: true },
 	{ name: 'notifications/clear',  login: true },
 
@@ -67,6 +67,8 @@ export default <IEndpoint[]>[
 	{ name: 'posts/likes', login: true },
 	{ name: 'posts/likes/create', login: true, limitDuration: hour, limitMax: 100 },
 	{ name: 'posts/likes/delete', login: true, limitDuration: hour, limitMax: 100 },
+	{ name: 'posts/favorites/create', login: true, limitDuration: hour, limitMax: 100 },
+	{ name: 'posts/favorites/delete', login: true, limitDuration: hour, limitMax: 100 },
 
 	{ name: 'talk/history', login: true, limitDuration: hour, limitMax: 1000 },
 	{ name: 'talk/messages', login: true, limitDuration: hour, limitMax: 1000 },
