@@ -23,6 +23,7 @@ module.exports = async (params, reply, user) =>
 		return reply(400, 'folder is required');
 	}
 
+	// Get folder
 	const folder = await DriveFolder
 		.findOne({
 			_id: new mongo.ObjectID(folderId),

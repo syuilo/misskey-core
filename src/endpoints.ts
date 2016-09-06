@@ -25,9 +25,11 @@ export default <IEndpoint[]>[
 	{ name: 'i/appdata/get', login: true },
 	{ name: 'i/appdata/set', login: true },
 
-	{ name: 'notifications',        login: true },
-	{ name: 'notifications/delete', login: true },
-	{ name: 'notifications/clear',  login: true },
+	{ name: 'notifications',                  login: true },
+	{ name: 'notifications/delete',           login: true },
+	{ name: 'notifications/delete_all',       login: true },
+	{ name: 'notifications/mark_as_read',     login: true },
+	{ name: 'notifications/mark_as_read_all', login: true },
 
 	{ name: 'drive',        login: true },
 	{ name: 'drive/stream',        login: true },
