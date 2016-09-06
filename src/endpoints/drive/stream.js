@@ -40,6 +40,16 @@ module.exports = async (params, reply, user) =>
 		return reply(400, 'cannot set since and max');
 	}
 
+	// Init 'type' parameter
+	let type = params.type;
+	if (type === undefined || type === null) {
+		type = null;
+	} else if (!/^[a-zA-Z\/\-\*]+$/.test(type)) {
+		return reply(400, 'invalid type format');
+	} else {
+		type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
+	}
+
 	// クエリ構築
 	const sort = {
 		created_at: -1
@@ -56,6 +66,9 @@ module.exports = async (params, reply, user) =>
 		query._id = {
 			$lt: new mongo.ObjectID(max)
 		};
+	}
+	if (type !== null) {
+		query.type = type;
 	}
 
 	// クエリ発行
