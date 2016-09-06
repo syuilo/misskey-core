@@ -53,9 +53,13 @@ export default (
 
 	// Remove private properties
 	delete _user.password;
+
+	// 自分だけが見れる
 	if (!opts.includePrivates) {
 		delete _user.drive_capacity;
 	}
+
+	// 公式でしか見れない
 	if (!opts.includeSecrets) {
 		delete _user._web;
 		delete _user._webdata;
@@ -68,7 +72,7 @@ export default (
 
 	_user.banner_url = _user.banner !== null
 		? `${config.drive.url}/${_user.banner}`
-		: `${config.drive.url}/default-banner.jpg`;
+		: null;
 
 	if (!opts.includeProfileImageIds) {
 		delete _user.avatar;
