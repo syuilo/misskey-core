@@ -24,6 +24,7 @@ export default <IEndpoint[]>[
 	{ name: 'i/update',      login: true, limitDuration: day, limitMax: 50 },
 	{ name: 'i/appdata/get', login: true },
 	{ name: 'i/appdata/set', login: true },
+	{ name: 'i/favorites',   login: true },
 
 	{ name: 'i/notifications',                  login: true },
 	{ name: 'notifications/delete',           login: true },
