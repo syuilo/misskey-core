@@ -7,6 +7,7 @@ import * as mongo from 'mongodb';
 import User from '../../models/user';
 import Following from '../../models/following';
 import event from '../../event';
+import serializeUser from '../../serializers/user';
 
 /**
  * Unfollow a user
@@ -71,4 +72,7 @@ module.exports = async (params, reply, user) =>
 			followers_count: -1
 		}
 	});
+
+	// Publish follow event
+	event(follower._id, 'unfollow', await serializeUser(followee, follower));
 };

@@ -77,9 +77,8 @@ module.exports = async (params, reply, user) =>
 	});
 
 	// Publish follow event
-	event(followee._id, 'follow', {
-		user: await serializeUser(follower, followee)
-	});
+	event(follower._id, 'follow', await serializeUser(followee, follower));
+	event(followee._id, 'followed', await serializeUser(follower, followee));
 
 	// Notify
 	notify(followee._id, 'follow', {
