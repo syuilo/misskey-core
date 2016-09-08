@@ -6,7 +6,6 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import Following from '../../models/following';
-import serialize from '../../serializers/following';
 import event from '../../event';
 
 /**
@@ -21,10 +20,10 @@ module.exports = async (params, reply, user) =>
 {
 	const follower = user;
 
-	// Init 'user_id' parameter
-	const userId = params.user_id;
+	// Init 'user' parameter
+	let userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
+		return reply(400, 'user is required');
 	}
 
 	// 自分自身
@@ -56,20 +55,20 @@ module.exports = async (params, reply, user) =>
 		_id: exist._id
 	});
 
-	follower.following_count--;
-	following.follower = follower;
-
-	followee.followers_count--;
-	following.followee = followee;
-
 	// Send response
 	reply();
 
-	// ユーザー情報更新
-	User.updateOne({_id: follower._id}, {
-		$set: follower
+	// Decrement following count
+	User.updateOne({ _id: follower._id }, {
+		$inc: {
+			following_count: -1
+		}
 	});
-	User.updateOne({_id: followee._id}, {
-		$set: followee
+
+	// Decrement followers count
+	User.updateOne({ _id: followee._id }, {
+		$inc: {
+			followers_count: -1
+		}
 	});
 };

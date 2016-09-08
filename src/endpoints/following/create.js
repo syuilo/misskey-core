@@ -22,10 +22,10 @@ module.exports = async (params, reply, user) =>
 {
 	const follower = user;
 
-	// Init 'user_id' parameter
-	let userId = params.user_id;
+	// Init 'user' parameter
+	let userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
+		return reply(400, 'user is required');
 	}
 
 	// 自分自身
@@ -78,7 +78,7 @@ module.exports = async (params, reply, user) =>
 
 	// Publish follow event
 	event(followee._id, 'follow', {
-		user: await serializeUser(follower)
+		user: await serializeUser(follower, followee)
 	});
 
 	// Notify

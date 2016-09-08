@@ -48,7 +48,7 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 			return reply(400, 'incorrect password');
 		}
 
-		reply(await serialize(user, {
+		reply(await serialize(user, null, {
 			includePrivates: true,
 			includeSecrets: isWeb,
 			includeProfileImageIds: isWeb

@@ -20,7 +20,7 @@ const deepcopy = require('deepcopy');
  */
 const self = (
 	post: any,
-	me: any,
+	me?: any,
 	options?: {
 		serializeReplyTo: boolean,
 		includeIsLiked: boolean

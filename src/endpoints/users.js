@@ -11,9 +11,10 @@ import serialize from '../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, me) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -67,5 +68,6 @@ module.exports = async (params, reply) =>
 	}
 
 	// serialize
-	reply(await Promise.all(users.map(async user => await serialize(user))));
+	reply(await Promise.all(users.map(async user =>
+		await serialize(user, me))));
 };

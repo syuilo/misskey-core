@@ -12,10 +12,10 @@ import serialize from '../../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} user
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply, user) =>
+module.exports = async (params, reply, me) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -43,13 +43,13 @@ module.exports = async (params, reply, user) =>
 	// 自分がフォローしているユーザーの関係を取得
 	// SELECT followee
 	const following = await Following
-		.find({ follower: user._id }, { followee: true })
+		.find({ follower: me._id }, { followee: true })
 		.toArray();
 
 	// 自分と自分がフォローしているユーザーのIDのリストを生成
 	const followingIds = following.length !== 0
-		? [...following.map(follow => follow.followee), user._id]
-		: [user._id];
+		? [...following.map(follow => follow.followee), me._id]
+		: [me._id];
 
 	// クエリ構築
 	const sort = {
@@ -84,5 +84,6 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// serialize
-	reply(await Promise.all(users.map(async user => await serialize(user))));
+	reply(await Promise.all(users.map(async user =>
+		await serialize(user, me))));
 };

@@ -15,10 +15,10 @@ const size = 10;
  *
  * @param {Object} params
  * @param {Object} reply
- * @param {Object} user
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply, user) =>
+module.exports = async (params, reply, me) =>
 {
 	// Init 'query' parameter
 	let query = params.query;
@@ -60,15 +60,18 @@ module.exports = async (params, reply, user) =>
 			return reply([]);
 		}
 
+		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+
 		const users = await User
 			.find({
 				_id: {
-					$in: response.hits.hits.map(hit => new mongo.ObjectID(hit._id))
+					$in: hits
 				}
 			})
 			.toArray();
 
 		// serialize
-		reply(await Promise.all(users.map(async user => await serialize(user))));
+		reply(await Promise.all(users.map(async user =>
+			await serialize(user, me))));
 	});
 };

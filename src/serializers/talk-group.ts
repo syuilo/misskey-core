@@ -52,8 +52,8 @@ export default (
 
 	if (opts.populateMembers) {
 		// Populate members
-		_group.members = await Promise.all(_group.members.map(async (member: any) =>
-			await serializeUser(member)
+		_group.members = await Promise.all(_group.members.map(async (member) =>
+			await serializeUser(member, me)
 		));
 	}
 

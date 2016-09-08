@@ -6,17 +6,20 @@
 import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import User from '../models/user';
+import Following from '../models/following';
 import config from '../config';
 
 /**
  * Serialize a user
  *
  * @param {Object} user
+ * @param {Object} me?
  * @param {Object} options?
  * @return {Promise<Object>}
  */
 export default (
 	user: any,
+	me?: any,
 	options?: {
 		includePrivates: boolean,
 		includeSecrets: boolean,
@@ -43,6 +46,15 @@ export default (
 		});
 	} else {
 		_user = deepcopy(user);
+	}
+
+	// me
+	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
+		if (typeof me === 'string') {
+			me = new mongo.ObjectID(me);
+		} else {
+			me = me._id;
+		}
 	}
 
 	// Rename _id to id
@@ -77,6 +89,16 @@ export default (
 	if (!opts.includeProfileImageIds) {
 		delete _user.avatar;
 		delete _user.banner;
+	}
+
+	if (me && me.toString() !== _user.id.toString()) {
+		// フォローしているか
+		const follow = await Following.findOne({
+			follower: me,
+			followee: _user.id
+		});
+
+		_user.is_following = follow !== null;
 	}
 
 	resolve(_user);

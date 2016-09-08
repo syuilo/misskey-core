@@ -133,5 +133,6 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// serialize
-	reply(await Promise.all(messages.map(async message => await serialize(message))));
+	reply(await Promise.all(messages.map(async message =>
+		await serialize(message))));
 };

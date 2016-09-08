@@ -83,5 +83,6 @@ module.exports = async (params, reply) =>
 	}
 
 	// serialize
-	reply(await Promise.all(posts.map(async post => await serialize(post))));
+	reply(await Promise.all(posts.map(async post =>
+		await serialize(post))));
 };

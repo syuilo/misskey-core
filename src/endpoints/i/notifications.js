@@ -72,5 +72,6 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// serialize
-	reply(await Promise.all(notifications.map(async notification => await serialize(notification))));
+	reply(await Promise.all(notifications.map(async notification =>
+		await serialize(notification))));
 };

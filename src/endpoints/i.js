@@ -18,7 +18,7 @@ import serialize from '../serializers/user';
 module.exports = async (params, reply, user, _, isWeb) =>
 {
 	// serialize
-	reply(await serialize(user, {
+	reply(await serialize(user, user, {
 		includePrivates: true,
 		includeSecrets: isWeb,
 		includeProfileImageIds: isWeb

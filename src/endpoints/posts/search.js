@@ -60,15 +60,18 @@ module.exports = async (params, reply, user) =>
 			return reply([]);
 		}
 
+		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
+
 		const posts = await Post
 			.find({
 				_id: {
-					$in: response.hits.hits.map(hit => new mongo.ObjectID(hit._id))
+					$in: hits
 				}
 			})
 			.toArray();
 
 		// serialize
-		reply(await Promise.all(posts.map(async post => await serialize(post))));
+		reply(await Promise.all(posts.map(async post =>
+			await serialize(post))));
 	});
 };

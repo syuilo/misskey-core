@@ -12,9 +12,10 @@ import serialize from '../../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, me) =>
 {
 	// Init 'user_id' parameter
 	let userId = params.user_id;
@@ -34,13 +35,13 @@ module.exports = async (params, reply) =>
 
 	// Lookup user
 	const user = userId !== null
-		? await User.findOne({_id: new mongo.ObjectID(userId)})
-		: await User.findOne({username});
+		? await User.findOne({ _id: new mongo.ObjectID(userId) })
+		: await User.findOne({ username });
 
 	if (user === null) {
 		return reply(404, 'user not found');
 	}
 
 	// Send response
-	reply(await serialize(user));
+	reply(await serialize(user, me));
 };

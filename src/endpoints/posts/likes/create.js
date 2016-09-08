@@ -78,7 +78,7 @@ module.exports = async (params, reply, user) =>
 
 	// Publish like event
 	event(post.user, 'like', {
-		user: await serializeUser(user),
+		user: await serializeUser(user, post.user),
 		post: await serializePost(post, post.user)
 	});
 };

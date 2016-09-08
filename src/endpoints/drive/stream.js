@@ -86,5 +86,6 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// serialize
-	reply(await Promise.all(files.map(async file => await serialize(file))));
+	reply(await Promise.all(files.map(async file =>
+		await serialize(file))));
 };

@@ -45,5 +45,6 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// serialize
-	reply(await Promise.all(folders.map(async folder => await serialize(folder))));
+	reply(await Promise.all(folders.map(async folder =>
+		await serialize(folder))));
 };

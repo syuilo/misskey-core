@@ -5,21 +5,22 @@
  */
 import * as mongo from 'mongodb';
 import Following from '../../models/following';
-import serialize from '../../serializers/following';
+import serialize from '../../serializers/user';
 
 /**
  * Get following users of a user
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, me) =>
 {
-	// Init 'user_id' parameter
-	const userId = params.user_id;
+	// Init 'user' parameter
+	const userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
+		return reply(400, 'user is required');
 	}
 
 	// Init 'limit' parameter
@@ -37,13 +38,16 @@ module.exports = async (params, reply) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
-
-	// 両方指定してたらエラー
-	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+	// Init 'offset' parameter
+	let offset = params.offset;
+	if (offset !== undefined && offset !== null) {
+		offset = parseInt(offset, 10);
+	} else {
+		offset = 0;
 	}
+
+	// Init 'sort' parameter
+	let sort = params.sort || 'desc';
 
 	// Lookup user
 	const user = await User.findOne({_id: new mongo.ObjectID(userId)});
@@ -52,36 +56,23 @@ module.exports = async (params, reply) =>
 		return reply(404, 'user not found');
 	}
 
-	// クエリ構築
-	const sort = {
-		created_at: -1
-	};
-	const query = {
-		follower: user._id
-	};
-	if (since !== null) {
-		sort.created_at = 1;
-		query._id = {
-			$gt: new mongo.ObjectID(since)
-		};
-	} else if (max !== null) {
-		query._id = {
-			$lt: new mongo.ObjectID(max)
-		};
-	}
-
-	// クエリ発行
+	// Get following
 	const following = await Following
-		.find(query, {}, {
+		.find({
+			follower: user._id
+		}, {}, {
 			limit: limit,
-			sort: sort
+			skip: offset,
+			sort: {
+				_id: sort == 'asc' ? 1 : -1
+			}
 		})
-		.toArray();
 
 	if (following.length === 0) {
 		return reply([]);
 	}
 
 	// serialize
-	reply(await Promise.all(following.map(async f => await serialize(f))));
+	reply(await Promise.all(following.map(async f =>
+		await serialize(f.followee, me))));
 };
