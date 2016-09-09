@@ -61,6 +61,7 @@ export default (
 	_user.id = _user._id;
 	delete _user._id;
 
+	delete _user._web;
 	delete _user.username_lower;
 
 	// Remove private properties
@@ -73,7 +74,6 @@ export default (
 
 	// 公式でしか見れない
 	if (!opts.includeSecrets) {
-		delete _user._web;
 		delete _user._webdata;
 		delete _user.email;
 	}
