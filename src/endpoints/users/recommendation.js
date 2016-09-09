@@ -32,12 +32,12 @@ module.exports = async (params, reply, me) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
-
-	// 両方指定してたらエラー
-	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+	// Init 'offset' parameter
+	let offset = params.offset;
+	if (offset !== undefined && offset !== null) {
+		offset = parseInt(offset, 10);
+	} else {
+		offset = 0;
 	}
 
 	// 自分がフォローしているユーザーの関係を取得
@@ -51,31 +51,17 @@ module.exports = async (params, reply, me) =>
 		? [...following.map(follow => follow.followee), me._id]
 		: [me._id];
 
-	// クエリ構築
-	const sort = {
-		created_at: -1
-	};
-	const query = {
-		_id: {
-			$nin: followingIds
-		}
-	};
-	if (since !== null) {
-		sort.created_at = 1;
-		query._id = {
-			$gt: new mongo.ObjectID(since)
-		};
-	} else if (max !== null) {
-		query._id = {
-			$lt: new mongo.ObjectID(max)
-		};
-	}
-
-	// クエリ発行
 	const users = await User
-		.find(query, {}, {
+		.find({
+			_id: {
+				$nin: followingIds
+			}
+		}, {}, {
 			limit: limit,
-			sort: sort
+			skip: offset,
+			sort: {
+				followers_count: -1
+			}
 		})
 		.toArray();
 
