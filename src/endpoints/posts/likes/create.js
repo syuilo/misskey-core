@@ -38,7 +38,7 @@ module.exports = async (params, reply, user) =>
 
 	// Myself
 	if (post.user.toString() === user._id.toString()) {
-		return reply(400, '-need-tranlstae-');
+		return reply(400, '-need-translate-');
 	}
 
 	// Check arleady liked
