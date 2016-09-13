@@ -10,7 +10,7 @@
   "main": "./built/index.js",
   "scripts": {
     "start": "node ./built/index.js",
-    "dts": "dtsm --insight false install",
+    "dtsm": "dtsm --insight false install",
     "build": "gulp build",
     "lint": "gulp lint",
     "test": "gulp test",
