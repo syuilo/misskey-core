@@ -10,13 +10,14 @@
   "main": "./built/index.js",
   "scripts": {
     "start": "node ./built/index.js",
-    "dts": "dtsm --insight false install",
+    "dtsm": "dtsm --insight false install",
     "build": "gulp build",
     "lint": "gulp lint",
     "test": "gulp test",
     "watch": "gulp watch"
   },
   "devDependencies": {
+    "dtsm": "1.1.0",
     "babel-preset-es2015": "6.13.2",
     "babel-preset-stage-3": "6.11.0",
     "event-stream": "3.3.4",
