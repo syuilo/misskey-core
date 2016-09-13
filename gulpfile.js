@@ -64,6 +64,8 @@ gulp.task('test', [
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
-	.pipe(tslint())
-	.pipe(tslint.report('verbose'))
+		.pipe(tslint({
+			formatter: "verbose"
+		}))
+		.pipe(tslint.report())
 );
