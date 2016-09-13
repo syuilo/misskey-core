@@ -17,6 +17,14 @@ Required
   * Java
 * GraphicsMagick
 
+Build
+-----
+1. `git clone https://github.com/syuilo/misskey-core.git`
+2. `cd misskey-core`
+3. `npm install`
+4. `npm run dtsm`
+5. `npm run build`
+
 Repositories
 ------------
 * **misskey-core** ... :round_pushpin: This repository
