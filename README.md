@@ -25,6 +25,10 @@ Build
 4. `npm run dtsm`
 5. `npm run build`
 
+Launch
+------
+`npm start`
+
 Repositories
 ------------
 * **misskey-core** ... :round_pushpin: This repository
