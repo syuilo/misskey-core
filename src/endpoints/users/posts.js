@@ -24,6 +24,14 @@ module.exports = async (params, reply, me) =>
 		return reply(400, 'user is required');
 	}
 
+	// Init 'with_images' parameter
+	let withImages = params.with_images;
+	if (withImages !== undefined && withImages !== null && withImages === 'true') {
+		withImages = true;
+	} else {
+		withImages = false;
+	}
+
 	// Init 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
@@ -71,6 +79,13 @@ module.exports = async (params, reply, me) =>
 	} else if (max !== null) {
 		query._id = {
 			$lt: new mongo.ObjectID(max)
+		};
+	}
+
+	if (withImages) {
+		query.images = {
+			$exists: true,
+			$ne: null
 		};
 	}
 
