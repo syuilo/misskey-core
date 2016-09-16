@@ -97,8 +97,14 @@ export default (
 			follower: me,
 			followee: _user.id
 		});
-
 		_user.is_following = follow !== null;
+
+		// フォローされているか
+		const follow2 = await Following.findOne({
+			follower: _user.id,
+			followee: me
+		});
+		_user.is_followed = follow2 !== null;
 	}
 
 	resolve(_user);
