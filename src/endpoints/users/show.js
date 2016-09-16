@@ -17,8 +17,8 @@ import serialize from '../../serializers/user';
  */
 module.exports = async (params, reply, me) =>
 {
-	// Init 'user_id' parameter
-	let userId = params.user_id;
+	// Init 'id' parameter
+	let userId = params.id;
 	if (userId === undefined || userId === null || userId === '') {
 		userId = null;
 	}
@@ -30,7 +30,7 @@ module.exports = async (params, reply, me) =>
 	}
 
 	if (userId === null && username === null) {
-		return reply(400, 'user_id or username is required', 'EMPTY_QUERY');
+		return reply(400, 'id or username is required', 'EMPTY_QUERY');
 	}
 
 	// Lookup user
