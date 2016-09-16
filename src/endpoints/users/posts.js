@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
+import User from '../../models/user';
 import serialize from '../../serializers/post';
 
 /**
@@ -12,14 +13,15 @@ import serialize from '../../serializers/post';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} me
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, me) =>
 {
-	// Init 'user_id' parameter
-	const userId = params.user_id;
+	// Init 'user' parameter
+	const userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user_id is required');
+		return reply(400, 'user is required');
 	}
 
 	// Init 'limit' parameter
@@ -46,7 +48,9 @@ module.exports = async (params, reply) =>
 	}
 
 	// Lookup user
-	const user = await User.findOne({_id: new mongo.ObjectID(userId)});
+	const user = await User.findOne({
+		_id: new mongo.ObjectID(userId)
+	});
 
 	if (user === null) {
 		return reply(404, 'user not found');
@@ -54,13 +58,13 @@ module.exports = async (params, reply) =>
 
 	// クエリ構築
 	const sort = {
-		created_at: -1
+		_id: -1
 	};
 	const query = {
 		user: user._id
 	};
 	if (since !== null) {
-		sort.created_at = 1;
+		sort._id = 1;
 		query._id = {
 			$gt: new mongo.ObjectID(since)
 		};
@@ -83,6 +87,10 @@ module.exports = async (params, reply) =>
 	}
 
 	// serialize
-	reply(await Promise.all(posts.map(async post =>
-		await serialize(post))));
+	reply(await Promise.all(posts.map(async (post) =>
+		await serialize(post, me, {
+			serializeReplyTo: true,
+			includeIsLiked: true
+		})
+	)));
 };
