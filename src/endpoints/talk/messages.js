@@ -70,9 +70,7 @@ module.exports = async (params, reply, user) =>
 		limit = parseInt(limit, 10);
 
 		// 1 ~ 100 まで
-		if (limit < 1) {
-			return reply(400, 'invalid limit range');
-		} else if (limit > 100) {
+		if (!(1 <= limit && limit <= 100)) {
 			return reply(400, 'invalid limit range');
 		}
 	} else {
