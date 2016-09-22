@@ -152,7 +152,7 @@ export default async function(): Promise<void> {
 		}
 	};
 
-	console.log('Thanks, writing...');
+	console.log('Thanks. Writing the configuration to a file...');
 
 	try {
 		fs.mkdirSync(configDirPath);
