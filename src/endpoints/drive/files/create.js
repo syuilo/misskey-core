@@ -32,7 +32,7 @@ module.exports = async (params, file, reply, user) =>
 			name = null;
 		} else if (name === 'blob') {
 			name = null;
-		} else if (name.length > 100) {
+		} else if (name.length > 128) {
 			return reply(400, 'too long name');
 		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
 			return reply(400, 'invalid name');
