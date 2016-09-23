@@ -1,24 +1,27 @@
 'use strict';
 
-import User from '../models/user';
+import db from './db/mongodb';
 import es from '../db/elasticsearch';
+import config from '../load-config';
 
-User
-.find(query, {}, {
-	limit: limit,
-	sort: sort
-})
-.toArray()
-.then(users => {
-	users.forEach(user => {
-		es.index({
-			index: 'misskey',
-			type: 'user',
-			id: user._id.toString(),
-			body: {
-				name: user.name,
-				username: user.username
-			}
+db(config()).then(db => {
+	db.collection('users')
+	.find(query, {}, {
+		limit: limit,
+		sort: sort
+	})
+	.toArray()
+	.then(users => {
+		users.forEach(user => {
+			es.index({
+				index: 'misskey',
+				type: 'user',
+				id: user._id.toString(),
+				body: {
+					name: user.name,
+					username: user.username
+				}
+			});
 		});
 	});
 });
