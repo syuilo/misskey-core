@@ -1,6 +1,6 @@
 'use strict';
 
-import db from './db/mongodb';
+import db from '../db/mongodb';
 import es from '../db/elasticsearch';
 import config from '../load-config';
 
