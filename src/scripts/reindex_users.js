@@ -4,6 +4,10 @@ import db from '../db/mongodb';
 import es from '../db/elasticsearch';
 import config from '../load-config';
 
+// Init babel
+require('babel-core/register');
+require('babel-polyfill');
+
 db(config()).then(db => {
 	db.collection('users')
 	.find(query, {}, {
