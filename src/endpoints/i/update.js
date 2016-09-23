@@ -59,4 +59,6 @@ module.exports = async (params, reply, user) =>
 
 	// serialize
 	reply(await serialize(user));
+
+	// TODO: 検索インデックス再作成
 };
