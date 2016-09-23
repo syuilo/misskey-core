@@ -1,4 +1,3 @@
-import * as cluster from 'cluster';
 import * as elasticsearch from 'elasticsearch';
 import config from '../config';
 
@@ -16,9 +15,7 @@ client.ping({
 	hello: 'elasticsearch!'
 }, error => {
 	if (error) {
-		console.error('elasticsearch cluster is down!');
-	} else {
-		console.log(`[${cluster.worker.id}] Connected to Elasticsearch`);
+		console.error('elasticsearch is down!');
 	}
 });
 
