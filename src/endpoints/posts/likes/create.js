@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
+import User from '../../../models/user';
 import notify from '../../../common/notify';
 import event from '../../../event';
 import serializeUser from '../../../serializers/user';
@@ -67,6 +68,20 @@ module.exports = async (params, reply, user) =>
 	Post.updateOne({ _id: post._id }, {
 		$inc: {
 			likes_count: 1
+		}
+	});
+
+	// Increment user likes count
+	User.updateOne({ _id: user._id }, {
+		$inc: {
+			likes_count: 1
+		}
+	});
+
+	// Increment user liked count
+	User.updateOne({ _id: post.user }, {
+		$inc: {
+			liked_count: 1
 		}
 	});
 
