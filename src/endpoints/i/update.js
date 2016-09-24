@@ -53,6 +53,12 @@ module.exports = async (params, reply, user) =>
 		user.avatar = new mongo.ObjectID(avatar);
 	}
 
+	// Init 'banner' parameter
+	const banner = params.banner;
+	if (banner !== undefined && banner !== null) {
+		user.banner = new mongo.ObjectID(banner);
+	}
+
 	await User.updateOne({ _id: user._id }, {
 		$set: user
 	});
