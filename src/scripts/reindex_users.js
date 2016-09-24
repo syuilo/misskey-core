@@ -9,11 +9,10 @@ require('babel-core/register');
 require('babel-polyfill');
 
 db(config()).then(db => {
-	db.collection('users')
-	.find(query, {}, {
-		limit: limit,
-		sort: sort
-	})
+	const User = db.collection('users');
+
+	User
+	.find({})
 	.toArray()
 	.then(users => {
 		users.forEach(user => {
