@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
+import es from '../../db/elasticsearch';
 
 /**
  * Update myself
@@ -66,5 +67,14 @@ module.exports = async (params, reply, user) =>
 	// serialize
 	reply(await serialize(user));
 
-	// TODO: 検索インデックス再作成
+	// 検索インデックス更新
+	es.index({
+		index: 'misskey',
+		type: 'user',
+		id: user._id.toString(),
+		body: {
+			name: user.name,
+			bio: user.bio
+		}
+	});
 };
