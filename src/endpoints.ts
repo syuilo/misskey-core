@@ -64,6 +64,7 @@ export default <IEndpoint[]>[
 
 	{ name: 'posts/show',    login: false },
 	{ name: 'posts/replies', login: false },
+	{ name: 'posts/context', login: false },
 	{ name: 'posts/create',  login: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second, limitKey: 'post' },
 	{ name: 'posts/reposts', login: false },
 	{ name: 'posts/search', login: false },
