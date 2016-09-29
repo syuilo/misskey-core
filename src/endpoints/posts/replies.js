@@ -16,9 +16,9 @@ import serialize from '../../serializers/post';
  */
 module.exports = async (params, reply) =>
 {
-	const postId = params.post_id;
+	const postId = params.id;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post_id is required', 'EMPTY_QUERY');
+		return reply(400, 'id is required', 'EMPTY_QUERY');
 	}
 
 	// Init 'limit' parameter
@@ -34,13 +34,16 @@ module.exports = async (params, reply) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
-
-	// 両方指定してたらエラー
-	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+	// Init 'offset' parameter
+	let offset = params.offset;
+	if (offset !== undefined && offset !== null) {
+		offset = parseInt(offset, 10);
+	} else {
+		offset = 0;
 	}
+
+	// Init 'sort' parameter
+	let sort = params.sort || 'desc';
 
 	// Lookup post
 	const post = await Post.findOne({
@@ -51,29 +54,14 @@ module.exports = async (params, reply) =>
 		return reply(404, 'post not found', 'POST_NOT_FOUND');
 	}
 
-	// クエリ構築
-	const sort = {
-		created_at: -1
-	};
-	const query = {
-		reply_to: post._id
-	};
-	if (since !== null) {
-		sort.created_at = 1;
-		query._id = {
-			$gt: new mongo.ObjectID(since)
-		};
-	} else if (max !== null) {
-		query._id = {
-			$lt: new mongo.ObjectID(max)
-		};
-	}
-
 	// クエリ発行
 	const replies = await Post
-		.find(query, {}, {
+		.find({ reply_to: post._id }, {}, {
 			limit: limit,
-			sort: sort
+			skip: offset,
+			sort: {
+				_id: sort == 'asc' ? 1 : -1
+			}
 		})
 		.toArray();
 
