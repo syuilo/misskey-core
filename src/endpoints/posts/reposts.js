@@ -16,9 +16,9 @@ import serialize from '../../serializers/post';
  */
 module.exports = async (params, reply) =>
 {
-	const postId = params.post_id;
+	const postId = params.id;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post_id is required', 'EMPTY_QUERY');
+		return reply(400, 'id is required', 'EMPTY_QUERY');
 	}
 
 	// Init 'limit' parameter
