@@ -29,15 +29,14 @@ module.exports = async (params, reply, user, app, isWeb) =>
 	}
 
 	const set = {};
+	set['data.' + key] = value;
 
 	if (isWeb) {
-		set['_webdata.' + key] = value;
 		await User.updateOne({ _id: user._id }, {
 			$set: set
 		});
 		reply(204);
 	} else {
-		set['data.' + key] = value;
 		await Appdata.updateOne({
 			app: app._id,
 			user: user._id

@@ -74,7 +74,7 @@ export default (
 
 	// 公式でしか見れない
 	if (!opts.includeSecrets) {
-		delete _user._webdata;
+		delete _user.data;
 		delete _user.email;
 	}
 

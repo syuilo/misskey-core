@@ -24,15 +24,15 @@ module.exports = async (params, reply, user, app, isWeb) =>
 	}
 
 	if (isWeb) {
-		if (!user._webdata) {
+		if (!user.data) {
 			return reply();
 		}
 		if (key !== null) {
 			const data = {};
-			data[key] = user._webdata[key];
+			data[key] = user.data[key];
 			reply(data);
 		} else {
-			reply(user._webdata);
+			reply(user.data);
 		}
 	} else {
 		const select = {};
