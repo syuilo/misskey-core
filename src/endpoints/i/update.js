@@ -16,7 +16,7 @@ import es from '../../db/elasticsearch';
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply, user) =>
+module.exports = async (params, reply, user, _, isWeb) =>
 {
 	// Init 'name' parameter
 	const name = params.name;
@@ -65,7 +65,11 @@ module.exports = async (params, reply, user) =>
 	});
 
 	// serialize
-	reply(await serialize(user));
+	reply(await serialize(user, user, {
+		includePrivates: true,
+		includeSecrets: isWeb,
+		includeProfileImageIds: isWeb
+	}));
 
 	// 検索インデックス更新
 	es.index({
