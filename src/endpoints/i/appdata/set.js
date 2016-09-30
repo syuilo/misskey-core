@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import Appdata from '../../../models/appdata';
+import User from '../../../models/user';
 
 /**
  * Set app data
@@ -17,25 +18,33 @@ import Appdata from '../../../models/appdata';
  */
 module.exports = async (params, reply, user, app, isWeb) =>
 {
-	const data = params.data;
-	if (data == null) {
-		return reply(400, 'data is required');
+	const key = params.key;
+	if (key == null) {
+		return reply(400, 'key is required');
 	}
 
+	const value = params.value;
+	if (value == null) {
+		return reply(400, 'value is required');
+	}
+
+	const set = {};
+
 	if (isWeb) {
+		set['_webdata.' + key] = value;
 		await User.updateOne({ _id: user._id }, {
-			$set: { data }
+			$set: set
 		});
 		reply(204);
 	} else {
+		set['data.' + key] = value;
 		await Appdata.updateOne({
 			app: app._id,
 			user: user._id
-		}, {
+		}, Object.assign({
 			app: app._id,
-			user: user._id,
-			data: data
-		}, {
+			user: user._id
+		}, set), {
 			upsert: true
 		});
 		reply(204);
