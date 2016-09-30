@@ -18,9 +18,9 @@ import User from '../../../models/user';
  */
 module.exports = async (params, reply, user, app, isWeb) =>
 {
-	const key = params.key;
-	if (key == null) {
-		return reply(400, 'key is required');
+	let key = params.key;
+	if (key === undefined) {
+		key = null;
 	}
 
 	const value = params.value;
@@ -28,8 +28,12 @@ module.exports = async (params, reply, user, app, isWeb) =>
 		return reply(400, 'value is required');
 	}
 
-	const set = {};
-	set['data.' + key] = value;
+	let set = {};
+	if (key !== null) {
+		set['data.' + key] = value;
+	} else {
+		set.data = JSON.parse(value);
+	}
 
 	if (isWeb) {
 		await User.updateOne({ _id: user._id }, {
