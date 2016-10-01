@@ -13,9 +13,10 @@ import serialize from '../../serializers/user';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, user) =>
 {
 	const postId = params.id;
 	if (postId === undefined || postId === null) {
@@ -72,5 +73,5 @@ module.exports = async (params, reply) =>
 
 	// serialize
 	reply(await Promise.all(likes.map(async like =>
-		await serialize(like.user))));
+		await serialize(like.user, user))));
 };

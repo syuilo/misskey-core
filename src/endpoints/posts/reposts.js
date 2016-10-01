@@ -12,9 +12,10 @@ import serialize from '../../serializers/post';
  *
  * @param {Object} params
  * @param {Object} reply
+ * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, reply) =>
+module.exports = async (params, reply, user) =>
 {
 	const postId = params.id;
 	if (postId === undefined || postId === null) {
@@ -83,5 +84,5 @@ module.exports = async (params, reply) =>
 
 	// serialize
 	reply(await Promise.all(reposts.map(async post =>
-		await serialize(post))));
+		await serialize(post, user))));
 };
