@@ -18,29 +18,29 @@ import User from '../../../models/user';
  */
 module.exports = async (params, reply, user, app, isWeb) =>
 {
-	let key = params.key;
-	if (key === undefined) {
-		key = null;
-	}
-
-	const value = params.value;
-	if (value == null) {
-		return reply(400, 'value is required');
-	}
-
-	let set = {};
-	if (key !== null) {
-		set['data.' + key] = value;
-	} else {
-		set.data = JSON.parse(value);
+	const data = params.data;
+	if (data == null) {
+		return reply(400, 'data is required');
 	}
 
 	if (isWeb) {
-		await User.updateOne({ _id: user._id }, {
-			$set: set
-		});
+		const set = {
+			$set: {
+				data: Object.assign(user.data || {}, JSON.parse(data))
+			}
+		};
+		await User.updateOne({ _id: user._id }, set);
 		reply(204);
 	} else {
+		const appdata = await Appdata.findOne({
+			app: app._id,
+			user: user._id
+		});
+		const set = {
+			$set: {
+				data: Object.assign((appdata || {}).data || {}, JSON.parse(data))
+			}
+		};
 		await Appdata.updateOne({
 			app: app._id,
 			user: user._id
