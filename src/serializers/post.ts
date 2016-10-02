@@ -78,7 +78,7 @@ const self = (
 		// Populate repost
 		_post.repost = await self(_post.repost, me, {
 			serializeReplyTo: false,
-			serializeRepost: false,
+			serializeRepost: _post.text == null,
 			includeIsLiked: false
 		});
 	}
