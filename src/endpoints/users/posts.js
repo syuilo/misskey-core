@@ -101,9 +101,6 @@ module.exports = async (params, reply, me) =>
 
 	// serialize
 	reply(await Promise.all(posts.map(async (post) =>
-		await serialize(post, me, {
-			serializeReplyTo: true,
-			includeIsLiked: true
-		})
+		await serialize(post, me)
 	)));
 };
