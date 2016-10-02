@@ -73,29 +73,11 @@ const server = config.https.enable ?
 	}, app) :
 	http.createServer(app);
 
-let listeningFlag = false;
-
 /**
  * Server listen
  */
 server.listen(config.port, () => {
-	if (listeningFlag) {
-		process.send('listening');
-	} else {
-		listeningFlag = true;
-	}
-});
-
-/**
- * Internal server
- */
-const internalServer = http.createServer(app);
-internalServer.listen(config.internalPort, 'localhost', () => {
-	if (listeningFlag) {
-		process.send('listening');
-	} else {
-		listeningFlag = true;
-	}
+	process.send('listening');
 });
 
 /**

@@ -17,11 +17,6 @@ export default async function(): Promise<void> {
 			message: 'Listen port:'
 		},
 		{
-			type: 'input',
-			name: 'internal_port',
-			message: 'Internal listen port:'
-		},
-		{
 			type: 'confirm',
 			name: 'https',
 			message: 'Use TLS?',
