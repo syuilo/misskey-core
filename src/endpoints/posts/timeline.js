@@ -85,9 +85,6 @@ module.exports = async (params, reply, user, app) =>
 
 	// serialize
 	reply(await Promise.all(timeline.map(async post =>
-		await serialize(post, user, {
-			serializeReplyTo: true,
-			includeIsLiked: true
-		})
+		await serialize(post, user)
 	)));
 };

@@ -23,13 +23,15 @@ const self = (
 	me?: any,
 	options?: {
 		serializeReplyTo: boolean,
+		serializeRepost: boolean,
 		includeIsLiked: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) =>
 {
 	const opts = options || {
 		serializeReplyTo: true,
-		includeIsLiked: false
+		serializeRepost: true,
+		includeIsLiked: true
 	};
 
 	let _post: any;
@@ -67,13 +69,18 @@ const self = (
 		// Populate reply to post
 		_post.reply_to = await self(_post.reply_to, me, {
 			serializeReplyTo: false,
+			serializeRepost: false,
 			includeIsLiked: false
 		});
 	}
 
-	if (_post.repost) {
+	if (_post.repost && opts.serializeRepost) {
 		// Populate repost
-		_post.repost = await self(_post.repost, me, opts);
+		_post.repost = await self(_post.repost, me, {
+			serializeReplyTo: false,
+			serializeRepost: false,
+			includeIsLiked: false
+		});
 	}
 
 	// Check is liked
