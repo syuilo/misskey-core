@@ -11,7 +11,7 @@ export default (
 
 	// Create notification
 	const res = await Notification.insert(Object.assign({
-		created_at: Date.now(),
+		created_at: new Date(),
 		i: i,
 		type: type
 	}, content));

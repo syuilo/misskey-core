@@ -54,7 +54,7 @@ module.exports = async (params, reply, user) =>
 
 	// Create following
 	await Following.insert({
-		created_at: Date.now(),
+		created_at: new Date(),
 		follower: follower._id,
 		followee: followee._id
 	});

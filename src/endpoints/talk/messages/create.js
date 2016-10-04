@@ -110,7 +110,7 @@ module.exports = async (params, reply, user) =>
 
 	// メッセージを作成
 	const res = await Message.insert({
-		created_at: Date.now(),
+		created_at: new Date(),
 		file: file ? file._id : undefined,
 		recipient: recipient ? recipient._id : undefined,
 		group: group ? group._id : undefined,
@@ -162,7 +162,7 @@ module.exports = async (params, reply, user) =>
 			user: user._id,
 			partner: recipient._id
 		}, {
-			updated_at: Date.now(),
+			updated_at: new Date(),
 			user: user._id,
 			partner: recipient._id,
 			message: message._id
@@ -175,7 +175,7 @@ module.exports = async (params, reply, user) =>
 			user: recipient._id,
 			partner: user._id
 		}, {
-			updated_at: Date.now(),
+			updated_at: new Date(),
 			user: recipient._id,
 			partner: user._id,
 			message: message._id
@@ -191,7 +191,7 @@ module.exports = async (params, reply, user) =>
 				user: member,
 				group: group._id
 			}, {
-				updated_at: Date.now(),
+				updated_at: new Date(),
 				user: member._id,
 				group: group._id,
 				message: message._id

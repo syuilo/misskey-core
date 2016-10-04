@@ -53,7 +53,7 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 		});
 
 		Signin.insert({
-			created_at: Date.now(),
+			created_at: new Date(),
 			user: user._id,
 			ip: params.ip,
 			ua: params.ua

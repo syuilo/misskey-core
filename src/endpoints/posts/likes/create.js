@@ -54,7 +54,7 @@ module.exports = async (params, reply, user) =>
 
 	// Create like
 	const res = await Like.insert({
-		created_at: Date.now(),
+		created_at: new Date(),
 		post: post._id,
 		user: user._id
 	});

@@ -51,7 +51,7 @@ module.exports = async (params, reply, app) =>
 		avatar: null,
 		banner: null,
 		birthday: null,
-		created_at: Date.now(),
+		created_at: new Date(),
 		bio: null,
 		email: null,
 		followers_count: 0,

@@ -63,7 +63,7 @@ module.exports = async (params, reply, user) =>
 
 	// Create folder
 	const res = await DriveFolder.insert({
-		created_at: Date.now(),
+		created_at: new Date(),
 		name: name,
 		folder: parent !== null ? parent._id : null,
 		user: user._id

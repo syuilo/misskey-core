@@ -155,7 +155,7 @@ module.exports = async (params, reply, user, app) =>
 
 	// 投稿を作成
 	const res = await Post.insert({
-		created_at: Date.now(),
+		created_at: new Date(),
 		images: images ? files.map(file => file._id) : undefined,
 		reply_to: replyTo ? replyTo._id : undefined,
 		repost: repost ? repost._id : undefined,
