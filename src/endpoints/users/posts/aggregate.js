@@ -57,7 +57,7 @@ module.exports = async (params, reply) =>
 
 	const posts = await Post
 		.aggregate([
-			{ $sort : { _id : sort == 'asc' ? -1 : 1 } },
+			{ $sort : { _id : sort == 'asc' ? 1 : -1 } },
 			{ $match: { user: { $eq: user._id } } },
 			{ $project:
 				{ date: {
@@ -65,16 +65,45 @@ module.exports = async (params, reply) =>
 						{ $dayOfYear: '$created_at' },
 						{ $mod: [{ $dayOfYear: '$created_at' }, 1] }
 					]}
+				}, type: {
+					$cond: {
+						if: { $ne: ['$repost', null] },
+						then: 'repost',
+						else: {
+							$cond: {
+								if: { $ne: ['$reply_to', null] },
+								then: 'reply',
+								else: 'post'
+							}
+						}
+					}
 				}}
 			},
-			{ $group: { _id: '$date', count: { '$sum': 1 } } },
+			{ $group: { _id: {
+				date: '$date',
+				type: '$type'
+			}, count: { '$sum': 1 } } },
+			{ $group: {
+				_id: '$_id.date', 
+				data: { $addToSet: {
+					type: "$_id.type",
+					count: "$count"
+				}}
+			} },
 			{ $limit: limit },
 			{ $skip: offset }
 		])
 		.toArray();
 
-	posts.forEach(x => {
-		x.day = x._id.day;
+	posts.forEach(data => {
+		data.day = data._id.day;
+		delete data._id;
+
+		data.posts = (data.data.filter(x => x.type == 'post')[0] || { count: 0 }).count;
+		data.reposts = (data.data.filter(x => x.type == 'repost')[0] || { count: 0 }).count;
+		data.replies = (data.data.filter(x => x.type == 'reply')[0] || { count: 0 }).count;
+
+		delete data.data;
 	});
 
 	reply(posts);
