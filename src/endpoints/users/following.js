@@ -65,6 +65,7 @@ module.exports = async (params, reply, me) =>
 				_id: sort == 'asc' ? 1 : -1
 			}
 		})
+		.toArray();
 
 	if (following.length === 0) {
 		return reply([]);
