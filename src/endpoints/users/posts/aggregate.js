@@ -57,7 +57,6 @@ module.exports = async (params, reply) =>
 
 	const posts = await Post
 		.aggregate([
-			{ $sort : { _id : sort == 'asc' ? 1 : -1 } },
 			{ $match: { user: { $eq: user._id } } },
 			{ $project:
 				{ date: {
@@ -90,6 +89,7 @@ module.exports = async (params, reply) =>
 					count: "$count"
 				}}
 			} },
+			{ $sort : { _id : sort == 'asc' ? 1 : -1 } },
 			{ $limit: limit },
 			{ $skip: offset }
 		])
