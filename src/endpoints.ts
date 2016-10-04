@@ -55,6 +55,7 @@ export default <IEndpoint[]>[
 	{ name: 'users/search',             login: false },
 	{ name: 'users/search_by_username', login: false },
 	{ name: 'users/posts',              login: false },
+	{ name: 'users/posts/aggregate',    login: false },
 	{ name: 'users/following',          login: false },
 	{ name: 'users/followers',          login: false },
 	{ name: 'users/recommendation',     login: true },
