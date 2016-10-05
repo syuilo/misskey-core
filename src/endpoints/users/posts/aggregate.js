@@ -34,7 +34,6 @@ module.exports = async (params, reply) =>
 	const posts = await Post
 		.aggregate([
 			{ $match: { user: user._id } },
-			{ $sort : { created_at: -1 } },
 			{ $project:
 				{ date: {
 					$concat: [
@@ -71,6 +70,8 @@ module.exports = async (params, reply) =>
 			} }
 		])
 		.toArray();
+
+	posts.sort((a, b) => new Date(a._id).getTime() < new Date(b._id).getTime() ? -1 : 1);
 
 	posts.forEach(data => {
 		data.date = data._id;
