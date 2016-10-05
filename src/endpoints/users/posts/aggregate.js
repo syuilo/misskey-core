@@ -34,6 +34,7 @@ module.exports = async (params, reply) =>
 	const posts = await Post
 		.aggregate([
 			{ $match: { user: user._id } },
+			{ $sort : { created_at: -1 } },
 			{ $project:
 				{ date: {
 					$concat: [
@@ -67,8 +68,7 @@ module.exports = async (params, reply) =>
 					type: "$_id.type",
 					count: "$count"
 				}}
-			} },
-			{ $sort : { _id : -1 } }
+			} }
 		])
 		.toArray();
 
