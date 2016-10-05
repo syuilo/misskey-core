@@ -33,13 +33,16 @@ module.exports = async (params, reply) =>
 
 	const posts = await Post
 		.aggregate([
-			{ $sort : { _id : -1 } },
 			{ $match: { user: user._id } },
 			{ $project:
 				{ date: {
-					day: { $dayOfMonth: '$created_at' },
-					month: { $month: '$created_at' },
-					year: { $year: '$created_at' }
+					$concat: [
+						{ $substr: [{$year: '$created_at'}, 0, 4] },
+						'/',
+						{ $substr: [{$month: '$created_at'}, 0, 2] },
+						'/',
+						{ $substr: [{$dayOfMonth: '$created_at'}, 0, 2] }
+					]
 				}, type: {
 					$cond: {
 						if: { $ne: ['$repost', null] },
@@ -64,7 +67,8 @@ module.exports = async (params, reply) =>
 					type: "$_id.type",
 					count: "$count"
 				}}
-			} }
+			} },
+			{ $sort : { _id : -1 } }
 		])
 		.toArray();
 
