@@ -33,7 +33,7 @@ module.exports = async (params, reply) =>
 
 	const posts = await Post
 		.aggregate([
-			{ $match: { user: { $eq: user._id } } },
+			{ $match: { user: user._id } },
 			{ $project:
 				{ date: {
 					day: { $dayOfMonth: '$created_at' },
