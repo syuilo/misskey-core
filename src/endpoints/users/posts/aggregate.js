@@ -61,9 +61,11 @@ module.exports = async (params, reply) =>
 			{ $project:
 				{ date: {
 					day: { $subtract: [
-						{ $dayOfYear: '$created_at' },
-						{ $mod: [{ $dayOfYear: '$created_at' }, 1] }
-					]}
+						{ $dayOfMonth: '$created_at' },
+						{ $mod: [{ $dayOfMonth: '$created_at' }, 1] }
+					]},
+					month: { $month: '$created_at' },
+					year: { $year: '$created_at' }
 				}, type: {
 					$cond: {
 						if: { $ne: ['$repost', null] },
@@ -96,7 +98,7 @@ module.exports = async (params, reply) =>
 		.toArray();
 
 	posts.forEach(data => {
-		data.day = data._id.day;
+		data.date = data._id;
 		delete data._id;
 
 		data.posts = (data.data.filter(x => x.type == 'post')[0] || { count: 0 }).count;
