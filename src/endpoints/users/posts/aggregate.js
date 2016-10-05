@@ -33,6 +33,7 @@ module.exports = async (params, reply) =>
 
 	const posts = await Post
 		.aggregate([
+			{ $sort : { _id : -1 } },
 			{ $match: { user: user._id } },
 			{ $project:
 				{ date: {
