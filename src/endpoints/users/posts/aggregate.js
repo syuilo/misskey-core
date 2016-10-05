@@ -63,8 +63,7 @@ module.exports = async (params, reply) =>
 					type: "$_id.type",
 					count: "$count"
 				}}
-			} },
-			{ $sort : { _id : -1 } }
+			} }
 		])
 		.toArray();
 
