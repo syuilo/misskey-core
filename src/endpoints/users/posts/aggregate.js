@@ -60,10 +60,7 @@ module.exports = async (params, reply) =>
 			{ $match: { user: { $eq: user._id } } },
 			{ $project:
 				{ date: {
-					day: { $subtract: [
-						{ $dayOfMonth: '$created_at' },
-						{ $mod: [{ $dayOfMonth: '$created_at' }, 1] }
-					]},
+					day: { $dayOfMonth: '$created_at' },
 					month: { $month: '$created_at' },
 					year: { $year: '$created_at' }
 				}, type: {
