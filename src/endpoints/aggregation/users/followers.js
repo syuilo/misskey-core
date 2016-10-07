@@ -66,7 +66,7 @@ module.exports = async (params, reply) =>
 		graph.push({
 			date: {
 				year: day.getFullYear(),
-				month: day.getMonth() + 1,
+				month: day.getMonth() + 1, // JavaScriptでは月を0~11で表すので+1します
 				day: day.getDate()
 			},
 			count: count
