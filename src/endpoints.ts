@@ -21,6 +21,7 @@ export default <IEndpoint[]>[
 	{ name: 'username/available', login: false },
 
 	{ name: 'aggregation/users/followers', login: false },
+	{ name: 'aggregation/users/following', login: false },
 
 	{ name: 'i',             login: true },
 	{ name: 'i/update',      login: true, limitDuration: day, limitMax: 50 },
