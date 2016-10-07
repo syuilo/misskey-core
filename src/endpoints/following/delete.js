@@ -44,7 +44,8 @@ module.exports = async (params, reply, user) =>
 	// Check not following
 	const exist = await Following.findOne({
 		follower: follower._id,
-		followee: followee._id
+		followee: followee._id,
+		deleted_at: { $exists: false }
 	});
 
 	if (exist === null) {
@@ -52,8 +53,12 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// Delete following
-	const res = await Following.deleteOne({
+	const res = await Following.updateOne({
 		_id: exist._id
+	}, {
+		$set: {
+			deleted_at: new Date()
+		}
 	});
 
 	// Send response

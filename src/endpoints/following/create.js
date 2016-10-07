@@ -45,7 +45,8 @@ module.exports = async (params, reply, user) =>
 	// Check arleady following
 	const exist = await Following.findOne({
 		follower: follower._id,
-		followee: followee._id
+		followee: followee._id,
+		deleted_at: { $exists: false }
 	});
 
 	if (exist !== null) {
