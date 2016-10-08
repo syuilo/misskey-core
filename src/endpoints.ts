@@ -21,6 +21,7 @@ export default <IEndpoint[]>[
 	{ name: 'username/available', login: false },
 
 	{ name: 'aggregation/users/posts', login: false },
+	{ name: 'aggregation/users/likes', login: false },
 	{ name: 'aggregation/users/followers', login: false },
 	{ name: 'aggregation/users/following', login: false },
 
