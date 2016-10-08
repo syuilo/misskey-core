@@ -4,10 +4,11 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Post from '../../../models/post';
+import User from '../../../models/user';
+import Like from '../../../models/like';
 
 /**
- * Aggregate replies of a post
+ * Aggregate like of a user
  *
  * @param {Object} params
  * @param {Object} reply
@@ -15,24 +16,24 @@ import Post from '../../../models/post';
  */
 module.exports = async (params, reply) =>
 {
-	// Init 'post' parameter
-	const postId = params.post;
-	if (postId === undefined || postId === null) {
-		return reply(400, 'post is required');
+	// Init 'user' parameter
+	const userId = params.user;
+	if (userId === undefined || userId === null) {
+		return reply(400, 'user is required');
 	}
 
-	// Lookup post
-	const post = await Post.findOne({
-		_id: new mongo.ObjectID(postId)
+	// Lookup user
+	const user = await User.findOne({
+		_id: new mongo.ObjectID(userId)
 	});
 
-	if (post === null) {
-		return reply(404, 'post not found');
+	if (user === null) {
+		return reply(404, 'user not found');
 	}
 
-	const datas = await Post
+	const datas = await Like
 		.aggregate([
-			{ $match: { reply_to: post._id } },
+			{ $match: { user: user._id } },
 			{ $project: {
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // 日本時間に戻す
 			}},
