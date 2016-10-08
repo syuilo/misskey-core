@@ -31,52 +31,45 @@ module.exports = async (params, reply) =>
 		return reply(404, 'post not found');
 	}
 
-	const datas = await Like
-		.aggregate([
-			{ $match: { post: post._id } },
-			{ $project: {
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // 日本時間に戻す
-			}},
-			{ $project: {
-				date: {
-					year: { $year: '$created_at' },
-					month: { $month: '$created_at' },
-					day: { $dayOfMonth: '$created_at' }
-				}
-			}},
-			{ $group: {
-				_id: '$date',
-				count: { $sum: 1 }
-			}}
-		])
-		.toArray();
+	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
 
-	datas.forEach(data => {
-		data.date = data._id;
-		delete data._id;
-	});
+	const likes = await Like
+		.find({
+			post: post._id,
+			$or: [
+				{ deleted_at: { $exists: false } },
+				{ deleted_at: { $gt: startTime } }
+			]
+		}, {
+			_id: false,
+			post: false
+		}, {
+			sort: { created_at: -1 }
+		})
+		.toArray();
 
 	const graph = [];
 
 	for (let i = 0; i < 30; i++) {
 		let day = new Date(new Date().setDate(new Date().getDate() - i));
+		day = new Date(day.setMilliseconds(999));
+		day = new Date(day.setSeconds(59));
+		day = new Date(day.setMinutes(59));
+		day = new Date(day.setHours(23));
+		//day = day.getTime();
 
-		const data = datas.filter(d =>
-			d.date.year == day.getFullYear() && d.date.month == day.getMonth() + 1 && d.date.day == day.getDate()
-		)[0];
+		const count = likes.filter(l =>
+			l.created_at < day && (l.deleted_at == null || l.deleted_at > day)
+		).length;
 
-		if (data) {
-			graph.push(data)
-		} else {
-			graph.push({
-				date: {
-					year: day.getFullYear(),
-					month: day.getMonth() + 1, // JavaScriptでは月を0~11で表すので+1します
-					day: day.getDate()
-				},
-				count: 0
-			})
-		};
+		graph.push({
+			date: {
+				year: day.getFullYear(),
+				month: day.getMonth() + 1, // JavaScriptでは月を0~11で表すので+1します
+				day: day.getDate()
+			},
+			count: count
+		});
 	}
 
 	reply(graph);
