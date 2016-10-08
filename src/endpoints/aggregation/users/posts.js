@@ -62,12 +62,12 @@ module.exports = async (params, reply) =>
 			{ $group: { _id: {
 				date: '$date',
 				type: '$type'
-			}, count: { '$sum': 1 } } },
+			}, count: { $sum: 1 } } },
 			{ $group: {
 				_id: '$_id.date', 
 				data: { $addToSet: {
-					type: "$_id.type",
-					count: "$count"
+					type: '$_id.type',
+					count: '$count'
 				}}
 			} }
 		])
