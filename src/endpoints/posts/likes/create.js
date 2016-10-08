@@ -45,7 +45,8 @@ module.exports = async (params, reply, user) =>
 	// Check arleady liked
 	const exist = await Like.findOne({
 		post: post._id,
-		user: user._id
+		user: user._id,
+		deleted_at: { $exists: false }
 	});
 
 	if (exist !== null) {
