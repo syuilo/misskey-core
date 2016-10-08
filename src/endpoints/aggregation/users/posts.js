@@ -37,8 +37,8 @@ module.exports = async (params, reply) =>
 			{ $project: {
 				repost: '$repost',
 				reply_to: '$reply_to',
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } } // 日本時間に戻す
-			},
+				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // 日本時間に戻す
+			}},
 			{ $project: {
 				date: {
 					year: { $year: '$created_at' },
