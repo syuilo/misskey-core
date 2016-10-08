@@ -8,7 +8,7 @@ import User from '../../../models/user';
 import Post from '../../../models/post';
 
 /**
- * Aggregate posts of a user
+ * Aggregate post of a user
  *
  * @param {Object} params
  * @param {Object} reply

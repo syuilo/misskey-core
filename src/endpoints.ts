@@ -20,13 +20,14 @@ export default <IEndpoint[]>[
 
 	{ name: 'username/available', login: false },
 
-	{ name: 'aggregation/users/posts', login: false },
-	{ name: 'aggregation/users/likes', login: false },
+	{ name: 'aggregation/users/post', login: false },
+	{ name: 'aggregation/users/like', login: false },
 	{ name: 'aggregation/users/followers', login: false },
 	{ name: 'aggregation/users/following', login: false },
+	{ name: 'aggregation/posts/like', login: false },
 	{ name: 'aggregation/posts/likes', login: false },
 	{ name: 'aggregation/posts/repost', login: false },
-	{ name: 'aggregation/posts/replies', login: false },
+	{ name: 'aggregation/posts/reply', login: false },
 
 	{ name: 'i',             login: true },
 	{ name: 'i/update',      login: true, limitDuration: day, limitMax: 50 },
