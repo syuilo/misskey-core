@@ -52,7 +52,7 @@ const self = (
 
 	delete _file.data;
 
-	_file.url = config.drive.url + '/' + _file.id + '/' + _file.name;
+	_file.url = `${config.drive.url}/${_file.id}/${encodeURIComponent(_file.name)}`;
 
 	if (opts.includeTags && _file.tags) {
 		// Populate tags
