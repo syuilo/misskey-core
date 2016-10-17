@@ -144,11 +144,5 @@ export default (
 			name: file.name,
 			user: user._id.toString()
 		}
-	}, (error, response) => {
-		if (error) {
-			console.error(error);
-		} else {
-			console.log(response);
-		}
 	});
 });
