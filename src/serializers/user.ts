@@ -95,14 +95,16 @@ export default (
 		// フォローしているか
 		const follow = await Following.findOne({
 			follower: me,
-			followee: _user.id
+			followee: _user.id,
+			deleted_at: { $exists: false }
 		});
 		_user.is_following = follow !== null;
 
 		// フォローされているか
 		const follow2 = await Following.findOne({
 			follower: _user.id,
-			followee: me
+			followee: me,
+			deleted_at: { $exists: false }
 		});
 		_user.is_followed = follow2 !== null;
 	}

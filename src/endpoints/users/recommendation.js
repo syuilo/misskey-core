@@ -41,7 +41,10 @@ module.exports = async (params, reply, me) =>
 	// 自分がフォローしているユーザーの関係を取得
 	// SELECT followee
 	const following = await Following
-		.find({ follower: me._id }, { followee: true })
+		.find({
+			follower: me._id,
+			deleted_at: { $exists: false }
+		}, { followee: true })
 		.toArray();
 
 	// 自分と自分がフォローしているユーザーのIDのリストを生成
