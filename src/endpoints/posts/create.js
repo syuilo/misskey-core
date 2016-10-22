@@ -166,7 +166,7 @@ module.exports = async (params, reply, user, app) =>
 	const post = res.ops[0];
 
 	// Serialize
-	const postObj = await serialize(post, user);
+	const postObj = await serialize(post);
 
 	// Reponse
 	reply(postObj);
