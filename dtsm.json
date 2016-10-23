@@ -66,6 +66,9 @@
     },
     "websocket/websocket.d.ts": {
       "ref": "55c3e254e151847b8d37ca09b1a566ad4a48a66a"
+    },
+    "ms/ms.d.ts": {
+      "ref": "5b4b22a2e84ad166ecd4f388f872a4ba32fddfbd"
     }
   }
 }

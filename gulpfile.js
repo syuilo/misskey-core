@@ -31,7 +31,7 @@ gulp.task('build:js', () => {
 gulp.task('build:ts', () => {
 	project
 		.src()
-		.pipe(ts(project))
+		.pipe(project())
 		.pipe(babel({
 			presets: ['es2015', 'stage-3']
 		}))
