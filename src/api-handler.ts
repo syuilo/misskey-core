@@ -34,13 +34,13 @@ export default (endpoint: IEndpoint, req: express.Request, res: express.Response
 			}
 		}
 
+		let exec = require(`${__dirname}/endpoints/${endpoint.name}`);
+
 		if (endpoint.withFile) {
-			require(`${__dirname}/endpoints/${endpoint.name}`)(
-				req.body, req.file, reply, ctx.user, ctx.app, ctx.isWeb);
-		} else {
-			require(`${__dirname}/endpoints/${endpoint.name}`)(
-				req.body, reply, ctx.user, ctx.app, ctx.isWeb);
+			exec = exec.bind(null, req.file);
 		}
+
+		exec(req.body, reply, ctx.user, ctx.app, ctx.isWeb);
 	}, err => {
 		console.error(err);
 		reply(403, 'AUTHENTICATION_FAILED');

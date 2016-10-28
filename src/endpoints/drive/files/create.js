@@ -13,13 +13,13 @@ import create from '../../../common/add-file-to-drive';
 /**
  * Create a file
  *
- * @param {Object} params
  * @param {Object} file
+ * @param {Object} params
  * @param {Object} reply
  * @param {Object} user
  * @return {void}
  */
-module.exports = async (params, file, reply, user) =>
+module.exports = async (file, params, reply, user) =>
 {
 	const buffer = fs.readFileSync(file.path);
 	fs.unlink(file.path);
