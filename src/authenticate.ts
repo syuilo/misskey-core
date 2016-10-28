@@ -4,46 +4,26 @@ import User from './models/user';
 import config from './config';
 
 export default (req: express.Request) =>
-	new Promise<{ app: any, user: any, isWeb: boolean }>(async (resolve, reject): Promise<void> =>
+	new Promise<{ app: any, user: any, isWeb: boolean }>(async (resolve, reject) =>
 {
-	if (req.body['_i']) {
+	const webToken = req.body['_i'];
+	if (webToken) {
 		const user = await User
-			.findOne({_web: req.body['_i']});
+			.findOne({ _web: webToken });
 
 		if (user === null) {
-			reject('user not found');
-			return;
+			return reject('user not found');
 		}
 
-		resolve({
+		return resolve({
 			app: null,
 			user: user,
 			isWeb: true
 		});
-		return;
 	}
 
-	if (!req.body['_web']) {
-		resolve({ app: null, user: null, isWeb: false });
-	} else if (req.body['_web'] !== config.webSecret) {
-		reject('incorrect key');
-	} else if (!req.body['_user']) {
-		resolve({ app: null, user: null, isWeb: true });
-	} else {
-		const id = req.body['_user'];
-
-		const user = await User
-			.findOne({_id: new mongo.ObjectID(id)});
-
-		if (user === null) {
-			reject('user not found');
-			return;
-		}
-
-		resolve({
-			app: null,
-			user: user,
-			isWeb: true
-		});
+	const webKey = req.body['_web'];
+	if (webKey && webKey == config.webSecret) {
+		return resolve({ app: null, user: null, isWeb: true });
 	}
 });
