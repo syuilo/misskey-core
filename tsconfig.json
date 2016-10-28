@@ -75,6 +75,7 @@
 		"./src/streaming.ts",
 		"./src/utils/cli/indicator.ts",
 		"./src/utils/cli/progressbar.ts",
-		"./src/utils/cli/yesno.ts"
+		"./src/utils/cli/yesno.ts",
+		"./src/limitter.ts"
 	]
 }
