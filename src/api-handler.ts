@@ -1,4 +1,6 @@
 import * as express from 'express';
+
+import { IEndpoint } from './endpoints';
 import authenticate from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
@@ -7,7 +9,7 @@ const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
 const isDebug = !isProduction;
 
-export default (endpoint: any, req: express.Request, res: express.Response) =>
+export default (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
 {
 	if (isDebug) {
 		console.log(`REQ: ${endpoint.name}`);

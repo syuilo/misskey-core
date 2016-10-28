@@ -3,9 +3,10 @@ const minute = 60 * second;
 const hour = 60 * minute;
 const day = 24 * hour;
 
-interface IEndpoint {
+export interface IEndpoint {
 	name: string;
 	shouldBeSignin: boolean;
+	limitKey?: string;
 	limitDuration?: number;
 	limitMax?: number;
 	minInterval?: number;
