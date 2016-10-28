@@ -1,4 +1,3 @@
-import * as mongo from 'mongodb';
 import * as express from 'express';
 import User from './models/user';
 import config from './config';
