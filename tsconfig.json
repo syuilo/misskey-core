@@ -76,6 +76,7 @@
 		"./src/utils/cli/indicator.ts",
 		"./src/utils/cli/progressbar.ts",
 		"./src/utils/cli/yesno.ts",
-		"./src/limitter.ts"
+		"./src/limitter.ts",
+		"./src/reply.ts"
 	]
 }
