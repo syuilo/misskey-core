@@ -20,11 +20,11 @@ export default (endpoint: any, req: express.Request, res: express.Response) =>
 			return reply(403, 'ACCESS_DENIED');
 		}
 
-		if (endpoint.login && ctx.user == null) {
+		if (endpoint.shouldBeSignin && ctx.user == null) {
 			return reply(401, 'PLZ_SIGNIN');
 		}
 
-		if (endpoint.login) {
+		if (endpoint.shouldBeSignin) {
 			try {
 				await limitter(endpoint, ctx);
 			} catch (e) {
