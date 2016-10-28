@@ -1,9 +1,5 @@
 import * as express from 'express';
 
-const env = process.env.NODE_ENV;
-const isProduction = env === 'production';
-const isDebug = !isProduction;
-
 export default (res: express.Response, x?: any, y?: any) => {
 	if (x === undefined) {
 		res.sendStatus(204);
@@ -13,7 +9,7 @@ export default (res: express.Response, x?: any, y?: any) => {
 				error: 'INTERNAL_ERROR'
 			});
 
-			if (isDebug) {
+			if (IS_DEBUG) {
 				console.log('REP: ERROR: INTERNAL');
 			}
 		} else {
@@ -21,14 +17,14 @@ export default (res: express.Response, x?: any, y?: any) => {
 				error: y
 			});
 
-			if (isDebug) {
+			if (IS_DEBUG) {
 				console.log(`REP: ERROR: ${x} ${y}`);
 			}
 		}
 	} else {
 		res.send(x);
 
-		if (isDebug) {
+		if (IS_DEBUG) {
 			console.log(`REP: OK: 200 ${JSON.stringify(x)}`);
 		}
 	}

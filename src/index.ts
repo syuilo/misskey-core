@@ -51,8 +51,8 @@ require('babel-core/register');
 require('babel-polyfill');
 
 const env = process.env.NODE_ENV;
-const isProduction = env === 'production';
-const isDebug = !isProduction;
+global.IS_PRODUCTION = env === 'production';
+global.IS_DEBUG = !global.IS_PRODUCTION;
 
 /**
  * Initialize state
@@ -174,7 +174,7 @@ async function init(): Promise<State> {
 
 	console.log('\nInitializing...\n');
 
-	if (isDebug) {
+	if (IS_DEBUG) {
 		logWarn('It is not in the Production mode. Do not use in the Production environment.');
 	}
 

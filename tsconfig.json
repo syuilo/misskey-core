@@ -25,6 +25,7 @@
 	"files": [
 		"./node_modules/typescript/lib/lib.es6.d.ts",
 		"./typings/bundle.d.ts",
+		"./src/vendor.d.ts",
 		"./src/api-handler.ts",
 		"./src/argv.ts",
 		"./src/authenticate.ts",

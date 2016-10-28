@@ -5,13 +5,9 @@ import authenticate from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
 
-const env = process.env.NODE_ENV;
-const isProduction = env === 'production';
-const isDebug = !isProduction;
-
 export default (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
 {
-	if (isDebug) {
+	if (IS_DEBUG) {
 		console.log(`REQ: ${endpoint.name}`);
 	}
 
