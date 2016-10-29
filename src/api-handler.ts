@@ -7,10 +7,6 @@ import limitter from './limitter';
 
 export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
 {
-	if (IS_DEBUG) {
-		console.log(`REQ: ${endpoint.name}`);
-	}
-
 	const reply = _reply.bind(null, res);
 	let ctx: any;
 

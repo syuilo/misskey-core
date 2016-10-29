@@ -5,27 +5,19 @@ export default (res: express.Response, x?: any, y?: any) => {
 		res.sendStatus(204);
 	} else if (typeof x === 'number') {
 		if (x === 500) {
-			res.status(500).send({
+			res.status(500).send(serialize({
 				error: 'INTERNAL_ERROR'
-			});
-
-			if (IS_DEBUG) {
-				console.log('REP: ERROR: INTERNAL');
-			}
+			}));
 		} else {
-			res.status(x).send({
+			res.status(x).send(serialize({
 				error: y
-			});
-
-			if (IS_DEBUG) {
-				console.log(`REP: ERROR: ${x} ${y}`);
-			}
+			}));
 		}
 	} else {
-		res.send(x);
-
-		if (IS_DEBUG) {
-			console.log(`REP: OK: 200 ${JSON.stringify(x)}`);
-		}
+		res.send(serialize(x));
 	}
+}
+
+function serialize(value: any): any {
+	return JSON.stringify(value);
 }
