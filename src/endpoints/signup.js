@@ -13,27 +13,27 @@ import es from '../db/elasticsearch';
  * Create an account
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} app
- * @return {void}
+ * @return {Promise<object>}
  */
 module.exports = async (params, reply, app) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'username' parameter
 	const username = params.username;
 	if (username === undefined || username === null || username === '') {
-		return reply(400, 'username is required');
+		return rej('username is required');
 	}
 
 	// Validate username
 	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
-		return reply(400, 'invalid username');
+		return rej('invalid username');
 	}
 
 	// Init 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
-		return reply(400, 'password is required');
+		return rej('password is required');
 	}
 
 	const name = params.name || '名無し';
@@ -46,7 +46,7 @@ module.exports = async (params, reply, app) =>
 	const secret = rndstr('a-zA-Z0-9', 32);
 
 	// Create account
-	const res = await User.insert({
+	const inserted = await User.insert({
 		_web: secret,
 		avatar: null,
 		banner: null,
@@ -68,10 +68,10 @@ module.exports = async (params, reply, app) =>
 		username_lower: username.toLowerCase()
 	});
 
-	const account = res.ops[0];
+	const account = inserted.ops[0];
 
 	// Response
-	reply(await serialize(account));
+	res(await serialize(account));
 
 	// Create search index
 	es.index({
@@ -82,4 +82,4 @@ module.exports = async (params, reply, app) =>
 			username: username
 		}
 	});
-};
+});

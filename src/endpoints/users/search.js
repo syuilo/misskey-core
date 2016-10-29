@@ -14,16 +14,16 @@ const size = 10;
  * Search a user
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} me
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, me) =>
+module.exports = (params, me) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'query' parameter
 	let query = params.query;
 	if (query === undefined || query === null || query.trim() === '') {
-		return reply(400, 'query is required');
+		return rej('query is required');
 	}
 
 	// Init 'page' parameter
@@ -53,11 +53,11 @@ module.exports = async (params, reply, me) =>
 	}, async (error, response) => {
 		if (error) {
 			console.error(error);
-			return reply(500);
+			return res(500);
 		}
 
 		if (response.hits.total === 0) {
-			return reply([]);
+			return res([]);
 		}
 
 		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
@@ -71,7 +71,7 @@ module.exports = async (params, reply, me) =>
 			.toArray();
 
 		// serialize
-		reply(await Promise.all(users.map(async user =>
+		res(await Promise.all(users.map(async user =>
 			await serialize(user, me))));
 	});
-};
+});

@@ -12,15 +12,15 @@ import serialize from '../../serializers/user';
  * Show a likes of a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const postId = params.id;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'id is required', 'EMPTY_QUERY');
+		return rej('id is required', 'EMPTY_QUERY');
 	}
 
 	// Init 'limit' parameter
@@ -30,7 +30,7 @@ module.exports = async (params, reply, user) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -53,7 +53,7 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found', 'POST_NOT_FOUND');
+		return rej('post not found', 'POST_NOT_FOUND');
 	}
 
 	// クエリ発行
@@ -68,10 +68,10 @@ module.exports = async (params, reply, user) =>
 		.toArray();
 
 	if (likes.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(likes.map(async like =>
+	res(await Promise.all(likes.map(async like =>
 		await serialize(like.user, user))));
-};
+});

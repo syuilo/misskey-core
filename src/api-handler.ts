@@ -5,40 +5,50 @@ import authenticate from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
 
-export default (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
+export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
 {
 	if (IS_DEBUG) {
 		console.log(`REQ: ${endpoint.name}`);
 	}
 
 	const reply = _reply.bind(null, res);
+	let ctx: any;
 
-	authenticate(req).then(async (ctx) => {
-		if (endpoint.webOnly && !ctx.isWeb) {
-			return reply(403, 'ACCESS_DENIED');
+	// 認証
+	try {
+		ctx = await authenticate(req);
+	} catch (e) {
+		return reply(403, 'AUTHENTICATION_FAILED');
+	}
+
+	if (endpoint.webOnly && !ctx.isWeb) {
+		return reply(403, 'ACCESS_DENIED');
+	}
+
+	if (endpoint.shouldBeSignin && ctx.user == null) {
+		return reply(401, 'PLZ_SIGNIN');
+	}
+
+	if (endpoint.shouldBeSignin) {
+		try {
+			// レートリミット
+			await limitter(endpoint, ctx);
+		} catch (e) {
+			reply(429);
 		}
+	}
 
-		if (endpoint.shouldBeSignin && ctx.user == null) {
-			return reply(401, 'PLZ_SIGNIN');
-		}
+	let exec = require(`${__dirname}/endpoints/${endpoint.name}`);
 
-		if (endpoint.shouldBeSignin) {
-			try {
-				await limitter(endpoint, ctx);
-			} catch (e) {
-				reply(429);
-			}
-		}
+	if (endpoint.withFile) {
+		exec = exec.bind(null, req.file);
+	}
 
-		let exec = require(`${__dirname}/endpoints/${endpoint.name}`);
-
-		if (endpoint.withFile) {
-			exec = exec.bind(null, req.file);
-		}
-
-		exec(req.body, reply, ctx.user, ctx.app, ctx.isWeb);
-	}, err => {
-		console.error(err);
-		reply(403, 'AUTHENTICATION_FAILED');
-	});
+	// API呼び出し
+	try {
+		const res = await exec(req.body, ctx.user, ctx.app, ctx.isWeb);
+		reply(res);
+	} catch (e) {
+		reply(400, e);
+	}
 };

@@ -10,17 +10,17 @@ import User from '../../../models/user';
  * Set app data
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
  * @param {Boolean} isWeb
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, app, isWeb) =>
+module.exports = (params, user, app, isWeb) =>
+	new Promise(async (res, rej) =>
 {
 	const data = params.data;
 	if (data == null) {
-		return reply(400, 'data is required');
+		return rej('data is required');
 	}
 
 	if (isWeb) {
@@ -30,7 +30,7 @@ module.exports = async (params, reply, user, app, isWeb) =>
 			}
 		};
 		await User.updateOne({ _id: user._id }, set);
-		reply(204);
+		res(204);
 	} else {
 		const appdata = await Appdata.findOne({
 			app: app._id,
@@ -50,6 +50,6 @@ module.exports = async (params, reply, user, app, isWeb) =>
 		}, set), {
 			upsert: true
 		});
-		reply(204);
+		res(204);
 	}
-};
+});

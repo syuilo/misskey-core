@@ -11,11 +11,11 @@ import serialize from '../../serializers/user';
  * Show a user
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} me
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, me) =>
+module.exports = (params, me) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'id' parameter
 	let userId = params.id;
@@ -30,7 +30,7 @@ module.exports = async (params, reply, me) =>
 	}
 
 	if (userId === null && username === null) {
-		return reply(400, 'id or username is required', 'EMPTY_QUERY');
+		return rej('id or username is required', 'EMPTY_QUERY');
 	}
 
 	// Lookup user
@@ -39,9 +39,9 @@ module.exports = async (params, reply, me) =>
 		: await User.findOne({ username });
 
 	if (user === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	// Send response
-	reply(await serialize(user, me));
-};
+	res(await serialize(user, me));
+});

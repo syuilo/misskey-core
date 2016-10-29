@@ -12,17 +12,17 @@ import es from '../../db/elasticsearch';
  * Update myself
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
 module.exports = async (params, reply, user, _, isWeb) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'name' parameter
 	const name = params.name;
 	if (name !== undefined && name !== null) {
 		if (name.length > 50) {
-			return reply(400, 'too long name');
+			return rej('too long name');
 		}
 
 		user.name = name;
@@ -32,7 +32,7 @@ module.exports = async (params, reply, user, _, isWeb) =>
 	const location = params.location;
 	if (location !== undefined && location !== null) {
 		if (location.length > 50) {
-			return reply(400, 'too long location');
+			return rej('too long location');
 		}
 
 		user.location = location;
@@ -42,7 +42,7 @@ module.exports = async (params, reply, user, _, isWeb) =>
 	const bio = params.bio;
 	if (bio !== undefined && bio !== null) {
 		if (bio.length > 500) {
-			return reply(400, 'too long bio');
+			return rej('too long bio');
 		}
 
 		user.bio = bio;
@@ -65,7 +65,7 @@ module.exports = async (params, reply, user, _, isWeb) =>
 	});
 
 	// serialize
-	reply(await serialize(user, user, {
+	res(await serialize(user, user, {
 		includePrivates: true,
 		includeSecrets: isWeb,
 		includeProfileImageIds: isWeb
@@ -81,4 +81,4 @@ module.exports = async (params, reply, user, _, isWeb) =>
 			bio: user.bio
 		}
 	});
-};
+});

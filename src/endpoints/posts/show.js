@@ -11,16 +11,16 @@ import serialize from '../../serializers/post';
  * Show a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const postId = params.id;
 
 	if (postId === undefined || postId === null) {
-		return reply(400, 'id is required');
+		return rej('id is required');
 	}
 
 	// Get post
@@ -29,12 +29,12 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found');
+		return rej('post not found');
 	}
 
 	// serialize
-	reply(await serialize(post, user, {
+	res(await serialize(post, user, {
 		serializeReplyTo: true,
 		includeIsLiked: true
 	}));
-};
+});

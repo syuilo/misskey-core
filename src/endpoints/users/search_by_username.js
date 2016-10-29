@@ -11,22 +11,22 @@ import serialize from '../../serializers/user';
  * Search a user by username
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} me
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, me) =>
+module.exports = (params, me) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'query' parameter
 	let query = params.query;
 	if (query === undefined || query === null || query.trim() === '') {
-		return reply(400, 'query is required');
+		return rej('query is required');
 	}
 
 	query = query.trim();
 
 	if (!/^[a-zA-Z0-9-]+$/.test(query)) {
-		return reply(400, 'invalid query');
+		return rej('invalid query');
 	}
 
 	// Init 'limit' parameter
@@ -36,7 +36,7 @@ module.exports = async (params, reply, me) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -57,6 +57,6 @@ module.exports = async (params, reply, me) =>
 		.toArray();
 
 	// serialize
-	reply(await Promise.all(users.map(async user =>
+	res(await Promise.all(users.map(async user =>
 		await serialize(user, me))));
-};
+});

@@ -13,11 +13,11 @@ import serialize from '../../serializers/talk-message';
  * Get messages
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'user' parameter
 	let recipient = params.user;
@@ -27,7 +27,7 @@ module.exports = async (params, reply, user) =>
 		});
 
 		if (recipient === null) {
-			return reply(400, 'user not found');
+			return rej('user not found');
 		}
 	} else {
 		recipient = null;
@@ -41,14 +41,14 @@ module.exports = async (params, reply, user) =>
 		});
 
 		if (group === null) {
-			return reply(400, 'group not found');
+			return rej('group not found');
 		}
 
 		// このグループのメンバーじゃなかったらreject
 		if (group.members
 				.map(member => member.toString())
 				.indexOf(user._id.toString()) === -1) {
-			return reply(403, 'access denied');
+			return rej('access denied');
 		}
 	} else {
 		group = null;
@@ -56,12 +56,12 @@ module.exports = async (params, reply, user) =>
 
 	// ユーザーの指定がないかつグループの指定もなかったらエラー
 	if (recipient === null && group === null) {
-		return reply(400, 'user or group is required');
+		return rej('user or group is required');
 	}
 
 	// ユーザーとグループ両方指定してたらエラー
 	if (recipient !== null && group !== null) {
-		return reply(400, 'need translate');
+		return rej('need translate');
 	}
 
 	// Init 'limit' parameter
@@ -71,7 +71,7 @@ module.exports = async (params, reply, user) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -82,7 +82,7 @@ module.exports = async (params, reply, user) =>
 
 	// 両方指定してたらエラー
 	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+		return rej('cannot set since and max');
 	}
 
 	let query;
@@ -127,10 +127,10 @@ module.exports = async (params, reply, user) =>
 		.toArray();
 
 	if (messages.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(messages.map(async message =>
+	res(await Promise.all(messages.map(async message =>
 		await serialize(message))));
-};
+});

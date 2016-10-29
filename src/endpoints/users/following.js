@@ -11,16 +11,16 @@ import serialize from '../../serializers/user';
  * Get following users of a user
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} me
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, me) =>
+module.exports = (params, me) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user is required');
+		return rej('user is required');
 	}
 
 	// Init 'limit' parameter
@@ -30,7 +30,7 @@ module.exports = async (params, reply, me) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -51,7 +51,7 @@ module.exports = async (params, reply, me) =>
 	const user = await User.findOne({_id: new mongo.ObjectID(userId)});
 
 	if (user === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	// Get following
@@ -68,10 +68,10 @@ module.exports = async (params, reply, me) =>
 		.toArray();
 
 	if (following.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(following.map(async f =>
+	res(await Promise.all(following.map(async f =>
 		await serialize(f.followee, me))));
-};
+});

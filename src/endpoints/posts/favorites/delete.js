@@ -11,16 +11,16 @@ import Post from '../../models/post';
  * Unfavorite a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'post' parameter
 	let postId = params.post;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post is required');
+		return rej('post is required');
 	}
 
 	// Get favoritee
@@ -29,7 +29,7 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found');
+		return rej('post not found');
 	}
 
 	// Check arleady favorited
@@ -39,14 +39,14 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (exist === null) {
-		return reply(400, 'already not favorited');
+		return rej('already not favorited');
 	}
 
 	// Delete favorite
-	const res = await Favorite.deleteOne({
+	await Favorite.deleteOne({
 		_id: exist._id
 	});
 
 	// Send response
-	reply();
-};
+	res();
+});

@@ -9,18 +9,18 @@ import serialize from '../serializers/user';
  * Show myself
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
  * @param {Boolean} isWeb
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, _, isWeb) =>
+module.exports = (params, user, _, isWeb) =>
+	new Promise(async (res, rej) =>
 {
 	// serialize
-	reply(await serialize(user, user, {
+	res(await serialize(user, user, {
 		includePrivates: true,
 		includeSecrets: isWeb,
 		includeProfileImageIds: isWeb
 	}));
-};
+});

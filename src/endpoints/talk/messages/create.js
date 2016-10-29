@@ -22,11 +22,11 @@ const maxTextLength = 500;
  * Create a message
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'user' parameter
 	let recipient = params.user;
@@ -36,7 +36,7 @@ module.exports = async (params, reply, user) =>
 		});
 
 		if (recipient === null) {
-			return reply(400, 'user not found');
+			return rej('user not found');
 		}
 	} else {
 		recipient = null;
@@ -50,14 +50,14 @@ module.exports = async (params, reply, user) =>
 		});
 
 		if (group === null) {
-			return reply(400, 'group not found');
+			return rej('group not found');
 		}
 
 		// このグループのメンバーじゃなかったらreject
 		if (group.members
 				.map(member => member.toString())
 				.indexOf(user._id.toString()) === -1) {
-			return reply(403, 'access denied');
+			return rej('access denied');
 		}
 	} else {
 		group = null;
@@ -65,12 +65,12 @@ module.exports = async (params, reply, user) =>
 
 	// ユーザーの指定がないかつグループの指定もなかったらエラー
 	if (recipient === null && group === null) {
-		return reply(400, 'user or group is required');
+		return rej('user or group is required');
 	}
 
 	// ユーザーとグループ両方指定してたらエラー
 	if (recipient !== null && group !== null) {
-		return reply(400, 'need translate');
+		return rej('need translate');
 	}
 
 	// Init 'text' parameter
@@ -80,7 +80,7 @@ module.exports = async (params, reply, user) =>
 		if (text.length === 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
-			return reply(400, 'too long text');
+			return rej('too long text');
 		}
 	} else {
 		text = null;
@@ -97,7 +97,7 @@ module.exports = async (params, reply, user) =>
 		});
 
 		if (file === null) {
-			return reply(400, 'file not found');
+			return rej('file not found');
 		}
 	} else {
 		file = null;
@@ -105,11 +105,11 @@ module.exports = async (params, reply, user) =>
 
 	// テキストが無いかつ添付ファイルも無かったらエラー
 	if (text === null && file === null) {
-		return reply(400, 'text or file is required');
+		return rej('text or file is required');
 	}
 
 	// メッセージを作成
-	const res = await Message.insert({
+	const inserted = await Message.insert({
 		created_at: new Date(),
 		file: file ? file._id : undefined,
 		recipient: recipient ? recipient._id : undefined,
@@ -118,13 +118,13 @@ module.exports = async (params, reply, user) =>
 		user: user._id
 	});
 
-	const message = res.ops[0];
+	const message = inserted.ops[0];
 
 	// Serialize
 	const messageObj = await serialize(message);
 
 	// Reponse
-	reply(messageObj);
+	res(messageObj);
 
 	// 自分のストリーム
 	event(message.user, 'talk_message', messageObj);
@@ -200,4 +200,4 @@ module.exports = async (params, reply, user) =>
 			});
 		});
 	}
-};
+});

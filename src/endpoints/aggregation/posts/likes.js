@@ -11,15 +11,15 @@ import Like from '../../../models/like';
  * Aggregate likes of a post
  *
  * @param {Object} params
- * @param {Object} reply
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply) =>
+module.exports = (params) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'post' parameter
 	const postId = params.post;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post is required');
+		return rej('post is required');
 	}
 
 	// Lookup post
@@ -28,7 +28,7 @@ module.exports = async (params, reply) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found');
+		return rej('post not found');
 	}
 
 	const startTime = new Date(new Date().setMonth(new Date().getMonth() - 1));
@@ -72,5 +72,5 @@ module.exports = async (params, reply) =>
 		});
 	}
 
-	reply(graph);
-};
+	res(graph);
+});

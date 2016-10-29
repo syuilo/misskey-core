@@ -15,11 +15,11 @@ import create from '../../../common/add-file-to-drive';
  *
  * @param {Object} file
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (file, params, reply, user) =>
+module.exports = (file, params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const buffer = fs.readFileSync(file.path);
 	fs.unlink(file.path);
@@ -33,9 +33,9 @@ module.exports = async (file, params, reply, user) =>
 		} else if (name === 'blob') {
 			name = null;
 		} else if (name.length > 128) {
-			return reply(400, 'too long name');
+			return rej('too long name');
 		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
-			return reply(400, 'invalid name');
+			return rej('invalid name');
 		}
 	} else {
 		name = null;
@@ -56,5 +56,5 @@ module.exports = async (file, params, reply, user) =>
 	const fileObj = await serialize(driveFile);
 
 	// Response
-	reply(fileObj);
-};
+	res(fileObj);
+});

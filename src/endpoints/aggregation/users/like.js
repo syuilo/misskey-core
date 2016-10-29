@@ -11,15 +11,15 @@ import Like from '../../../models/like';
  * Aggregate like of a user
  *
  * @param {Object} params
- * @param {Object} reply
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply) =>
+module.exports = (params) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user is required');
+		return rej('user is required');
 	}
 
 	// Lookup user
@@ -28,7 +28,7 @@ module.exports = async (params, reply) =>
 	});
 
 	if (user === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	const datas = await Like
@@ -79,5 +79,5 @@ module.exports = async (params, reply) =>
 		};
 	}
 
-	reply(graph);
-};
+	res(graph);
+});

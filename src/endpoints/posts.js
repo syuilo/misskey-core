@@ -10,10 +10,10 @@ import serialize from '../serializers/post';
  * Lists all posts
  *
  * @param {Object} params
- * @param {Object} reply
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply) =>
+module.exports = (params) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -22,7 +22,7 @@ module.exports = async (params, reply) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -33,7 +33,7 @@ module.exports = async (params, reply) =>
 
 	// 両方指定してたらエラー
 	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+		return rej('cannot set since and max');
 	}
 
 	// クエリ構築
@@ -61,9 +61,9 @@ module.exports = async (params, reply) =>
 		.toArray();
 
 	if (posts.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(posts.map(async post => await serialize(post))));
-};
+	res(await Promise.all(posts.map(async post => await serialize(post))));
+});

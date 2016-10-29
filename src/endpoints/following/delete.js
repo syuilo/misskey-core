@@ -13,23 +13,23 @@ import serializeUser from '../../serializers/user';
  * Unfollow a user
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const follower = user;
 
 	// Init 'user' parameter
 	let userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user is required');
+		return rej('user is required');
 	}
 
 	// 自分自身
 	if (userId === user._id.toString()) {
-		return reply(400, 'followee is yourself');
+		return rej('followee is yourself');
 	}
 
 	// Get followee
@@ -38,7 +38,7 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (followee === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	// Check not following
@@ -49,11 +49,11 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (exist === null) {
-		return reply(400, 'already not following');
+		return rej('already not following');
 	}
 
 	// Delete following
-	const res = await Following.updateOne({
+	await Following.updateOne({
 		_id: exist._id
 	}, {
 		$set: {
@@ -62,7 +62,7 @@ module.exports = async (params, reply, user) =>
 	});
 
 	// Send response
-	reply();
+	res();
 
 	// Decrement following count
 	User.updateOne({ _id: follower._id }, {
@@ -80,4 +80,4 @@ module.exports = async (params, reply, user) =>
 
 	// Publish follow event
 	event(follower._id, 'unfollow', await serializeUser(followee, follower));
-};
+});

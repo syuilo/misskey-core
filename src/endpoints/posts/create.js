@@ -31,12 +31,12 @@ const maxFileLength = 4;
  * Create a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, app) =>
+module.exports = (params, user, app) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'text' parameter
 	let text = params.text;
@@ -47,7 +47,7 @@ module.exports = async (params, reply, user, app) =>
 		} else if (text[0] === '$') {
 			return command(text);
 		} else if (text.length > maxTextLength) {
-			return reply(400, 'too long text');
+			return rej('too long text');
 		}
 	} else {
 		text = null;
@@ -60,7 +60,7 @@ module.exports = async (params, reply, user, app) =>
 		images = images.split(',');
 
 		if (images.length > maxFileLength) {
-			return reply(400, 'too many images');
+			return rej('too many images');
 		}
 
 		// 重複チェック
@@ -79,7 +79,7 @@ module.exports = async (params, reply, user, app) =>
 			});
 
 			if (entity === null) {
-				return reply(400, 'file not found');
+				return rej('file not found');
 			} else {
 				files.push(entity);
 			}
@@ -97,9 +97,9 @@ module.exports = async (params, reply, user, app) =>
 		});
 
 		if (repost === null) {
-			return reply(404, 'repostee is not found');
+			return rej('repostee is not found');
 		} else if (repost.repost && !repost.text && !repost.images) {
-			return reply(400, 'cannot repost from repost');
+			return rej('cannot repost from repost');
 		}
 
 		// Get recently post
@@ -116,14 +116,14 @@ module.exports = async (params, reply, user, app) =>
 				latestPost.repost &&
 				latestPost.repost.toString() === repost._id.toString() &&
 				text === null && files === null) {
-			return reply(400, '二重Repostです(NEED TRANSLATE)');
+			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 				latestPost._id.toString() === repost._id.toString() &&
 				text === null && files === null) {
-			return reply(400, '二重Repostです(NEED TRANSLATE)');
+			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 	} else {
 		repost = null;
@@ -137,12 +137,12 @@ module.exports = async (params, reply, user, app) =>
 		});
 
 		if (replyTo === null) {
-			return reply(404, 'reply to post is not found');
+			return rej('reply to post is not found');
 		}
 
 		// 返信対象が引用でないRepostだったらエラー
 		if (replyTo.repost && !replyTo.text && !replyTo.images) {
-			return reply(400, 'cannot reply to repost');
+			return rej('cannot reply to repost');
 		}
 	} else {
 		replyTo = null;
@@ -150,11 +150,11 @@ module.exports = async (params, reply, user, app) =>
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
 	if (text === null && files === null && repost === null) {
-		return reply(400, 'text, images or repost is required');
+		return rej('text, images or repost is required');
 	}
 
 	// 投稿を作成
-	const res = await Post.insert({
+	const inserted = await Post.insert({
 		created_at: new Date(),
 		images: images ? files.map(file => file._id) : undefined,
 		reply_to: replyTo ? replyTo._id : undefined,
@@ -163,13 +163,13 @@ module.exports = async (params, reply, user, app) =>
 		user: user._id
 	});
 
-	const post = res.ops[0];
+	const post = inserted.ops[0];
 
 	// Serialize
 	const postObj = await serialize(post);
 
 	// Reponse
-	reply(postObj);
+	res(postObj);
 
 	// 自分のストリーム
 	event(user._id, 'post', postObj);
@@ -260,11 +260,11 @@ module.exports = async (params, reply, user, app) =>
 			case 'write':
 				// Create file
 				await createFile(user, new Buffer(arg), Date.now() + '.txt', null, null);
-				reply();
+				res();
 				break;
 			default:
-				reply(400, 'unknown command');
+				rej('unknown command');
 				break;
 		}
 	}
-};
+});

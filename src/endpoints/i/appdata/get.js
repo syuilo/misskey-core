@@ -9,13 +9,13 @@ import Appdata from '../../../models/appdata';
  * Get app data
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
  * @param {Boolean} isWeb
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, app, isWeb) =>
+module.exports = (params, user, app, isWeb) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'key' parameter
 	let key = params.key;
@@ -25,14 +25,14 @@ module.exports = async (params, reply, user, app, isWeb) =>
 
 	if (isWeb) {
 		if (!user.data) {
-			return reply();
+			return res();
 		}
 		if (key !== null) {
 			const data = {};
 			data[key] = user.data[key];
-			reply(data);
+			res(data);
 		} else {
-			reply(user.data);
+			res(user.data);
 		}
 	} else {
 		const select = {};
@@ -45,9 +45,9 @@ module.exports = async (params, reply, user, app, isWeb) =>
 		}, select);
 
 		if (appdata) {
-			reply(appdata.data);
+			res(appdata.data);
 		} else {
-			reply();
+			res();
 		}
 	}
-};
+});

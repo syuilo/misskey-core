@@ -12,16 +12,16 @@ import event from '../../../event';
  * Mark as read a notification
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const notificationId = params.notification;
 
 	if (notificationId === undefined || notificationId === null) {
-		return reply(400, 'notification is required');
+		return rej('notification is required');
 	}
 
 	// Get notifcation
@@ -32,7 +32,7 @@ module.exports = async (params, reply, user) =>
 		});
 
 	if (notification === null) {
-		return reply(404, 'notification-not-found');
+		return rej('notification-not-found');
 	}
 
 	// Update
@@ -44,11 +44,11 @@ module.exports = async (params, reply, user) =>
 	});
 
 	// Response
-	reply();
+	res();
 
 	// serialize
 	const notificationObj = await serialize(notification);
 
 	// Publish read_notification event
 	event(user._id, 'read_notification', notificationObj);
-};
+});

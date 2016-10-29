@@ -11,12 +11,12 @@ import serialize from '../../serializers/drive-folder';
  * Get drive folders
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, app) =>
+module.exports = (params, user, app) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -25,7 +25,7 @@ module.exports = async (params, reply, user, app) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -36,7 +36,7 @@ module.exports = async (params, reply, user, app) =>
 
 	// 両方指定してたらエラー
 	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+		return rej('cannot set since and max');
 	}
 
 	// Init 'folder' parameter
@@ -77,10 +77,10 @@ module.exports = async (params, reply, user, app) =>
 		.toArray();
 
 	if (folders.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(folders.map(async folder =>
+	res(await Promise.all(folders.map(async folder =>
 		await serialize(folder))));
-};
+});

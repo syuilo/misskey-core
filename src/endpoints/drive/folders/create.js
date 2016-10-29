@@ -12,11 +12,11 @@ import event from '../../../event';
  * Create drive folder
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const follower = user;
 
@@ -27,9 +27,9 @@ module.exports = async (params, reply, user) =>
 		if (name.length === 0) {
 			name = null;
 		} else if (name.length > 100) {
-			return reply(400, 'too long name');
+			return rej('too long name');
 		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
-			return reply(400, 'invalid name');
+			return rej('invalid name');
 		}
 	} else {
 		name = null;
@@ -62,21 +62,21 @@ module.exports = async (params, reply, user) =>
 	}
 
 	// Create folder
-	const res = await DriveFolder.insert({
+	const inserted = await DriveFolder.insert({
 		created_at: new Date(),
 		name: name,
 		folder: parent !== null ? parent._id : null,
 		user: user._id
 	});
 
-	const folder = res.ops[0];
+	const folder = inserted.ops[0];
 
 	// Serialize
 	const folderObj = await serialize(folder);
 
 	// Response
-	reply(folderObj);
+	res(folderObj);
 
 	// Publish drive_folder_created event
 	event(user._id, 'drive_folder_created', folderObj);
-};
+});

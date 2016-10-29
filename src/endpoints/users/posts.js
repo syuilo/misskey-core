@@ -12,16 +12,16 @@ import serialize from '../../serializers/post';
  * Get posts of a user
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} me
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, me) =>
+module.exports = (params, me) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
-		return reply(400, 'user is required');
+		return rej('user is required');
 	}
 
 	// Init 'with_images' parameter
@@ -39,7 +39,7 @@ module.exports = async (params, reply, me) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -50,7 +50,7 @@ module.exports = async (params, reply, me) =>
 
 	// 両方指定してたらエラー
 	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+		return rej('cannot set since and max');
 	}
 
 	// Lookup user
@@ -59,7 +59,7 @@ module.exports = async (params, reply, me) =>
 	});
 
 	if (user === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	// クエリ構築
@@ -96,11 +96,11 @@ module.exports = async (params, reply, me) =>
 		.toArray();
 
 	if (posts.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(posts.map(async (post) =>
+	res(await Promise.all(posts.map(async (post) =>
 		await serialize(post, me)
 	)));
-};
+});

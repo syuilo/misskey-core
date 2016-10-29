@@ -10,9 +10,10 @@ import User from '../../models/user';
  *
  * @param {Object} params
  * @param {Object} res
- * @return {void}
+ * @return {Promise<object>}
  */
 module.exports = async (params, res) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'username' parameter
 	const username = params.username;
@@ -34,4 +35,4 @@ module.exports = async (params, res) =>
 	res({
 		available: exist === 0
 	});
-};
+});

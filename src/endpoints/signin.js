@@ -13,24 +13,24 @@ import event from '../event';
  * Signin
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
  * @param {Object} app
  * @param {Boolean} isWeb
- * @return {void}
+ * @return {Promise<object>}
  */
 module.exports = async (params, reply, _1, _2, isWeb) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'username' parameter
 	const username = params.username;
 	if (username === undefined || username === null || username === '') {
-		return reply(400, 'username is required');
+		return rej('username is required');
 	}
 
 	// Init 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
-		return reply(400, 'password is required');
+		return rej('password is required');
 	}
 
 	const user = await User.findOne({
@@ -38,17 +38,17 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 	});
 
 	if (user === null) {
-		return reply(404, 'user not found');
+		return rej('user not found');
 	}
 
 	bcrypt.compare(password, user.password, async (compareErr, same) => {
 		if (compareErr) {
-			return reply(500);
+			return res(500);
 		} else if (!same) {
-			return reply(400, 'incorrect password');
+			return rej('incorrect password');
 		}
 
-		reply({
+		res({
 			web: user._web
 		});
 
@@ -61,4 +61,4 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 
 		//event.
 	});
-};
+});

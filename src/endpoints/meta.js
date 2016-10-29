@@ -10,16 +10,16 @@ import config from '../config';
  * Show core info
  *
  * @param {Object} params
- * @param {Object} reply
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply) =>
+module.exports = (params) =>
+	new Promise(async (res, rej) =>
 {
 	const repository = await Git.Repository.open(__dirname + '/../../');
 
-	reply({
+	res({
 		maintainer: config.maintainer,
 		commit: (await repository.getHeadCommit()).sha(),
 		secure: config.https.enable
 	});
-};
+});

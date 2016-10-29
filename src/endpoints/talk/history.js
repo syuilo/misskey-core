@@ -11,11 +11,11 @@ import serialize from '../../serializers/talk-message';
  * Show talk history
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -24,7 +24,7 @@ module.exports = async (params, reply, user) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -43,10 +43,10 @@ module.exports = async (params, reply, user) =>
 		.toArray();
 
 	if (history.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(history.map(async i =>
+	res(await Promise.all(history.map(async i =>
 		await serialize(i.message))));
-};
+});

@@ -12,16 +12,16 @@ import event from '../../../event';
  * Update a folder
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const folderId = params.folder;
 
 	if (folderId === undefined || folderId === null) {
-		return reply(400, 'folder is required');
+		return rej('folder is required');
 	}
 
 	// Get folder
@@ -32,7 +32,7 @@ module.exports = async (params, reply, user) =>
 		});
 
 	if (folder === null) {
-		return reply(404, 'folder-not-found');
+		return rej('folder-not-found');
 	}
 
 	// Init 'parent' parameter
@@ -54,7 +54,7 @@ module.exports = async (params, reply, user) =>
 				});
 
 			if (parent === null) {
-				return reply(404, 'parent-folder-not-found');
+				return rej('parent-folder-not-found');
 			}
 
 			// 再帰しないかチェック
@@ -71,7 +71,7 @@ module.exports = async (params, reply, user) =>
 
 			if (parent.folder !== null) {
 				if (await checkCircle(parent.folder)) {
-					return reply(400, 'detected-circular-definition');
+					return rej('detected-circular-definition');
 				}
 			}
 
@@ -88,8 +88,8 @@ module.exports = async (params, reply, user) =>
 	const folderObj = await serialize(folder);
 
 	// Response
-	reply(folderObj);
+	res(folderObj);
 
 	// Publish drive_folder_updated event
 	event(user._id, 'drive_folder_updated', folderObj);
-};
+});

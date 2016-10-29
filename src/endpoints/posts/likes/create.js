@@ -16,16 +16,16 @@ import serializePost from '../../../serializers/post';
  * Like a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'post' parameter
 	let postId = params.post;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post is required');
+		return rej('post is required');
 	}
 
 	// Get likee
@@ -34,12 +34,12 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found');
+		return rej('post not found');
 	}
 
 	// Myself
 	if (post.user.toString() === user._id.toString()) {
-		return reply(400, '-need-translate-');
+		return rej('-need-translate-');
 	}
 
 	// Check arleady liked
@@ -50,20 +50,20 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (exist !== null) {
-		return reply(400, 'already liked');
+		return rej('already liked');
 	}
 
 	// Create like
-	const res = await Like.insert({
+	const inserted = await Like.insert({
 		created_at: new Date(),
 		post: post._id,
 		user: user._id
 	});
 
-	const like = res.ops[0];
+	const like = inserted.ops[0];
 
 	// Send response
-	reply();
+	res();
 
 	// Increment likes count
 	Post.updateOne({ _id: post._id }, {
@@ -97,4 +97,4 @@ module.exports = async (params, reply, user) =>
 		user: await serializeUser(user, post.user),
 		post: await serializePost(post, post.user)
 	});
-};
+});

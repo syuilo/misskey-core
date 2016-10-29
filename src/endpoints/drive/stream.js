@@ -11,11 +11,11 @@ import serialize from '../../serializers/drive-file';
  * Get drive stream
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'limit' parameter
 	let limit = params.limit;
@@ -24,7 +24,7 @@ module.exports = async (params, reply, user) =>
 
 		// 1 ~ 100 まで
 		if (!(1 <= limit && limit <= 100)) {
-			return reply(400, 'invalid limit range');
+			return rej('invalid limit range');
 		}
 	} else {
 		limit = 10;
@@ -35,7 +35,7 @@ module.exports = async (params, reply, user) =>
 
 	// 両方指定してたらエラー
 	if (since !== null && max !== null) {
-		return reply(400, 'cannot set since and max');
+		return rej('cannot set since and max');
 	}
 
 	// Init 'type' parameter
@@ -43,7 +43,7 @@ module.exports = async (params, reply, user) =>
 	if (type === undefined || type === null) {
 		type = null;
 	} else if (!/^[a-zA-Z\/\-\*]+$/.test(type)) {
-		return reply(400, 'invalid type format');
+		return rej('invalid type format');
 	} else {
 		type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
@@ -80,10 +80,10 @@ module.exports = async (params, reply, user) =>
 		.toArray();
 
 	if (files.length === 0) {
-		return reply([]);
+		return res([]);
 	}
 
 	// serialize
-	reply(await Promise.all(files.map(async file =>
+	res(await Promise.all(files.map(async file =>
 		await serialize(file))));
-};
+});

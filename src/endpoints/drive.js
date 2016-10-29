@@ -9,11 +9,11 @@ import DriveFile from './models/drive-file';
  * Get drive information
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// ドライブ使用量を取得するためにすべてのファイルを取得
 	const files = await DriveFile
@@ -26,8 +26,8 @@ module.exports = async (params, reply, user) =>
 	// 現時点でのドライブ使用量を算出(byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
 
-	reply({
+	res({
 		capacity: user.drive_capacity,
 		usage: usage
 	});
-};
+});

@@ -11,16 +11,16 @@ import Post from '../../models/post';
  * Favorite a post
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	// Init 'post' parameter
 	let postId = params.post;
 	if (postId === undefined || postId === null) {
-		return reply(400, 'post is required');
+		return rej('post is required');
 	}
 
 	// Get favoritee
@@ -29,7 +29,7 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (post === null) {
-		return reply(404, 'post not found');
+		return rej('post not found');
 	}
 
 	// Check arleady favorited
@@ -39,18 +39,18 @@ module.exports = async (params, reply, user) =>
 	});
 
 	if (exist !== null) {
-		return reply(400, 'already favorited');
+		return rej('already favorited');
 	}
 
 	// Create favorite
-	const res = await Favorite.insert({
+	const inserted = await Favorite.insert({
 		created_at: new Date(),
 		post: post._id,
 		user: user._id
 	});
 
-	const favorite = res.ops[0];
+	const favorite = inserted.ops[0];
 
 	// Send response
-	reply();
-};
+	res();
+});

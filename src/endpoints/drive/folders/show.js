@@ -11,16 +11,16 @@ import serialize from '../../../serializers/drive-folder';
  * Show a folder
  *
  * @param {Object} params
- * @param {Object} reply
  * @param {Object} user
- * @return {void}
+ * @return {Promise<object>}
  */
-module.exports = async (params, reply, user) =>
+module.exports = (params, user) =>
+	new Promise(async (res, rej) =>
 {
 	const folderId = params.folder;
 
 	if (folderId === undefined || folderId === null) {
-		return reply(400, 'folder is required');
+		return rej('folder is required');
 	}
 
 	// Get folder
@@ -31,11 +31,11 @@ module.exports = async (params, reply, user) =>
 		});
 
 	if (folder === null) {
-		return reply(404, 'folder-not-found');
+		return rej('folder-not-found');
 	}
 
 	// serialize
-	reply(await serialize(folder, {
+	res(await serialize(folder, {
 		includeParent: true
 	}));
-};
+});
