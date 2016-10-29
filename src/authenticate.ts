@@ -3,8 +3,19 @@ import User from './models/user';
 import config from './config';
 
 export interface IAuthContext {
+	/**
+	 * リクエストしたApp
+	 */
 	app: any;
+
+	/**
+	 * 認証されたユーザー
+	 */
 	user: any;
+
+	/**
+	 * 公式Webからのリクエストか否か
+	 */
 	isWeb: boolean;
 }
 
