@@ -1,8 +1,9 @@
 import * as Limiter from 'ratelimiter';
 import limiterDB from './db/redis';
 import { IEndpoint } from './endpoints';
+import { IAuthContext } from './authenticate';
 
-export default (endpoint: IEndpoint, ctx: any) => new Promise((ok, reject) => {
+export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reject) => {
 	const limitKey = endpoint.hasOwnProperty('limitKey')
 		? endpoint.limitKey
 		: endpoint.name;

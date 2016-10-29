@@ -2,13 +2,14 @@ import * as express from 'express';
 
 import { IEndpoint } from './endpoints';
 import authenticate from './authenticate';
+import { IAuthContext } from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
 
 export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
 {
 	const reply = _reply.bind(null, res);
-	let ctx: any;
+	let ctx: IAuthContext;
 
 	// 認証
 	try {
