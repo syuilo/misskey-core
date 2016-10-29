@@ -4,15 +4,9 @@ export default (res: express.Response, x?: any, y?: any) => {
 	if (x === undefined) {
 		res.sendStatus(204);
 	} else if (typeof x === 'number') {
-		if (x === 500) {
-			res.status(500).send(serialize({
-				error: 'INTERNAL_ERROR'
-			}));
-		} else {
-			res.status(x).send(serialize({
-				error: y
-			}));
-		}
+		res.status(x).send(serialize({
+			error: x == 500 ? 'INTERNAL_ERROR' : y
+		}));
 	} else {
 		res.send(serialize(x));
 	}
