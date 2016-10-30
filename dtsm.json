@@ -69,6 +69,9 @@
     },
     "ms/ms.d.ts": {
       "ref": "35b24575255b09ecdfdf80094b51165407790cbc"
+    },
+    "node-uuid/node-uuid.d.ts": {
+      "ref": "44be13ae844ec0721109542d5902e41438d72855"
     }
   }
 }
