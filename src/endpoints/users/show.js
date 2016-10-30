@@ -36,7 +36,7 @@ module.exports = (params, me) =>
 	// Lookup user
 	const user = userId !== null
 		? await User.findOne({ _id: new mongo.ObjectID(userId) })
-		: await User.findOne({ username });
+		: await User.findOne({ username_lower: username.toLowerCase() });
 
 	if (user === null) {
 		return rej('user not found');
