@@ -2,7 +2,7 @@ import * as mongodb from 'mongodb';
 
 const collection = (<mongodb.Db>(<any>global).db).collection('users');
 
-collection.ensureIndex('username');
-collection.ensureIndex('_web');
+collection.createIndex('username');
+collection.createIndex('_web');
 
 export default collection;
