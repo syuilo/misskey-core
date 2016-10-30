@@ -9,22 +9,23 @@ import User from '../../models/user';
  * Check available username
  *
  * @param {Object} params
- * @param {Object} res
  * @return {Promise<object>}
  */
-module.exports = async (params, res) =>
+module.exports = async (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'username' parameter
+	// Get 'username' parameter
 	const username = params.username;
-	if (username === undefined || username === null || username === '') {
-		return res(400, 'username-is-required');
+	if (username == null || username == '') {
+		return rej('username-is-required');
 	}
 
+	// Validate username
 	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
-		return res(400, 'invalid-username');
+		return rej('invalid-username');
 	}
 
+	// Get exist
 	const exist = await User
 		.count({
 			username_lower: username.toLowerCase()
@@ -32,6 +33,7 @@ module.exports = async (params, res) =>
 			limit: 1
 		});
 
+	// Reply
 	res({
 		available: exist === 0
 	});
