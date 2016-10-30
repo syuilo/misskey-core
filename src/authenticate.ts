@@ -42,4 +42,6 @@ export default (req: express.Request) =>
 	if (webKey && webKey == config.webSecret) {
 		return resolve({ app: null, user: null, isWeb: true });
 	}
+
+	const userKey = req.headers['user-key'];
 });
