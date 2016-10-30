@@ -13,10 +13,9 @@ import es from '../db/elasticsearch';
  * Create an account
  *
  * @param {Object} params
- * @param {Object} app
  * @return {Promise<object>}
  */
-module.exports = async (params, reply, app) =>
+module.exports = async (params) =>
 	new Promise(async (res, rej) =>
 {
 	// Init 'username' parameter
