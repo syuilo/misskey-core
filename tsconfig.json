@@ -70,6 +70,7 @@
 		"./src/models/user.ts",
 		"./src/models/userkey.ts",
 		"./src/reply.ts",
+		"./src/serializers/app.ts",
 		"./src/serializers/drive-file.ts",
 		"./src/serializers/drive-folder.ts",
 		"./src/serializers/drive-tag.ts",
