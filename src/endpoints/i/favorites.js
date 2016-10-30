@@ -4,7 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Favorite from '../models/favorite';
+import Favorite from '../../models/favorite';
 import serialize from '../../serializers/post';
 
 /**
