@@ -21,6 +21,8 @@ export default <IEndpoint[]>[
 
 	{ name: 'username/available', shouldBeSignin: false },
 
+	{ name: 'my/apps',            shouldBeSignin: true },
+
 	{ name: 'app/create',            shouldBeSignin: true, limitDuration: day, limitMax: 2 },
 	{ name: 'app/name_id/available', shouldBeSignin: false },
 
