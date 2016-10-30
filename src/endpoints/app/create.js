@@ -17,7 +17,7 @@ import serialize from '../serializers/app';
 module.exports = async (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'name_id' parameter
+	// Get 'name_id' parameter
 	const nameId = params.name_id;
 	if (nameId == null || nameId == '') {
 		return rej('name_id is required');
@@ -43,6 +43,7 @@ module.exports = async (params, user) =>
 		user: user._id,
 		name: name,
 		name_id: nameId,
+		name_id_lower: nameId.toLowerCase(),
 		secret: secret
 	});
 

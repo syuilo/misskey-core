@@ -21,6 +21,11 @@ export default <IEndpoint[]>[
 
 	{ name: 'username/available', shouldBeSignin: false },
 
+	{ name: 'app/create',            shouldBeSignin: true, limitDuration: day, limitMax: 2 },
+	{ name: 'app/name_id/available', shouldBeSignin: false },
+
+	{ name: 'auth/gen_session_token', shouldBeSignin: false },
+
 	{ name: 'aggregation/users/post',      shouldBeSignin: false },
 	{ name: 'aggregation/users/like',      shouldBeSignin: false },
 	{ name: 'aggregation/users/followers', shouldBeSignin: false },
