@@ -54,7 +54,7 @@ export default (
 		delete _app.secret;
 	}
 
-	_app.icon_url = _app.icon !== null
+	_app.icon_url = _app.icon != null
 		? `${config.drive.url}/${_app.icon}`
 		: `${config.drive.url}/app-default.jpg`;
 

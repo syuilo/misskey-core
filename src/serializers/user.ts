@@ -77,11 +77,11 @@ export default (
 		delete _user.email;
 	}
 
-	_user.avatar_url = _user.avatar !== null
+	_user.avatar_url = _user.avatar != null
 		? `${config.drive.url}/${_user.avatar}`
 		: `${config.drive.url}/default-avatar.jpg`;
 
-	_user.banner_url = _user.banner !== null
+	_user.banner_url = _user.banner != null
 		? `${config.drive.url}/${_user.banner}`
 		: null;
 
