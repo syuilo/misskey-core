@@ -49,7 +49,7 @@ app.get('/', (req, res) => {
 	res.render('index');
 });
 
-app.get('/authorization/:token', require('./web/auth').default);
+app.get('/authorize/:token', require('./web/auth').default);
 
 app.get('/:endpoint([a-z_\/]+)', (req, res) => {
 	res.render(`docs/${req.params.endpoint}`);
