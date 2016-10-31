@@ -43,7 +43,7 @@ export default (req: express.Request) =>
 		return resolve({ app: null, user: null, isWeb: true });
 	}
 
-	const userKey = req.headers['user-key'];
+	// const userKey = req.headers['user-key'];
 
 	return resolve({ app: null, user: null, isWeb: false });
 });
