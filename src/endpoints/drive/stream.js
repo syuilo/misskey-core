@@ -22,7 +22,7 @@ module.exports = (params, user) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -33,7 +33,7 @@ module.exports = (params, user) =>
 	const since = params.since || null;
 	const max = params.max || null;
 
-	// 両方指定してたらエラー
+	// Check if both of since and max is specified
 	if (since !== null && max !== null) {
 		return rej('cannot set since and max');
 	}
@@ -48,7 +48,7 @@ module.exports = (params, user) =>
 		type = new RegExp(`^${type.replace(/\*/g, '.+?')}$`);
 	}
 
-	// クエリ構築
+	// Construct query
 	const sort = {
 		created_at: -1
 	};
@@ -69,7 +69,7 @@ module.exports = (params, user) =>
 		query.type = type;
 	}
 
-	// クエリ発行
+	// Issue query
 	const files = await DriveFile
 		.find(query, {
 			data: false
@@ -83,7 +83,7 @@ module.exports = (params, user) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(files.map(async file =>
 		await serialize(file))));
 });

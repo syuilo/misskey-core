@@ -37,7 +37,7 @@ module.exports = (params) =>
 			{ $project: {
 				repost: '$repost',
 				reply_to: '$reply_to',
-				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // 日本時間に戻す
+				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
 				date: {
@@ -99,7 +99,7 @@ module.exports = (params) =>
 			graph.push({
 				date: {
 					year: day.getFullYear(),
-					month: day.getMonth() + 1, // JavaScriptでは月を0~11で表すので+1します
+					month: day.getMonth() + 1, // In JavaScript, month is zero-based.
 					day: day.getDate()
 				},
 				posts: 0,

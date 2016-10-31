@@ -33,6 +33,6 @@ module.exports = (params, user) =>
 		return rej('file-not-found');
 	}
 
-	// serialize
+	// Serialize
 	res(await serialize(file));
 });

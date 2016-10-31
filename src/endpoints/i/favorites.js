@@ -21,7 +21,7 @@ module.exports = (params) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -57,7 +57,7 @@ module.exports = (params) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>
 		await serialize(favorite.post)
 	)));

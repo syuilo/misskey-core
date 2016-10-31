@@ -57,7 +57,7 @@ module.exports = (params, user) =>
 				return rej('parent-folder-not-found');
 			}
 
-			// 再帰しないかチェック
+			// Check if the circular reference will be occured
 			async function checkCircle(f) {
 				f = await DriveFolder.findOne({ _id: f }, { _id: true, folder: true });
 				if (f._id.toString() === folder._id.toString()) {
@@ -84,7 +84,7 @@ module.exports = (params, user) =>
 		$set: folder
 	});
 
-	// serialize
+	// Serialize
 	const folderObj = await serialize(folder);
 
 	// Response

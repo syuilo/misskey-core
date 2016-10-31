@@ -34,7 +34,7 @@ module.exports = (params, user) =>
 		return rej('folder-not-found');
 	}
 
-	// serialize
+	// Serialize
 	res(await serialize(folder, {
 		includeParent: true
 	}));

@@ -27,7 +27,7 @@ module.exports = (params, user) =>
 		return rej('user is required');
 	}
 
-	// 自分自身
+	// Check if the followee is yourself
 	if (userId === user._id.toString()) {
 		return rej('followee is yourself');
 	}

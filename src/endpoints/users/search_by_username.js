@@ -34,7 +34,7 @@ module.exports = (params, me) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -56,7 +56,7 @@ module.exports = (params, me) =>
 		})
 		.toArray();
 
-	// serialize
+	// Serialize
 	res(await Promise.all(users.map(async user =>
 		await serialize(user, me))));
 });

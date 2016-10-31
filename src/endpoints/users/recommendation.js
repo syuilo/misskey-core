@@ -22,7 +22,7 @@ module.exports = (params, me) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -38,7 +38,7 @@ module.exports = (params, me) =>
 		offset = 0;
 	}
 
-	// 自分がフォローしているユーザーの関係を取得
+	// Fetch relation to other users who the user follows
 	// SELECT followee
 	const following = await Following
 		.find({
@@ -47,7 +47,7 @@ module.exports = (params, me) =>
 		}, { followee: true })
 		.toArray();
 
-	// 自分と自分がフォローしているユーザーのIDのリストを生成
+	// ID list of the user itself and other users who the user follows
 	const followingIds = following.length !== 0
 		? [...following.map(follow => follow.followee), me._id]
 		: [me._id];
@@ -70,7 +70,7 @@ module.exports = (params, me) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(users.map(async user =>
 		await serialize(user, me))));
 });
