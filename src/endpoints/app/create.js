@@ -46,6 +46,9 @@ module.exports = async (params, user) =>
 		return rej('permission is required');
 	}
 
+	// Get 'callback_url' parameter
+	const callback = params.callback_url;
+
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -58,6 +61,7 @@ module.exports = async (params, user) =>
 		name_id_lower: nameId.toLowerCase(),
 		description: description,
 		permission: permission.split(','),
+		callback_url: callback,
 		secret: secret
 	});
 
