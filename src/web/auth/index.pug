@@ -1,11 +1,66 @@
 doctype html
 
+- var escapeScript = function(name, val) {
+-   return 'eval(decodeURIComponent("' + encodeURIComponent('var ' + name + '=' + val) + '"));';
+- }
+
 html(dir='ltr')
 	head
 		meta(charset='utf-8')
 		title Misskey | アプリの連携
+		script!= escapeScript('app', JSON.stringify(app))
 		style
 			include index.css
+		script.
+			alert('a');
 
 	body
+		div.me
+			img(src= me.avatar_url + '?thumbnail&size=64')
+			p
+				b= me.username
+				| でログイン中
 		main
+			header
+				h1
+					i 「#{app.name}」
+					| があなたの
+					b アカウント
+					| に
+					b アクセス
+					| することを
+					b 許可
+					| しますか？
+				img(src= app.icon_url + '?thumbnail&size=64')
+			div.app
+				section
+					h2= app.name
+					p.nid= app.name_id
+					p.description= app.description
+				section
+					h2 このアプリは次の権限を要求しています:
+					ul
+						each p in app.permission
+							li
+								case p
+									when 'account-read'
+										| アカウントの情報を見る。
+									when 'account-write'
+										| アカウントの情報を操作する。
+									when 'post-write'
+										| 投稿する。
+									when 'like-write'
+										| いいねしたりいいね解除する。
+									when 'following-write'
+										| フォローしたりフォロー解除する。
+									when 'drive-read'
+										| ドライブを見る。
+									when 'drive-write'
+										| ドライブを操作する。
+									when 'notification-read'
+										| 通知を見る。
+									when 'notification-write'
+										| 通知を操作する。
+			div.action
+				button キャンセル
+				button アクセスを許可

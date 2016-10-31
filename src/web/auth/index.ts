@@ -3,6 +3,8 @@ import * as express from 'express';
 import App from '../../models/app';
 import AuthSessToken from '../../models/auth-sess-token';
 import User from '../../models/user';
+import serializeApp from '../../serializers/app';
+import serializeUser from '../../serializers/user';
 
 export default async function(req: express.Request, res: express.Response): Promise<any> {
 	// Fetch token
@@ -25,8 +27,8 @@ export default async function(req: express.Request, res: express.Response): Prom
 			.findOne({ _web: i });
 
 		res.render('auth', {
-			me,
-			app
+			me: await serializeUser(me),
+			app: await serializeApp(app)
 		});
 	} else {
 		res.render('auth/signin');
