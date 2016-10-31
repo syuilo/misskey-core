@@ -39,7 +39,7 @@ export default (req: express.Request) =>
 	}
 
 	const webKey = req.body['_web'];
-	if (webKey && webKey == config.webSecret) {
+	if (webKey && webKey === config.webSecret) {
 		return resolve({ app: null, user: null, isWeb: true });
 	}
 
