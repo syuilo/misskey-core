@@ -17,15 +17,15 @@ interface IOptions {
 
 const db = <mongodb.Db>(<any>global).db;
 
-export async function inc(name: string, id: any, options: IOptions) {
+export async function inc(name: string, id: any, options: IOptions): Promise<void> {
 	await update(name, id, 1, true, options);
 }
 
-export async function dec(name: string, id: any, options: IOptions) {
+export async function dec(name: string, id: any, options: IOptions): Promise<void> {
 	await update(name, id, -1, true, options);
 }
 
-export async function update(name: string, id: any, value: number, inc: boolean, options: IOptions) {
+export async function update(name: string, id: any, value: number, inc: boolean, options: IOptions): Promise<void> {
 	const collection = db.collection(`record_of_${name}`);
 
 	const record = await collection.findOne({ key: id });
