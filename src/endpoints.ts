@@ -12,6 +12,7 @@ export interface IEndpoint {
 	minInterval?: number;
 	withFile?: boolean;
 	webOnly?: boolean;
+	kind?: string;
 }
 
 export default <IEndpoint[]>[
@@ -21,10 +22,10 @@ export default <IEndpoint[]>[
 
 	{ name: 'username/available', shouldBeSignin: false },
 
-	{ name: 'my/apps',            shouldBeSignin: true },
+	{ name: 'my/apps', shouldBeSignin: true },
 
 	{ name: 'app/create',            shouldBeSignin: true, limitDuration: day, limitMax: 2 },
-	{ name: 'app/show', shouldBeSignin: false },
+	{ name: 'app/show',              shouldBeSignin: false },
 	{ name: 'app/name_id/available', shouldBeSignin: false },
 
 	{ name: 'auth/gen_session_token', shouldBeSignin: false },
@@ -38,30 +39,30 @@ export default <IEndpoint[]>[
 	{ name: 'aggregation/posts/repost',    shouldBeSignin: false },
 	{ name: 'aggregation/posts/reply',     shouldBeSignin: false },
 
-	{ name: 'i',             shouldBeSignin: true },
-	{ name: 'i/update',      shouldBeSignin: true, limitDuration: day, limitMax: 50 },
+	{ name: 'i',             shouldBeSignin: true, kind: 'account/read' },
+	{ name: 'i/update',      shouldBeSignin: true, limitDuration: day, limitMax: 50, kind: 'account/write' },
 	{ name: 'i/appdata/get', shouldBeSignin: true },
 	{ name: 'i/appdata/set', shouldBeSignin: true },
 
-	{ name: 'i/notifications',                shouldBeSignin: true },
-	{ name: 'notifications/delete',           shouldBeSignin: true },
-	{ name: 'notifications/delete_all',       shouldBeSignin: true },
-	{ name: 'notifications/mark_as_read',     shouldBeSignin: true },
-	{ name: 'notifications/mark_as_read_all', shouldBeSignin: true },
+	{ name: 'i/notifications',                shouldBeSignin: true, kind: 'notification/read' },
+	{ name: 'notifications/delete',           shouldBeSignin: true, kind: 'notification/write' },
+	{ name: 'notifications/delete_all',       shouldBeSignin: true, kind: 'notification/write' },
+	{ name: 'notifications/mark_as_read',     shouldBeSignin: true, kind: 'notification/write' },
+	{ name: 'notifications/mark_as_read_all', shouldBeSignin: true, kind: 'notification/write' },
 
-	{ name: 'drive',                shouldBeSignin: true },
-	{ name: 'drive/stream',         shouldBeSignin: true },
-	{ name: 'drive/files',          shouldBeSignin: true },
-	{ name: 'drive/files/create',   shouldBeSignin: true, limitDuration: hour, limitMax: 100, withFile: true },
-	{ name: 'drive/files/show',     shouldBeSignin: true },
-	{ name: 'drive/files/find',     shouldBeSignin: true },
-	{ name: 'drive/files/delete',   shouldBeSignin: true },
-	{ name: 'drive/files/update',   shouldBeSignin: true },
-	{ name: 'drive/folders',        shouldBeSignin: true },
-	{ name: 'drive/folders/create', shouldBeSignin: true, limitDuration: hour, limitMax: 50 },
-	{ name: 'drive/folders/show',   shouldBeSignin: true },
-	{ name: 'drive/folders/find',   shouldBeSignin: true },
-	{ name: 'drive/folders/update', shouldBeSignin: true },
+	{ name: 'drive',                shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/stream',         shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/files',          shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/files/create',   shouldBeSignin: true, limitDuration: hour, limitMax: 100, withFile: true, kind: 'drive/write' },
+	{ name: 'drive/files/show',     shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/files/find',     shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/files/delete',   shouldBeSignin: true, kind: 'drive/write' },
+	{ name: 'drive/files/update',   shouldBeSignin: true, kind: 'drive/write' },
+	{ name: 'drive/folders',        shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/folders/create', shouldBeSignin: true, limitDuration: hour, limitMax: 50, kind: 'drive/write' },
+	{ name: 'drive/folders/show',   shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/folders/find',   shouldBeSignin: true, kind: 'drive/read' },
+	{ name: 'drive/folders/update', shouldBeSignin: true, kind: 'drive/write' },
 
 	{ name: 'users',                    shouldBeSignin: false },
 	{ name: 'users/show',               shouldBeSignin: false },
@@ -70,22 +71,22 @@ export default <IEndpoint[]>[
 	{ name: 'users/posts',              shouldBeSignin: false },
 	{ name: 'users/following',          shouldBeSignin: false },
 	{ name: 'users/followers',          shouldBeSignin: false },
-	{ name: 'users/recommendation',     shouldBeSignin: true },
+	{ name: 'users/recommendation',     shouldBeSignin: true, kind: 'account/read' },
 
-	{ name: 'following/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100 },
-	{ name: 'following/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100 },
+	{ name: 'following/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following/write' },
+	{ name: 'following/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'following/write' },
 
 	{ name: 'posts/show',             shouldBeSignin: false },
 	{ name: 'posts/replies',          shouldBeSignin: false },
 	{ name: 'posts/context',          shouldBeSignin: false },
-	{ name: 'posts/create',           shouldBeSignin: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second },
+	{ name: 'posts/create',           shouldBeSignin: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second, kind: 'post/write' },
 	{ name: 'posts/reposts',          shouldBeSignin: false },
 	{ name: 'posts/search',           shouldBeSignin: false },
 	{ name: 'posts/timeline',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
 	{ name: 'posts/likes',            shouldBeSignin: true },
-	{ name: 'posts/likes/create',     shouldBeSignin: true, limitDuration: hour, limitMax: 100 },
-	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100 },
-	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100 },
-	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100 }
+	{ name: 'posts/likes/create',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like/write' },
+	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like/write' },
+	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite/write' },
+	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite/write' }
 
 ];
