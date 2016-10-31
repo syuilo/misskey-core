@@ -50,6 +50,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/authorize/:token', require('./web/auth').default);
+app.post('/authorize', require('./endpoints/auth/authorize').default);
 
 app.get('/:endpoint([a-z_\/]+)', (req, res) => {
 	res.render(`docs/${req.params.endpoint}`);

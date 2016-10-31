@@ -22,16 +22,20 @@ export default async function(req: express.Request, res: express.Response): Prom
 	// Get token from cookie
 	const i = (req.headers['cookie'].match(/i=(\w+)/) || [null, null])[1];
 
-	if (i) {
-		const me = await User
-			.findOne({ _web: i });
+	if (i === null) {
+		return res.sendStatus(400);
+	}
 
-		res.render('auth', {
-			me: await serializeUser(me),
-			app: await serializeApp(app),
-			token: token.token
+	const me = await User
+		.findOne({ _web: i });
+
+	if (me === null) {
+		return res.sendStatus(400);
+	}
+
+	if (req.params.action === 'authorize') {
+		res.render('authorized', {
+			me: await serializeUser(me)
 		});
-	} else {
-		res.render('auth/signin');
 	}
 }
