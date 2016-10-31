@@ -15,6 +15,8 @@ import config from './config';
 import endpoints from './endpoints';
 import streaming from './streaming';
 
+import User from './models/user';
+
 /**
  * Init app
  */
@@ -47,6 +49,26 @@ app.use('/resources', express.static(__dirname + '/resources'));
  */
 app.get('/', (req, res) => {
 	res.render('index');
+});
+
+app.get('/authorization/:token', async (req, res) => {
+	// Get token from cookie
+	const i = (req.headers['cookie'].match(/i=(\w+)/) || [null, null])[1];
+
+	if (i) {
+		const me = await User
+			.findOne({ _web: i });
+
+		res.render('auth', {
+			me: me
+		});
+	} else {
+		res.render('auth/signin');
+	}
+});
+
+app.get('/:endpoint([a-z_\/]+)', (req, res) => {
+	res.render(`docs/${req.params.endpoint}`);
 });
 
 const upload = multer({ dest: 'uploads/' });
