@@ -37,7 +37,7 @@ module.exports = (params) =>
 	// Create session token document
 	const inserted = await AuthSessToken.insert({
 		created_at: new Date(),
-		app: app.id,
+		app: app._id,
 		token: token
 	});
 
