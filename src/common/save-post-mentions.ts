@@ -10,7 +10,6 @@ export default function(author: IUser, post: IPost, text: string): void {
 				user: user._id,
 				post: post.id
 			}, (createErr: any, createdMention: IPostMention) => {
-				// 通知を作成
 				createNotification(null, user._id, 'mention', {
 					postId: post.id
 				});

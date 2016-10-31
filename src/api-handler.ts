@@ -10,7 +10,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 	const reply = _reply.bind(null, res);
 	let ctx: IAuthContext;
 
-	// 認証
+	// Authetication
 	try {
 		ctx = await authenticate(req);
 	} catch (e) {
@@ -27,7 +27,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 
 	if (endpoint.shouldBeSignin) {
 		try {
-			// レートリミット
+			// Rate limit
 			await limitter(endpoint, ctx);
 		} catch (e) {
 			return reply(429);
@@ -40,7 +40,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		exec = exec.bind(null, req.file);
 	}
 
-	// API呼び出し
+	// API invoking
 	try {
 		const res = await exec(req.body, ctx.user, ctx.app, ctx.isWeb);
 		reply(res);

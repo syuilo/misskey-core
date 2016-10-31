@@ -4,17 +4,17 @@ import config from './config';
 
 export interface IAuthContext {
 	/**
-	 * リクエストしたApp
+	 * App which requested
 	 */
 	app: any;
 
 	/**
-	 * 認証されたユーザー
+	 * Authenticated user
 	 */
 	user: any;
 
 	/**
-	 * 公式Webからのリクエストか否か
+	 * Weather if the request is via the Misskey Web Client or not
 	 */
 	isWeb: boolean;
 }

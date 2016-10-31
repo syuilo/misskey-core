@@ -10,16 +10,16 @@ import event from '../event';
 import es from '../db/elasticsearch';
 
 /**
- * ドライブにファイルを追加します
+ * Add file to drive
  *
- * @param user ユーザー
- * @param fileName ファイル名
- * @param data 内容
- * @param comment ファイルの説明
- * @param type ファイルタイプ
- * @param folderId フォルダID
- * @param force trueに設定すると、ハッシュが同じファイルが見つかった場合でも無視してドライブに登録します
- * @return 追加したファイルオブジェクト
+ * @param user User who wish to add file
+ * @param fileName File name
+ * @param data Contents
+ * @param comment Comment
+ * @param type File type
+ * @param folderId Folder ID
+ * @param force If set to true, forcibly upload the file even if there is a file with the same hash.
+ * @return Object that represents added file
  */
 export default (
 	user: any,

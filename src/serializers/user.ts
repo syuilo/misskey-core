@@ -47,7 +47,7 @@ export default (
 		_user = deepcopy(user);
 	}
 
-	// me
+	// Me
 	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
 		if (typeof me === 'string') {
 			me = new mongo.ObjectID(me);
@@ -66,12 +66,12 @@ export default (
 	// Remove private properties
 	delete _user.password;
 
-	// 自分だけが見れる
+	// Visible by only owner
 	if (!opts.includePrivates) {
 		delete _user.drive_capacity;
 	}
 
-	// 公式でしか見れない
+	// Visible via only the official client
 	if (!opts.includeSecrets) {
 		delete _user.data;
 		delete _user.email;
@@ -91,7 +91,7 @@ export default (
 	}
 
 	if (me && me.toString() !== _user.id.toString()) {
-		// フォローしているか
+		// If the user is following
 		const follow = await Following.findOne({
 			follower: me,
 			followee: _user.id,
@@ -99,7 +99,7 @@ export default (
 		});
 		_user.is_following = follow !== null;
 
-		// フォローされているか
+		// If the user is followed
 		const follow2 = await Following.findOne({
 			follower: _user.id,
 			followee: me,

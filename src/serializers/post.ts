@@ -82,7 +82,7 @@ const self = (
 		});
 	}
 
-	// Check is liked
+	// Check if it is liked
 	if (me && opts.includeIsLiked) {
 		const liked = await Like
 			.count({

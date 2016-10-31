@@ -7,7 +7,7 @@ export default function(text: string): string[] {
 
 	return (tags !== null ? tags : [])
 		.map(tag => tag.trim())
-		.map(tag => tag.replace('#', '')) // 先頭の#を除去
+		.map(tag => tag.replace('#', '')) // Eliminate # at the head
 		.filter(tag => tag !== '')
-		.filter(tag => tag.indexOf('#') === -1); // 複数の#が含まれていたら不正なので弾く
+		.filter(tag => tag.indexOf('#') === -1); // Kick if it contains more than one #
 }

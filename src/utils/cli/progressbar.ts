@@ -33,7 +33,7 @@ class ProgressBar extends ev.EventEmitter {
 		this.value++;
 		this.draw();
 
-		// on complete
+		// Check if it is fulfilled
 		if (this.value === this.max) {
 			this.indicator = null;
 
@@ -82,6 +82,6 @@ export default ProgressBar;
  * Clear current line
  */
 function cll(): void {
-	readline.clearLine(process.stdout, 0); // clear current text
-	readline.cursorTo(process.stdout, 0, null); // move cursor to beginning of line
+	readline.clearLine(process.stdout, 0); // Clear current text
+	readline.cursorTo(process.stdout, 0, null); // Move cursor to the head of line
 }

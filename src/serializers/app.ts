@@ -49,7 +49,7 @@ export default (
 
 	delete _app.name_id_lower;
 
-	// 自分だけが見れる
+	// Visible by only owner
 	if (!opts.includeSecret) {
 		delete _app.secret;
 	}

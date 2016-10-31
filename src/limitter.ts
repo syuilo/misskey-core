@@ -23,7 +23,7 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 		ok();
 	}
 
-	// 短い期間の方のリミット
+	// Short-term limit
 	function min(): void {
 		const minIntervalLimiter = new Limiter({
 			id: `${ctx.user._id}:${limitKey}:min`,
@@ -47,7 +47,7 @@ export default (endpoint: IEndpoint, ctx: IAuthContext) => new Promise((ok, reje
 		});
 	}
 
-	// 長い期間の方のリミット
+	// Long term limit
 	function max(): void {
 		const limiter = new Limiter({
 			id: `${ctx.user._id}:${limitKey}`,
