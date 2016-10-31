@@ -4,8 +4,8 @@
  * Module dependencies
  */
 import rndstr from 'rndstr';
-import User from '../../models/user';
-import serialize from '../serializers/app';
+import App from '../../models/app';
+import serialize from '../../serializers/app';
 
 /**
  * Create an app
