@@ -32,7 +32,7 @@ module.exports = (params, user) =>
 		return rej('post not found');
 	}
 
-	// serialize
+	// Serialize
 	res(await serialize(post, user, {
 		serializeReplyTo: true,
 		includeIsLiked: true

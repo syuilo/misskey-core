@@ -28,7 +28,7 @@ module.exports = (params, user) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -56,7 +56,7 @@ module.exports = (params, user) =>
 		return rej('post not found', 'POST_NOT_FOUND');
 	}
 
-	// クエリ発行
+	// Issue query
 	const likes = await Like
 		.find({ post: post._id }, {}, {
 			limit: limit,
@@ -71,7 +71,7 @@ module.exports = (params, user) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(likes.map(async like =>
 		await serialize(like.user, user))));
 });

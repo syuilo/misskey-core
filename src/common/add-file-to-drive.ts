@@ -29,10 +29,10 @@ export default (
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
 ) => new Promise<any>(async (resolve, reject) => {
-	// ファイルサイズ
+	// File size
 	const size = data.byteLength;
 
-	// ファイルタイプ
+	// File type
 	let mime = 'application/octet-stream';
 	const type = fileType(data);
 	if (type !== null) {
@@ -47,14 +47,14 @@ export default (
 		}
 	}
 
-	// ハッシュ生成
+	// Generate hash
 	const hash = crypto
 		.createHash('sha256')
 		.update(data)
 		.digest('hex') as string;
 
 	if (!force) {
-		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認
+		// Check if there is a file with the same hash and same data size (to be safe)
 		const much = await DriveFile.findOne({
 			user: user._id,
 			hash: hash,
@@ -67,7 +67,7 @@ export default (
 		}
 	}
 
-	// ドライブ使用量を取得するためにすべてのファイルを取得
+	// Fetch all files to calculate drive usage
 	const files = await DriveFile
 		.find({ user: user._id }, {
 			datasize: true,
@@ -75,15 +75,15 @@ export default (
 		})
 		.toArray();
 
-	// 現時点でのドライブ使用量を算出(byte)
+	// Calculate drive usage (in byte)
 	const usage = files.map(file => file.datasize).reduce((x, y) => x + y, 0);
 
-	// 容量を超える場合
+	// If usage limit exceeded
 	if (usage + size > user.drive_capacity) {
 		return reject('no-free-space');
 	}
 
-	// フォルダ指定時
+	// If the folder is specified
 	let folder: any = null;
 	if (folderId !== null) {
 		folder = await DriveFolder
@@ -99,9 +99,9 @@ export default (
 
 	let properties: any = null;
 
-	// 画像だった場合
+	// If the file is an image
 	if (/^image\/.*$/.test(mime)) {
-		// 幅と高さを取得してプロパティに保存しておく
+		// Calculate width and height to save in property
 		const g = gm(data, name);
 		const size = await prominence(g).size();
 		properties = {
@@ -110,7 +110,7 @@ export default (
 		};
 	}
 
-	// DriveFileドキュメントを作成
+	// Create DriveFile document
 	const res = await DriveFile.insert({
 		created_at: new Date(),
 		user: user._id,

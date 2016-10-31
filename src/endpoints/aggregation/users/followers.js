@@ -57,7 +57,7 @@ module.exports = (params) =>
 		day = new Date(day.setSeconds(59));
 		day = new Date(day.setMinutes(59));
 		day = new Date(day.setHours(23));
-		//day = day.getTime();
+		// day = day.getTime();
 
 		const count = following.filter(f =>
 			f.created_at < day && (f.deleted_at == null || f.deleted_at > day)
@@ -66,7 +66,7 @@ module.exports = (params) =>
 		graph.push({
 			date: {
 				year: day.getFullYear(),
-				month: day.getMonth() + 1, // JavaScriptでは月を0~11で表すので+1します
+				month: day.getMonth() + 1, // In JavaScript, month is zero-based.
 				day: day.getDate()
 			},
 			count: count

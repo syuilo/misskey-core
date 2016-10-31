@@ -17,7 +17,7 @@ import serialize from '../serializers/user';
 module.exports = (params, user, _, isWeb) =>
 	new Promise(async (res, rej) =>
 {
-	// serialize
+	// Serialize
 	res(await serialize(user, user, {
 		includePrivates: true,
 		includeSecrets: isWeb,

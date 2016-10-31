@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 import Like from '../../../models/like';
 import Post from '../../../models/post';
 import User from '../../../models/user';
-//import event from '../../../event';
+// import event from '../../../event';
 
 /**
  * Unlike a post

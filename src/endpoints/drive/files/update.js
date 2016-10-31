@@ -66,7 +66,7 @@ module.exports = (params, user) =>
 		$set: file
 	});
 
-	// serialize
+	// Serialize
 	const fileObj = await serialize(file);
 
 	// Response

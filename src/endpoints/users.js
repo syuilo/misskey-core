@@ -21,7 +21,7 @@ module.exports = (params, me) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -32,12 +32,12 @@ module.exports = (params, me) =>
 	const since = params.since || null;
 	const max = params.max || null;
 
-	// 両方指定してたらエラー
+	// Check if both of since and max is specified
 	if (since !== null && max !== null) {
 		return rej('cannot set since and max');
 	}
 
-	// クエリ構築
+	// Construct query
 	const sort = {
 		created_at: -1
 	};
@@ -53,7 +53,7 @@ module.exports = (params, me) =>
 		};
 	}
 
-	// クエリ発行
+	// Issue query
 	const users = await User
 		.find(query, {}, {
 			limit: limit,
@@ -65,7 +65,7 @@ module.exports = (params, me) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(users.map(async user =>
 		await serialize(user, me))));
 });

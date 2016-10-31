@@ -64,14 +64,14 @@ module.exports = async (params, reply, user, _, isWeb) =>
 		$set: user
 	});
 
-	// serialize
+	// Serialize
 	res(await serialize(user, user, {
 		includePrivates: true,
 		includeSecrets: isWeb,
 		includeProfileImageIds: isWeb
 	}));
 
-	// 検索インデックス更新
+	// Update search index
 	es.index({
 		index: 'misskey',
 		type: 'user',

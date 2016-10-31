@@ -47,7 +47,7 @@ module.exports = (params, user) =>
 		parentId = new mongo.ObjectID(parentId);
 	}
 
-	// 親フォルダ指定時
+	// If the parent folder is specified
 	let parent = null;
 	if (parentId !== null) {
 		parent = await DriveFolder

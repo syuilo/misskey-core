@@ -31,7 +31,7 @@ module.exports = (params, user) =>
 		folder = new mongo.ObjectID(folder);
 	}
 
-	// クエリ発行
+	// Issue query
 	const folders = await DriveFolder
 		.find({
 			name: name,
@@ -44,7 +44,7 @@ module.exports = (params, user) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(folders.map(async folder =>
 		await serialize(folder))));
 });

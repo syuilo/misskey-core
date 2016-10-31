@@ -46,7 +46,7 @@ module.exports = (params, user) =>
 	// Response
 	res();
 
-	// serialize
+	// Serialize
 	const notificationObj = await serialize(notification);
 
 	// Publish read_notification event

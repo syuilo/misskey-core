@@ -23,7 +23,7 @@ module.exports = (params, user, app) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -34,7 +34,7 @@ module.exports = (params, user, app) =>
 	const since = params.since || null;
 	const max = params.max || null;
 
-	// 両方指定してたらエラー
+	// Check if both of since and max is specified
 	if (since !== null && max !== null) {
 		return rej('cannot set since and max');
 	}
@@ -47,7 +47,7 @@ module.exports = (params, user, app) =>
 		folder = new mongo.ObjectID(folder);
 	}
 
-	// クエリ構築
+	// Construct query
 	const sort = {
 		created_at: -1
 	};
@@ -66,7 +66,7 @@ module.exports = (params, user, app) =>
 		};
 	}
 
-	// クエリ発行
+	// Issue query
 	const folders = await DriveFolder
 		.find(query, {
 			data: false
@@ -80,7 +80,7 @@ module.exports = (params, user, app) =>
 		return res([]);
 	}
 
-	// serialize
+	// Serialize
 	res(await Promise.all(folders.map(async folder =>
 		await serialize(folder))));
 });

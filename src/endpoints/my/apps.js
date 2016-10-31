@@ -22,7 +22,7 @@ module.exports = (params, user) =>
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
 
-		// 1 ~ 100 まで
+		// From 1 to 100
 		if (!(1 <= limit && limit <= 100)) {
 			return rej('invalid limit range');
 		}
@@ -42,7 +42,7 @@ module.exports = (params, user) =>
 		user: user._id
 	};
 
-	// Exec query
+	// Execute query
 	const apps = await App
 		.find(query, {}, {
 			limit: limit,

@@ -70,7 +70,7 @@ module.exports = (params, me) =>
 			})
 			.toArray();
 
-		// serialize
+		// Serialize
 		res(await Promise.all(users.map(async user =>
 			await serialize(user, me))));
 	});

@@ -59,6 +59,6 @@ module.exports = async (params, reply, _1, _2, isWeb) =>
 			ua: params.ua
 		});
 
-		//event.
+		// Event
 	});
 });
