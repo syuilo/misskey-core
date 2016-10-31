@@ -44,4 +44,6 @@ export default (req: express.Request) =>
 	}
 
 	const userKey = req.headers['user-key'];
+
+	return resolve({ app: null, user: null, isWeb: false });
 });
