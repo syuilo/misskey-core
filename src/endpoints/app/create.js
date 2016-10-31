@@ -40,6 +40,12 @@ module.exports = async (params, user) =>
 		return rej('description is required');
 	}
 
+	// Get 'permission' parameter
+	const permission = params.permission;
+	if (permission == null || permission == '') {
+		return rej('permission is required');
+	}
+
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
 
@@ -51,6 +57,7 @@ module.exports = async (params, user) =>
 		name_id: nameId,
 		name_id_lower: nameId.toLowerCase(),
 		description: description,
+		permission: permission.split(','),
 		secret: secret
 	});
 
