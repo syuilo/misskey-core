@@ -30,8 +30,14 @@ module.exports = async (params, user) =>
 
 	// Get 'name' parameter
 	const name = params.name;
-	if (name == null) {
+	if (name == null || name == '') {
 		return rej('name is required');
+	}
+
+	// Get 'description' parameter
+	const description = params.description;
+	if (description == null || description == '') {
+		return rej('description is required');
 	}
 
 	// Generate secret
@@ -44,6 +50,7 @@ module.exports = async (params, user) =>
 		name: name,
 		name_id: nameId,
 		name_id_lower: nameId.toLowerCase(),
+		description: description,
 		secret: secret
 	});
 
