@@ -31,7 +31,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 			// レートリミット
 			await limitter(endpoint, ctx);
 		} catch (e) {
-			reply(429);
+			return reply(429);
 		}
 	}
 
