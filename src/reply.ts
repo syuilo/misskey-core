@@ -10,4 +10,4 @@ export default (res: express.Response, x?: any, y?: any) => {
 	} else {
 		res.send(x);
 	}
-}
+};
