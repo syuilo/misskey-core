@@ -22,8 +22,7 @@ export default (
 	options?: {
 		populateMembers: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) =>
-{
+) => new Promise<Object>(async (resolve, reject) => {
 	const opts = options || {
 		populateMembers: true
 	};

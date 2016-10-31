@@ -24,8 +24,7 @@ export default (
 	options?: {
 		populateRecipientAndGroup: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) =>
-{
+) => new Promise<Object>(async (resolve, reject) => {
 	const opts = options || {
 		populateRecipientAndGroup: true
 	};

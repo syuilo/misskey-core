@@ -1,8 +1,7 @@
 import Following from '../models/following';
 
 export default (meId: string, otherpartyId: string) =>
-	new Promise<boolean>((resolve, reject) =>
-{
+	new Promise<boolean>((resolve, reject) => {
 	Following
 	.count({
 		followee: otherpartyId,

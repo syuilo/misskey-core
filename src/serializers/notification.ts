@@ -15,8 +15,7 @@ const deepcopy = require('deepcopy');
  * @param {Object} notification
  * @return {Promise<Object>}
  */
-export default (notification: any) => new Promise<Object>(async (resolve, reject) =>
-{
+export default (notification: any) => new Promise<Object>(async (resolve, reject) => {
 	let _notification: any;
 
 	// Populate the notification if 'notification' is ID

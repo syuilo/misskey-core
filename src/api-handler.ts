@@ -6,8 +6,7 @@ import { IAuthContext } from './authenticate';
 import _reply from './reply';
 import limitter from './limitter';
 
-export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) =>
-{
+export default async (endpoint: IEndpoint, req: express.Request, res: express.Response) => {
 	const reply = _reply.bind(null, res);
 	let ctx: IAuthContext;
 

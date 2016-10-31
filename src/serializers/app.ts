@@ -22,8 +22,7 @@ export default (
 		includeSecret: boolean,
 		includeProfileImageIds: boolean
 	}
-) => new Promise<any>(async (resolve, reject) =>
-{
+) => new Promise<any>(async (resolve, reject) => {
 	const opts = options || {
 		includeSecret: false,
 		includeProfileImageIds: false

@@ -15,8 +15,7 @@ const deepcopy = require('deepcopy');
  */
 const self = (
 	tag: any
-) => new Promise<Object>(async (resolve, reject) =>
-{
+) => new Promise<Object>(async (resolve, reject) => {
 	let _tag: any;
 
 	// Populate the tag if 'tag' is ID

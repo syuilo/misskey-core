@@ -20,8 +20,7 @@ export interface IAuthContext {
 }
 
 export default (req: express.Request) =>
-	new Promise<IAuthContext>(async (resolve, reject) =>
-{
+	new Promise<IAuthContext>(async (resolve, reject) => {
 	const webToken = req.body['_i'];
 	if (webToken) {
 		const user = await User

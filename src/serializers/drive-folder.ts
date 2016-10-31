@@ -19,8 +19,7 @@ const self = (
 	options?: {
 		includeParent: boolean
 	}
-) => new Promise<Object>(async (resolve, reject) =>
-{
+) => new Promise<Object>(async (resolve, reject) => {
 	const opts = options || {
 		includeParent: false
 	};

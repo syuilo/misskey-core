@@ -28,8 +28,7 @@ export default (
 	comment: string = null,
 	folderId: mongodb.ObjectID = null,
 	force: boolean = false
-) => new Promise<any>(async (resolve, reject) =>
-{
+) => new Promise<any>(async (resolve, reject) => {
 	// ファイルサイズ
 	const size = data.byteLength;
 
