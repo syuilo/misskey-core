@@ -76,9 +76,7 @@ function main(): void {
 	// Master
 	if (cluster.isMaster) {
 		master();
-	}
-	// Workers
-	else {
+	} else { // Workers
 		worker();
 	}
 }
