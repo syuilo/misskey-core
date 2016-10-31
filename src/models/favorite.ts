@@ -1,3 +1,3 @@
 import * as mongodb from 'mongodb';
 
-export default (<mongodb.Db>(<any>global).db).collection('favorites');
+export default ((global as any).db as mongodb.Db).collection('favorites');

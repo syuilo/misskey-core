@@ -15,7 +15,7 @@ export interface IEndpoint {
 	kind?: string;
 }
 
-export default <IEndpoint[]>[
+export default [
 	{ name: 'meta',   shouldBeSignin: false },
 	{ name: 'signin', shouldBeSignin: false, webOnly: true },
 	{ name: 'signup', shouldBeSignin: false, webOnly: true },
@@ -89,4 +89,4 @@ export default <IEndpoint[]>[
 	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
 	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' }
 
-];
+] as IEndpoint[];

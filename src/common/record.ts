@@ -15,7 +15,7 @@ interface IOptions {
 	aggregate: () => Promise<number>;
 }
 
-const db = <mongodb.Db>(<any>global).db;
+const db = (global as any).db as mongodb.Db;
 
 export async function inc(name: string, id: any, options: IOptions): Promise<void> {
 	await update(name, id, 1, true, options);

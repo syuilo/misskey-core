@@ -48,10 +48,10 @@ export default (
 	}
 
 	// ハッシュ生成
-	const hash = <string>crypto
+	const hash = crypto
 		.createHash('sha256')
 		.update(data)
-		.digest('hex');
+		.digest('hex') as string;
 
 	if (!force) {
 		// 同じハッシュ(と同じファイルサイズ(念のため))を持つファイルが既に存在するか確認

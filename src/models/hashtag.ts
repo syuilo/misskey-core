@@ -8,10 +8,10 @@ export default function(db: Connection): Model<Document> {
 		users: [{ type: Schema.Types.ObjectId, required: true, ref: 'User' }]
 	});
 
-	if (!(<any>schema).options.toObject) {
-		(<any>schema).options.toObject = {};
+	if (!(schema as any).options.toObject) {
+		(schema as any).options.toObject = {};
 	}
-	(<any>schema).options.toObject.transform = (doc: any, ret: any) => {
+	(schema as any).options.toObject.transform = (doc: any, ret: any) => {
 		ret.id = doc.id;
 		delete ret._id;
 		delete ret.__v;

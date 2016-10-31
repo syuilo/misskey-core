@@ -5,7 +5,7 @@ let conf: IConfig;
 
 try {
 	// Load and parse the config
-	conf = <IConfig>load();
+	conf = load() as IConfig;
 } catch (e) {
 	console.error('Failed to load config: ' + e);
 	process.exit(1);

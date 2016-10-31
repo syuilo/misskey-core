@@ -1,3 +1,3 @@
 import * as mongodb from 'mongodb';
 
-export default (<mongodb.Db>(<any>global).db).collection('following');
+export default ((global as any).db as mongodb.Db).collection('following');

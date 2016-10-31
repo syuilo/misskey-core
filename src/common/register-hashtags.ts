@@ -13,12 +13,12 @@ export default function(me: IUser, hashtags: string[]): void {
 					users: [me.id]
 				});
 			} else {
-				const meExist: any[] = (<any>existHashtag.users).filter((id: any) => {
+				const meExist: any[] = (existHashtag.users as any).filter((id: any) => {
 					return id.toString() === me.id.toString();
 				});
 				if (meExist.length === 0) {
 					existHashtag.count++;
-					(<any>existHashtag.users).push(me.id);
+					(existHashtag.users as any).push(me.id);
 					existHashtag.markModified('users');
 					existHashtag.save();
 				}

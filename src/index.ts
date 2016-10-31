@@ -144,7 +144,7 @@ async function master(): Promise<void> {
 function worker(): void {
 	// Init mongo
 	initdb(config()).then(db => {
-		(<any>global).db = db;
+		(global as any).db = db;
 
 		// start server
 		require('./server');
