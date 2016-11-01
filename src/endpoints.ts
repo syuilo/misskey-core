@@ -30,7 +30,7 @@ export default [
 
 	{ name: 'auth/session/generate', shouldBeSignin: false },
 	{ name: 'auth/session/show',     shouldBeSignin: false },
-	{ name: 'auth/user_key/get',     shouldBeSignin: false },
+	{ name: 'auth/session/userkey',  shouldBeSignin: false },
 	{ name: 'auth/accept',           shouldBeSignin: true, webOnly: true },
 	{ name: 'auth/deny',             shouldBeSignin: true, webOnly: true },
 
