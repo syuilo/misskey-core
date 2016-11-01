@@ -29,6 +29,7 @@ export default [
 	{ name: 'app/name_id/available', shouldBeSignin: false },
 
 	{ name: 'auth/session/generate', shouldBeSignin: false },
+	{ name: 'auth/session/show', shouldBeSignin: false },
 
 	{ name: 'aggregation/users/post',      shouldBeSignin: false },
 	{ name: 'aggregation/users/like',      shouldBeSignin: false },
