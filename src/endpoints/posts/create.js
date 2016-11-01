@@ -160,7 +160,8 @@ module.exports = (params, user, app) =>
 		reply_to: replyTo ? replyTo._id : undefined,
 		repost: repost ? repost._id : undefined,
 		text: text,
-		user: user._id
+		user: user._id,
+		app: app ? app._id : null
 	});
 
 	const post = inserted.ops[0];
