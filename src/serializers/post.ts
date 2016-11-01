@@ -59,7 +59,7 @@ const self = (
 
 	if (_post.images) {
 		// Populate images
-		_post.images = await Promise.all(_post.images.map(async (file) =>
+		_post.images = await Promise.all(_post.images.map(async (file: any) =>
 			await serializeDriveFile(file)
 		));
 	}
