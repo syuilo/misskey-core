@@ -11,9 +11,12 @@ import serialize from '../../serializers/app';
  * Show an app
  *
  * @param {Object} params
+ * @param {Object} user
+ * @param {Object} _
+ * @param {Object} isWeb
  * @return {Promise<object>}
  */
-module.exports = (params) =>
+module.exports = (params, user, _, isWeb) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'id' parameter
@@ -42,5 +45,7 @@ module.exports = (params) =>
 	}
 
 	// Send response
-	res(await serialize(app));
+	res(await serialize(app, {
+		includeSecret: isWeb && app.user.toString() === user._id.toString()
+	}));
 });
