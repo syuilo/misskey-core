@@ -42,6 +42,11 @@ module.exports = (params, user) =>
 		key: key
 	});
 
+	// Delete session
+	AuthSess.deleteOne({
+		_id: session._id
+	});
+
 	// Response
 	res();
 });
