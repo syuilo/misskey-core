@@ -1,6 +1,5 @@
 {
-	//jsconfig.json 形式に関するドキュメントは、
-	//https://go.microsoft.com/fwlink/?LinkId=759670 でご確認ください
+	// Please visit https://go.microsoft.com/fwlink/?LinkId=759670 for more information about jsconfig.json
 	"compilerOptions": {
 		"target": "es6",
 		"module": "commonjs",
