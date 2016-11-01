@@ -27,8 +27,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 
 	if (endpoint.shouldBeSignin) {
 		try {
-			// Rate limit
-			await limitter(endpoint, ctx);
+			await limitter(endpoint, ctx); // Rate limit
 		} catch (e) {
 			return reply(429);
 		}
