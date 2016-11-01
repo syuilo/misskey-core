@@ -44,4 +44,4 @@ module.exports = (params, user) =>
 
 	// Response
 	res();
-}
+});
