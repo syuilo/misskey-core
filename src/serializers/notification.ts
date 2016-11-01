@@ -39,27 +39,23 @@ export default (notification: any) => new Promise<Object>(async (resolve, reject
 	delete _notification.i;
 
 	switch (_notification.type) {
-
-	case 'follow':
-		// Populate user
-		_notification.user = await serializeUser(_notification.user, i);
-		break;
-
-	case 'like':
-		// Populate user
-		_notification.user = await serializeUser(_notification.user, i);
-		// Populate post
-		_notification.post = await serializePost(_notification.post, i);
-		break;
-
-	case 'repost':
-		// Populate post
-		_notification.post = await serializePost(_notification.post, i);
-		break;
-
-	default:
-		console.error(`Unknown type: ${_notification.type}`);
-		break;
+		case 'follow':
+			// Populate user
+			_notification.user = await serializeUser(_notification.user, i);
+			break;
+		case 'like':
+			// Populate user
+			_notification.user = await serializeUser(_notification.user, i);
+			// Populate post
+			_notification.post = await serializePost(_notification.post, i);
+			break;
+		case 'repost':
+			// Populate post
+			_notification.post = await serializePost(_notification.post, i);
+			break;
+		default:
+			console.error(`Unknown type: ${_notification.type}`);
+			break;
 	}
 
 	resolve(_notification);
