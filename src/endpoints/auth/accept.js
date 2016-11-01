@@ -42,6 +42,13 @@ module.exports = (params, user) =>
 		key: key
 	});
 
+	// Update session
+	await AuthSess.updateOne({
+		$set: {
+			user: user._id
+		}
+	});
+
 	// Response
 	res();
 });
