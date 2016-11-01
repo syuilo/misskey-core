@@ -96,7 +96,7 @@ async function master(): Promise<void> {
 	}
 
 	const res = (t: string, c: string) =>
-		console.log(chalk.bold(`--> ${chalk[c](t)}\n`));
+		console.log(chalk.bold(`--> ${(chalk as any)[c](t)}\n`));
 
 	switch (state) {
 		case State.failed:
