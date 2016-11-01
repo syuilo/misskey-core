@@ -13,9 +13,11 @@ import es from '../../db/elasticsearch';
  *
  * @param {Object} params
  * @param {Object} user
+ * @param {Object} _
+ * @param {boolean} isWeb
  * @return {Promise<object>}
  */
-module.exports = async (params, reply, user, _, isWeb) =>
+module.exports = async (params, user, _, isWeb) =>
 	new Promise(async (res, rej) =>
 {
 	// Init 'name' parameter
