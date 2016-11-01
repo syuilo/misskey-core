@@ -117,7 +117,6 @@ export default async function(): Promise<void> {
 	const conf: IConfig = {
 		maintainer: as.maintainer,
 		port: parseInt(as.port, 10),
-		internalPort: parseInt(as.internal_port, 10),
 		https: {
 			enable: as.https,
 			key: as.https_key || null,
