@@ -17,6 +17,10 @@ export default (
 ) => new Promise<any>(async (resolve, reject) => {
 	let _session: any;
 
+	// TODO: Populate session if it ID
+
+	_session = deepcopy(session);
+
 	delete _session._id;
 
 	// Populate app
