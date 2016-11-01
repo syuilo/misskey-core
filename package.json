@@ -13,8 +13,7 @@
     "dtsm": "dtsm --insight false install",
     "build": "gulp build",
     "lint": "gulp lint",
-    "test": "gulp test",
-    "watch": "gulp watch"
+    "test": "gulp test"
   },
   "devDependencies": {
     "dtsm": "1.1.0",
