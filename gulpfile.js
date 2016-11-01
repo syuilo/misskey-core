@@ -20,47 +20,46 @@ gulp.task('build', [
 	'build:copy'
 ]);
 
-gulp.task('build:js', () => {
-	return gulp.src('./src/**/*.js')
+gulp.task('build:js', () =>
+	gulp.src('./src/**/*.js')
 		.pipe(babel({
 			presets: ['es2015', 'stage-3']
 		}))
-		.pipe(gulp.dest('./built/'));
-});
+		.pipe(gulp.dest('./built/'))
+);
 
-gulp.task('build:ts', () => {
+gulp.task('build:ts', () =>
 	project
 		.src()
 		.pipe(project())
 		.pipe(babel({
 			presets: ['es2015', 'stage-3']
 		}))
-		.pipe(gulp.dest('./built/'));
-});
+		.pipe(gulp.dest('./built/'))
+);
 
-gulp.task('build:styles', () => {
-	return gulp.src('./src/web/**/*.styl')
+gulp.task('build:styles', () =>
+	gulp.src('./src/web/**/*.styl')
 		.pipe(stylus())
-		.pipe(gulp.dest('./built/web/'));
-});
+		.pipe(gulp.dest('./built/web/'))
+);
 
 gulp.task('build:copy', () => {
-	return es.merge(
-		gulp.src([
+	let copyResources = gulp.src([
 			'./src/resources/**/*'
-		]).pipe(gulp.dest('./built/resources/')),
-		gulp.src([
+		]).pipe(gulp.dest('./built/resources/'));
+	
+	let copyWeb = gulp.src([
 			'./src/web/**/*',
 			'!**/*.ts',
 			'!**/*.ls',
 			'!**/*.styl'
-		]).pipe(gulp.dest('./built/web/'))
-	);
+		]).pipe(gulp.dest('./built/web/'));
+
+	return es.merge(copyResources, copyWeb);
 });
 
-gulp.task('test', [
-	'lint'
-]);
+gulp.task('test', ['lint', 'build']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
