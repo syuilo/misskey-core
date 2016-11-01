@@ -1,9 +1,9 @@
 import * as express from 'express';
 
-import App from '../../models/app';
+// import App from '../../models/app';
 import AuthSessToken from '../../models/auth-sess-token';
 import User from '../../models/user';
-import serializeApp from '../../serializers/app';
+// import serializeApp from '../../serializers/app';
 import serializeUser from '../../serializers/user';
 
 export default async function(req: express.Request, res: express.Response): Promise<any> {
@@ -16,8 +16,7 @@ export default async function(req: express.Request, res: express.Response): Prom
 	}
 
 	// Fetch App
-	const app = await App
-		.findOne({ _id: token.app });
+	// const app = await App.findOne({ _id: token.app });
 
 	// Get token from cookie
 	const i = (req.headers['cookie'].match(/i=(\w+)/) || [null, null])[1];
