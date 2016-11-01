@@ -25,6 +25,12 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		return reply(401, 'PLZ_SIGNIN');
 	}
 
+	if (ctx.app && endpoint.kind) {
+		if (!(ctx.app as any).permission.some((p: any) => p === endpoint.kind)) {
+			return reply(403, 'ACCESS_DENIED');
+		}
+	}
+
 	if (endpoint.shouldBeSignin) {
 		try {
 			await limitter(endpoint, ctx); // Rate limit

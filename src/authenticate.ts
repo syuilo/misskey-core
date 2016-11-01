@@ -1,5 +1,7 @@
 import * as express from 'express';
+import App from './models/app';
 import User from './models/user';
+import Userkey from './models/userkey';
 import config from './config';
 
 export interface IAuthContext {
@@ -42,7 +44,24 @@ export default (req: express.Request) =>
 		return resolve({ app: null, user: null, isWeb: true });
 	}
 
-	// const userKey = req.headers['user-key'];
+	const userkey = req.headers['userkey'];
+	if (userkey) {
+		const userkeyDoc = await Userkey.findOne({
+			key: userkey
+		});
+
+		if (userkeyDoc === null) {
+			return reject('invalid userkey');
+		}
+
+		const app = await App
+			.findOne({ _id: userkeyDoc.app });
+
+		const user = await User
+			.findOne({ _id: userkeyDoc.user });
+
+		return resolve({ app: app, user: user, isWeb: false });
+	}
 
 	return resolve({ app: null, user: null, isWeb: false });
 });
