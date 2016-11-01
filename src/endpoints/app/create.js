@@ -47,7 +47,10 @@ module.exports = async (params, user) =>
 	}
 
 	// Get 'callback_url' parameter
-	const callback = params.callback_url;
+	let callback = params.callback_url;
+	if (callback === '') {
+		callback = null;
+	}
 
 	// Generate secret
 	const secret = rndstr('a-zA-Z0-9', 32);
