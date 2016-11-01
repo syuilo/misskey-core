@@ -5,7 +5,7 @@
  */
 import * as uuid from 'uuid';
 import App from '../../../models/app';
-import AuthSessToken from '../../../models/auth-sess-token';
+import AuthSess from '../../../models/auth-session';
 
 /**
  * Generate a session
@@ -35,7 +35,7 @@ module.exports = (params) =>
 	const token = uuid.v4();
 
 	// Create session token document
-	const inserted = await AuthSessToken.insert({
+	const inserted = await AuthSess.insert({
 		created_at: new Date(),
 		app: app._id,
 		token: token
