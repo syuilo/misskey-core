@@ -21,7 +21,7 @@ module.exports = async (params) =>
 	}
 
 	// Validate name_id
-	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(nameId)) {
+	if (!/^[a-zA-Z0-9\-]{3,30}$/.test(nameId)) {
 		return rej('invalid name_id');
 	}
 
