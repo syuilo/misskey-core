@@ -44,6 +44,8 @@ module.exports = (params, user) =>
 
 	// Update session
 	await AuthSess.updateOne({
+		_id: session._id
+	}, {
 		$set: {
 			user: user._id
 		}
