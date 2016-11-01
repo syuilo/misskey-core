@@ -49,13 +49,6 @@ app.get('/', (req, res) => {
 	res.render('index');
 });
 
-app.get('/authorize/:token', require('./web/auth').default);
-app.post('/authorize', require('./endpoints/auth/authorize').default);
-
-app.get('/:endpoint([a-z_\/]+)', (req, res) => {
-	res.render(`docs/${req.params.endpoint}`);
-});
-
 const upload = multer({ dest: 'uploads/' });
 endpoints.forEach(endpoint => {
 	if (endpoint.withFile) {
