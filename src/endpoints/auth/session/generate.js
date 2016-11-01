@@ -4,11 +4,11 @@
  * Module dependencies
  */
 import * as uuid from 'uuid';
-import App from '../../models/app';
-import AuthSessToken from '../../models/auth-sess-token';
+import App from '../../../models/app';
+import AuthSessToken from '../../../models/auth-sess-token';
 
 /**
- * Generate a session token
+ * Generate a session
  *
  * @param {Object} params
  * @return {Promise<object>}
