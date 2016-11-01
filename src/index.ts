@@ -253,7 +253,7 @@ function spawn(callback: any): void {
 		});
 	}
 
-	// on all workers started
+	// On all workers started
 	progress.on('complete', () => {
 		callback();
 	});
