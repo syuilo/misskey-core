@@ -99,16 +99,13 @@ async function master(): Promise<void> {
 		console.log(chalk.bold(`--> ${chalk[c](t)}\n`));
 
 	switch (state) {
-		// fatal error
 		case State.failed:
 			res('Fatal error occurred :(', 'red');
 			process.exit();
 			return;
-		// with warning(s)
 		case State.warn:
 			res('Some problem(s) :|', 'yellow');
 			break;
-		// np
 		case State.success:
 			res('OK :)', 'green');
 			break;
