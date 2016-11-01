@@ -34,13 +34,21 @@ module.exports = (params, user) =>
 	// Generate userkey
 	const key = rndstr('a-zA-Z0-9', 32);
 
-	// Insert userkey doc
-	await Userkey.insert({
-		created_at: new Date(),
+	// Fetch exist userkey
+	const exist = await Userkey.findOne({
 		app: session.app,
 		user: user._id,
-		key: key
 	});
+
+	if (exist === null) {
+		// Insert userkey doc
+		await Userkey.insert({
+			created_at: new Date(),
+			app: session.app,
+			user: user._id,
+			key: key
+		});
+	}
 
 	// Update session
 	await AuthSess.updateOne({
