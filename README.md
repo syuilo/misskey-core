@@ -5,7 +5,7 @@ Misskey Core
 [![][dependencies-badge]][dependencies-link]
 [![][mit-badge]][mit]
 
-An api server of *Misskey*.
+An API server of *Misskey*.
 
 Required
 --------
