@@ -44,7 +44,7 @@ export default (req: express.Request) =>
 		return resolve({ app: null, user: null, isWeb: true });
 	}
 
-	const userkey = req.headers['userkey'];
+	const userkey = req.headers['userkey'] || req.body['_userkey'];
 	if (userkey) {
 		const userkeyDoc = await Userkey.findOne({
 			key: userkey
