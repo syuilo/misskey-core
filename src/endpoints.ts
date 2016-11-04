@@ -91,6 +91,10 @@ export default [
 	{ name: 'posts/likes/create',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
 	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
 	{ name: 'posts/favorites/create', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
-	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' }
+	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
+
+	{ name: 'talk/history',         shouldBeSignin: true, kind: 'talk-read' },
+	{ name: 'talk/messages',        shouldBeSignin: true, kind: 'talk-read' },
+	{ name: 'talk/messages/create', shouldBeSignin: true, kind: 'talk-write' }
 
 ] as IEndpoint[];
