@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import parse from 'misskey-text';
 import Post from '../../models/post';
 import User from '../../models/user';
 import Following from '../../models/following';
@@ -241,13 +242,28 @@ module.exports = (params, user, app) =>
 		});
 	}
 
+	const tokens = parse(text);
+
+	// Extract a mentions
+	const mentions = tokens
+		.filter(t => t.type == 'mention')
+		.map(m => m.username);
+
+	mentions.forEach(async (mention) => {
+		// Fetch mentioned user
+		const mentionedUser = await User
+			.findOne({ username_lower: mention.toLowerCase() });
+
+		// Notify
+		notify(mentionedUser._id, 'mention', {
+			post: post._id
+		});
+	});
+
 	// ハッシュタグ抽出
 	//const hashtags = extractHashtags(text);
 
 	// ハッシュタグをデータベースに登録
 	//registerHashtags(user, hashtags);
-
-	// メンションを抽出してデータベースに登録
-	//savePostMentions(user, post, post.text);
 
 });
