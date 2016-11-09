@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import DriveFolder from '../../../models/drive-folder';
 import DriveFile from '../../../models/drive-file';
+import { validateFileName } from '../../../models/drive-file';
 import serialize from '../../../serializers/drive-file';
 import event from '../../../event';
 
@@ -37,7 +38,18 @@ module.exports = (params, user) =>
 		return rej('file-not-found');
 	}
 
-	// Init 'folder' parameter
+	// Get 'name' parameter
+	let name = params.name;
+	if (name) {
+		name = name.trim();
+		if (validateFileName(name)) {
+			file.name = name;
+		} else {
+			return rej('invalid file name');
+		}
+	}
+
+	// Get 'folder' parameter
 	let folderId = params.folder;
 	if (folderId !== undefined && folderId !== 'null') {
 		folderId = new mongo.ObjectID(folderId);
