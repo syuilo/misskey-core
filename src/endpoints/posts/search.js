@@ -29,12 +29,10 @@ module.exports = (params, user) =>
 	// Init 'page' parameter
 	let page = params.page;
 	if (page === undefined) {
-		page = 1;
-	} else if (page === 0) {
-		page = 1;
+		page = 0;
 	}
 
-	const from = (page - 1) * size;
+	const from = page * size;
 
 	es.search({
 		index: 'misskey',
