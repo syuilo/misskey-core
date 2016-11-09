@@ -6,6 +6,7 @@
 import * as fs from 'fs';
 import * as mongo from 'mongodb';
 import File from '../../../models/drive-file';
+import { validateFileName } from '../../../models/drive-file';
 import User from '../../../models/user';
 import serialize from '../../../serializers/drive-file';
 import create from '../../../common/add-file-to-drive';
@@ -32,9 +33,7 @@ module.exports = (file, params, user) =>
 			name = null;
 		} else if (name === 'blob') {
 			name = null;
-		} else if (name.length > 128) {
-			return rej('too long name');
-		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
+		} else if (!validateFileName(name)) {
 			return rej('invalid name');
 		}
 	} else {
