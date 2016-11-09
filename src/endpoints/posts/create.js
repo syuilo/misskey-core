@@ -44,8 +44,6 @@ module.exports = (params, user, app) =>
 		text = text.trim();
 		if (text.length === 0) {
 			text = null;
-		} else if (text[0] === '$') {
-			return command(text);
 		} else if (text.length > maxTextLength) {
 			return rej('too long text');
 		}
@@ -252,20 +250,4 @@ module.exports = (params, user, app) =>
 	// メンションを抽出してデータベースに登録
 	//savePostMentions(user, post, post.text);
 
-	async function command(text) {
-		const separator = ' ';
-		const cmd = text.substr(1, text.indexOf(separator) - 1);
-		const arg = text.substr(text.indexOf(separator) + 1);
-
-		switch (cmd) {
-			case 'write':
-				// Create file
-				await createFile(user, new Buffer(arg), Date.now() + '.txt', null, null);
-				res();
-				break;
-			default:
-				rej('unknown command');
-				break;
-		}
-	}
 });
