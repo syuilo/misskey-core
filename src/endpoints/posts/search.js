@@ -46,6 +46,14 @@ module.exports = (params, user) =>
 					query: query,
 					default_operator: 'and'
 				}
+			},
+			highlight: {
+				pre_tags: ['<mark>'],
+				post_tags: ['</mark>'],
+				encoder: 'html',
+				fields: {
+					text: {}
+				}
 			}
 		}
 	}, async (error, response) => {
@@ -67,6 +75,10 @@ module.exports = (params, user) =>
 				}
 			})
 			.toArray();
+
+		posts.map(post => {
+			post._highlight = response.hits.hits.filter(hit => hit._id == post._id.toString())[0].highlight.text[0];
+		});
 
 		// Serialize
 		res(await Promise.all(posts.map(async post =>
