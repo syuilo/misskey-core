@@ -47,6 +47,9 @@ module.exports = (params, user) =>
 					default_operator: 'and'
 				}
 			},
+			sort: [
+				{ _doc: 'desc' }
+			],
 			highlight: {
 				pre_tags: ['<mark>'],
 				post_tags: ['</mark>'],
@@ -68,10 +71,15 @@ module.exports = (params, user) =>
 
 		const hits = response.hits.hits.map(hit => new mongo.ObjectID(hit._id));
 
+		// Fetxh found posts
 		const posts = await Post
 			.find({
 				_id: {
 					$in: hits
+				}
+			}, {}, {
+				sort: {
+					_id: -1
 				}
 			})
 			.toArray();
