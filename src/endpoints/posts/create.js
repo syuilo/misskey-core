@@ -232,7 +232,7 @@ module.exports = (params, user, app) =>
 	}
 
 	// Register to search database
-	if (post.text != null) {
+	if (text != null) {
 		es.index({
 			index: 'misskey',
 			type: 'post',
@@ -241,30 +241,29 @@ module.exports = (params, user, app) =>
 				text: post.text
 			}
 		});
-	}
 
-	const tokens = parse(text);
+		const tokens = parse(text);
 
-	// Extract a mentions
-	const mentions = tokens
-		.filter(t => t.type == 'mention')
-		.map(m => m.username);
+		// Extract a mentions
+		const mentions = tokens
+			.filter(t => t.type == 'mention')
+			.map(m => m.username);
 
-	mentions.forEach(async (mention) => {
-		// Fetch mentioned user
-		const mentionedUser = await User
-			.findOne({ username_lower: mention.toLowerCase() });
+		mentions.forEach(async (mention) => {
+			// Fetch mentioned user
+			const mentionedUser = await User
+				.findOne({ username_lower: mention.toLowerCase() });
 
-		// Notify
-		notify(mentionedUser._id, 'mention', {
-			post: post._id
+			// Notify
+			notify(mentionedUser._id, 'mention', {
+				post: post._id
+			});
 		});
-	});
 
-	// ハッシュタグ抽出
-	//const hashtags = extractHashtags(text);
+		// ハッシュタグ抽出
+		//const hashtags = extractHashtags(text);
 
-	// ハッシュタグをデータベースに登録
-	//registerHashtags(user, hashtags);
-
+		// ハッシュタグをデータベースに登録
+		//registerHashtags(user, hashtags);
+	}
 });
