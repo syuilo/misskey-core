@@ -90,6 +90,6 @@ module.exports = (params, user) =>
 
 		// Serialize
 		res(await Promise.all(posts.map(async post =>
-			await serialize(post))));
+			await serialize(post, user))));
 	});
 });
