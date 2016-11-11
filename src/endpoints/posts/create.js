@@ -10,7 +10,6 @@ import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
 import serialize from '../../serializers/post';
-//import savePostMentions from '../../core/save-post-mentions';
 //import extractHashtags from '../../core/extract-hashtags';
 //import registerHashtags from '../../core/register-hashtags';
 import createFile from '../../common/add-file-to-drive';
