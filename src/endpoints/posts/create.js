@@ -207,9 +207,11 @@ module.exports = (params, user, app) =>
 		event(repost.user, 'repost', postObj);
 
 		// Notify
-		notify(repost.user, 'repost', {
-			post: post._id
-		});
+		if (repost.user.toString() !== user._id.toString()) {
+			notify(repost.user, 'repost', {
+				post: post._id
+			});
+		}
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
