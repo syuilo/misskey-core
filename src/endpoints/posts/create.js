@@ -255,9 +255,11 @@ module.exports = (params, user, app) =>
 				.findOne({ username_lower: mention.toLowerCase() });
 
 			// Notify
-			notify(mentionedUser._id, 'mention', {
-				post: post._id
-			});
+			if (mentionedUser._id.toString() !== user._id.toString()) {
+				notify(mentionedUser._id, 'mention', {
+					post: post._id
+				});
+			}
 		});
 
 		// ハッシュタグ抽出
