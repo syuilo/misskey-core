@@ -115,7 +115,8 @@ module.exports = (params, user) =>
 		recipient: recipient ? recipient._id : undefined,
 		group: group ? group._id : undefined,
 		text: text ? text : undefined,
-		user: user._id
+		user: user._id,
+		is_read: false
 	});
 
 	const message = inserted.ops[0];

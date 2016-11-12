@@ -19,7 +19,7 @@ import serialize from '../../serializers/talk-message';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'user' parameter
+	// Get 'user' parameter
 	let recipient = params.user;
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
@@ -33,7 +33,7 @@ module.exports = (params, user) =>
 		recipient = null;
 	}
 
-	// Init 'group' parameter
+	// Get 'group' parameter
 	let group = params.group;
 	if (group !== undefined && group !== null) {
 		group = await Group.findOne({
@@ -52,6 +52,14 @@ module.exports = (params, user) =>
 		}
 	} else {
 		group = null;
+	}
+
+	// Get 'mark_as_read' parameter
+	let markAsRead = params.mark_as_read;
+	if (markAsRead == null) {
+		markAsRead = true;
+	} else {
+		markAsRead = markAsRead === 'true';
 	}
 
 	// ユーザーの指定がないかつグループの指定もなかったらエラー
@@ -133,4 +141,20 @@ module.exports = (params, user) =>
 	// Serialize
 	res(await Promise.all(messages.map(async message =>
 		await serialize(message))));
+
+	// Mark as read all
+	if (markAsRead) {
+		const ids = messages
+			.filter(m => m.is_read == false)
+			.filter(m => m.recipient.toString() == user._id.toString())
+			.map(m => m._id);
+
+		Message.update({
+			_id: { $in: ids }
+		}, {
+			$set: { is_read: true }
+		}, {
+			multi: true
+		});
+	}
 });
