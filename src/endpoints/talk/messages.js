@@ -8,6 +8,7 @@ import Message from '../../models/talk-message';
 import Group from '../../models/talk-group';
 import User from '../../models/user';
 import serialize from '../../serializers/talk-message';
+import { publishTalkingStream } from '../../event';
 
 /**
  * Get messages
@@ -144,17 +145,25 @@ module.exports = (params, user) =>
 
 	// Mark as read all
 	if (markAsRead) {
-		const ids = messages
-			.filter(m => m.is_read == false)
-			.filter(m => m.recipient.toString() == user._id.toString())
-			.map(m => m._id);
+		if (recipient) {
+			const ids = messages
+				.filter(m => m.is_read == false)
+				.filter(m => m.recipient.toString() == user._id.toString())
+				.map(m => m._id);
 
-		Message.update({
-			_id: { $in: ids }
-		}, {
-			$set: { is_read: true }
-		}, {
-			multi: true
-		});
+			// Update documents
+			Message.update({
+				_id: { $in: ids }
+			}, {
+				$set: { is_read: true }
+			}, {
+				multi: true
+			});
+
+			// Publish event
+			publishTalkingStream(message.recipient, user._id, 'read', ids.map(id => id.toString()));
+		} else if (group) {
+			// TODO
+		}
 	}
 });

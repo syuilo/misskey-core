@@ -10,7 +10,8 @@ import History from '../../../models/talk-history';
 import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/talk-message';
-import event from '../../../event';
+import publishUserStream from '../../../event';
+import { publishTalkingStream } from '../../../event';
 import es from '../../../db/elasticsearch';
 
 /**
@@ -116,7 +117,8 @@ module.exports = (params, user) =>
 		group: group ? group._id : undefined,
 		text: text ? text : undefined,
 		user: user._id,
-		is_read: false
+		is_read: recipient ? false : undefined,
+		read: group ? false : undefined
 	});
 
 	const message = inserted.ops[0];
@@ -128,19 +130,24 @@ module.exports = (params, user) =>
 	res(messageObj);
 
 	// 自分のストリーム
-	event(message.user, 'talk_message', messageObj);
+	publishTalkingStream(message.user, message.recipient, 'message', messageObj);
+	publishUserStream(message.user, 'talk_message', messageObj);
 
 	if (message.recipient) {
 		// 相手のストリーム
-		event(message.recipient, 'talk_message', messageObj);
+		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
+		publishUserStream(message.recipient, 'talk_message', messageObj);
 	} else if (message.group) {
+		// グループのストリーム
+		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
+
 		const group = await Group.findOne({
 			_id: message.group
 		});
 
 		// メンバーのストリーム
 		group.members.forEach(member => {
-			event(member, 'talk_message', messageObj);
+			publishUserStream(member, 'talk_message', messageObj);
 		});
 	}
 

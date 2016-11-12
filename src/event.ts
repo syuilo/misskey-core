@@ -2,6 +2,8 @@ import * as mongo from 'mongodb';
 import * as redis from 'redis';
 import config from './config';
 
+type ID = string | mongo.ObjectID;
+
 class MisskeyEvent {
 	private redisClient: redis.RedisClient;
 
@@ -18,11 +20,17 @@ class MisskeyEvent {
 		}));
 	}
 
-	public userstream(userId: string | mongo.ObjectID, type: string, message: Object): void {
+	public publishUserStream(userId: ID, type: string, message: Object): void {
 		this.publish(`user-stream:${userId}`, type, message);
+	}
+
+	public publishTalkingStream(userId: ID, otherpartyId: ID, type: string, message: Object): void {
+		this.publish(`talking-stream:${userId}-${otherpartyId}`, type, message);
 	}
 }
 
 const ev = new MisskeyEvent();
 
-export default ev.userstream.bind(ev);
+export default ev.publishUserStream.bind(ev);
+
+export const publishTalkingStream = ev.publishTalkingStream.bind(ev);
