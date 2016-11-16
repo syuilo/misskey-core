@@ -94,6 +94,7 @@ export default [
 	{ name: 'posts/favorites/delete', shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'favorite-write' },
 
 	{ name: 'messaging/history',         shouldBeSignin: true, kind: 'messaging-read' },
+	{ name: 'messaging/unread',          shouldBeSignin: true, kind: 'messaging-read' },
 	{ name: 'messaging/messages',        shouldBeSignin: true, kind: 'messaging-read' },
 	{ name: 'messaging/messages/create', shouldBeSignin: true, kind: 'messaging-write' }
 
