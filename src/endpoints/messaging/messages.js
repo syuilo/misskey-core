@@ -161,7 +161,7 @@ module.exports = (params, user) =>
 			});
 
 			// Publish event
-			publishMessagingStream(message.recipient, user._id, 'read', ids.map(id => id.toString()));
+			publishMessagingStream(recipient._id, user._id, 'read', ids.map(id => id.toString()));
 		} else if (group) {
 			// TODO
 		}
