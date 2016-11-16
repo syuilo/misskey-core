@@ -11,7 +11,7 @@ import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
-import { publishTalkingStream } from '../../../event';
+import { publishMessagingStream } from '../../../event';
 import es from '../../../db/elasticsearch';
 
 /**
@@ -130,16 +130,16 @@ module.exports = (params, user) =>
 	res(messageObj);
 
 	// 自分のストリーム
-	publishTalkingStream(message.user, message.recipient, 'message', messageObj);
+	publishMessagingStream(message.user, message.recipient, 'message', messageObj);
 	publishUserStream(message.user, 'messaging_message', messageObj);
 
 	if (message.recipient) {
 		// 相手のストリーム
-		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
+		publishMessagingStream(message.recipient, message.user, 'message', messageObj);
 		publishUserStream(message.recipient, 'messaging_message', messageObj);
 	} else if (message.group) {
 		// グループのストリーム
-		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
+		publishMessagingStream(message.recipient, message.user, 'message', messageObj);
 
 		const group = await Group.findOne({
 			_id: message.group

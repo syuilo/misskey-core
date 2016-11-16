@@ -24,7 +24,7 @@ class MisskeyEvent {
 		this.publish(`user-stream:${userId}`, type, message);
 	}
 
-	public publishTalkingStream(userId: ID, otherpartyId: ID, type: string, message: Object): void {
+	public publishMessagingStream(userId: ID, otherpartyId: ID, type: string, message: Object): void {
 		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, message);
 	}
 }
@@ -33,4 +33,4 @@ const ev = new MisskeyEvent();
 
 export default ev.publishUserStream.bind(ev);
 
-export const publishTalkingStream = ev.publishTalkingStream.bind(ev);
+export const publishMessagingStream = ev.publishMessagingStream.bind(ev);

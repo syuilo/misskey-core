@@ -8,7 +8,7 @@ import Message from '../../models/messaging-message';
 import Group from '../../models/messaging-group';
 import User from '../../models/user';
 import serialize from '../../serializers/messaging-message';
-import { publishTalkingStream } from '../../event';
+import { publishMessagingStream } from '../../event';
 
 /**
  * Get messages
@@ -161,7 +161,7 @@ module.exports = (params, user) =>
 			});
 
 			// Publish event
-			publishTalkingStream(message.recipient, user._id, 'read', ids.map(id => id.toString()));
+			publishMessagingStream(message.recipient, user._id, 'read', ids.map(id => id.toString()));
 		} else if (group) {
 			// TODO
 		}
