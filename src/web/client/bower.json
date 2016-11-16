@@ -1,0 +1,33 @@
+{
+  "name": "misskey-web",
+  "description": "Misskey Web",
+  "main": "./built/index.js",
+  "authors": [
+    "syuilo <syuilotan@yahoo.co.jp>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/syuilo/misskey-web",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "cropperjs": "0.7.2",
+    "fastclick": "1.0.6",
+    "fuck-adblock": "3.2.0",
+    "Sortable": "1.4.2",
+    "Swiper": "swiper#3.3.0",
+    "password-strength.js": "latest",
+    "misskey-text": "latest",
+    "fetch": "",
+    "velocity": "1.3.1",
+    "reconnectingWebsocket": "",
+    "page": "1.7.1",
+    "nprogress": "0.2.0"
+  }
+}

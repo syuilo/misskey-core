@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "misskey-web",
+  "version": "0.0.0",
+  "description": "Misskey Web",
+  "license": "MIT",
+  "repository": "https://github.com/syuilo/misskey-web.git",
+  "devDependencies": {
+    "aliasify": "2.1.0",
+    "bower": "1.7.9",
+    "browserify": "13.1.1",
+    "browserify-livescript": "0.2.3",
+    "event-stream": "3.3.4",
+    "glob": "7.1.1",
+    "gulp": "3.9.1",
+    "gulp-cssnano": "2.1.2",
+    "gulp-livescript": "3.0.1",
+    "gulp-pug": "3.1.0",
+    "gulp-replace": "0.5.4",
+    "gulp-stylus": "2.6.0",
+    "gulp-typescript": "3.1.2",
+    "gulp-uglify": "2.0.0",
+    "gulp-util": "3.0.7",
+    "livescript": "1.5.0",
+    "riotify": "1.0.1",
+    "syuilo-transformify": "0.1.2",
+    "vinyl-buffer": "1.0.0",
+    "vinyl-source-stream": "1.1.0"
+  },
+  "dependencies": {
+    "chart.js": "2.3.0",
+    "textarea-caret": "3.0.2"
+  }
+}

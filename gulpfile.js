@@ -48,7 +48,7 @@ gulp.task('build:copy', () => {
 	let copyResources = gulp.src([
 			'./src/resources/**/*'
 		]).pipe(gulp.dest('./built/resources/'));
-	
+
 	let copyWeb = gulp.src([
 			'./src/web/**/*',
 			'!**/*.ts',
