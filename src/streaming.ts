@@ -12,13 +12,36 @@ export default function (server: any): void {
 		httpServer: server
 	});
 
-	ws.on('request', request => {
+	ws.on('request', async (request) => {
 		const connection = request.accept();
+
+		const user = await authenticate(connection);
 
 		// Connect to Redis
 		const subscriber = redis.createClient(
 			config.redis.port, config.redis.host);
 
+		connection.on('close', () => {
+			subscriber.unsubscribe();
+			subscriber.quit();
+		});
+
+		const channel =
+			request.resourceURL.pathname === '/' ? homeStream :
+			request.resourceURL.pathname === '/talk' ? talkingStream :
+			null;
+
+		if (channel !== null) {
+			channel(request, connection, subscriber, user);
+		} else {
+			connection.close();
+		}
+	});
+}
+
+function authenticate(connection: websocket.connection): Promise<any> {
+	return new Promise((resolve, reject) => {
+		// Listen first message
 		connection.on('message', async (data) => {
 			const msg = JSON.parse(data.utf8Data);
 
@@ -33,16 +56,26 @@ export default function (server: any): void {
 
 			connection.send('authenticated');
 
-			// Subscribe Home stream channel
-			subscriber.subscribe(`misskey:user-stream:${user._id}`);
-			subscriber.on('message', (_: any, data: any) => {
-				connection.send(data);
-			});
+			resolve(user);
 		});
+	});
+}
 
-		connection.on('close', () => {
-			subscriber.unsubscribe();
-			subscriber.quit();
-		});
+function homeStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+	// Subscribe Home stream channel
+	subscriber.subscribe(`misskey:user-stream:${user._id}`);
+	subscriber.on('message', (_: any, data: any) => {
+		console.log(data);
+		connection.send(data);
+	});
+}
+
+function talkingStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+	const otherparty = request.resourceURL.query.otherparty;
+
+	// Subscribe talking stream
+	subscriber.subscribe(`misskey:talking-stream:${user._id}-${otherparty}`);
+	subscriber.on('message', (_: any, data: any) => {
+		connection.send(data);
 	});
 }
