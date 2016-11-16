@@ -8,6 +8,7 @@ import Message from '../../models/messaging-message';
 import Group from '../../models/messaging-group';
 import User from '../../models/user';
 import serialize from '../../serializers/messaging-message';
+import publishUserStream from '../../event';
 import { publishMessagingStream } from '../../event';
 
 /**
@@ -152,7 +153,7 @@ module.exports = (params, user) =>
 				.map(m => m._id);
 
 			// Update documents
-			Message.update({
+			await Message.update({
 				_id: { $in: ids }
 			}, {
 				$set: { is_read: true }
@@ -162,6 +163,17 @@ module.exports = (params, user) =>
 
 			// Publish event
 			publishMessagingStream(recipient._id, user._id, 'read', ids.map(id => id.toString()));
+
+			const count = await Message
+				.count({
+					recipient: user._id,
+					is_read: false
+				});
+
+			if (count == 0) {
+				// 全ての(いままで未読だった)メッセージを(これで)読みましたよというイベントを発行
+				publishUserStream(user._id, 'read_all_messaging_messages');
+			}
 		} else if (group) {
 			// TODO
 		}

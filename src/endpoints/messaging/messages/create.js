@@ -151,6 +151,18 @@ module.exports = (params, user) =>
 		});
 	}
 
+	// 5秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
+	setTimeout(async () => {
+		if (message.recipient) {
+			const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
+			if (!freshMessage.is_read) {
+				publishUserStream(message.recipient, 'unread_messaging_message', messageObj);
+			}
+		} else if (message.group) {
+			// TODO
+		}
+	}, 5000);
+
 	// Register to search database
 	if (message.text) {
 		es.index({
