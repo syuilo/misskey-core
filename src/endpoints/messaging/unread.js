@@ -3,7 +3,7 @@
 /**
  * Module dependencies
  */
-import Message from '../../models/talk-message';
+import Message from '../../models/messaging-message';
 
 /**
  * Get count of unread messages
@@ -20,6 +20,8 @@ module.exports = (params, user) =>
 			recipient: user._id,
 			is_read: false
 		});
+
+	// TODO: Support group
 
 	res({
 		count: count

@@ -25,7 +25,7 @@ class MisskeyEvent {
 	}
 
 	public publishTalkingStream(userId: ID, otherpartyId: ID, type: string, message: Object): void {
-		this.publish(`talking-stream:${userId}-${otherpartyId}`, type, message);
+		this.publish(`messaging-stream:${userId}-${otherpartyId}`, type, message);
 	}
 }
 

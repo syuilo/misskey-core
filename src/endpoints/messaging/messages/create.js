@@ -4,12 +4,12 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Message from '../../../models/talk-message';
-import Group from '../../../models/talk-group';
-import History from '../../../models/talk-history';
+import Message from '../../../models/messaging-message';
+import Group from '../../../models/messaging-group';
+import History from '../../../models/messaging-history';
 import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
-import serialize from '../../../serializers/talk-message';
+import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishTalkingStream } from '../../../event';
 import es from '../../../db/elasticsearch';
@@ -131,12 +131,12 @@ module.exports = (params, user) =>
 
 	// 自分のストリーム
 	publishTalkingStream(message.user, message.recipient, 'message', messageObj);
-	publishUserStream(message.user, 'talk_message', messageObj);
+	publishUserStream(message.user, 'messaging_message', messageObj);
 
 	if (message.recipient) {
 		// 相手のストリーム
 		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
-		publishUserStream(message.recipient, 'talk_message', messageObj);
+		publishUserStream(message.recipient, 'messaging_message', messageObj);
 	} else if (message.group) {
 		// グループのストリーム
 		publishTalkingStream(message.recipient, message.user, 'message', messageObj);
@@ -147,7 +147,7 @@ module.exports = (params, user) =>
 
 		// メンバーのストリーム
 		group.members.forEach(member => {
-			publishUserStream(member, 'talk_message', messageObj);
+			publishUserStream(member, 'messaging_message', messageObj);
 		});
 	}
 
@@ -155,7 +155,7 @@ module.exports = (params, user) =>
 	if (message.text) {
 		es.index({
 			index: 'misskey',
-			type: 'talk_message',
+			type: 'messaging_message',
 			id: message._id.toString(),
 			body: {
 				text: message.text

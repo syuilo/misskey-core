@@ -4,11 +4,11 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import History from '../../models/talk-history';
-import serialize from '../../serializers/talk-message';
+import History from '../../models/messaging-history';
+import serialize from '../../serializers/messaging-message';
 
 /**
- * Show talk history
+ * Show messaging history
  *
  * @param {Object} params
  * @param {Object} user

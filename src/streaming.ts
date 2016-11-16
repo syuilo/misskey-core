@@ -28,7 +28,7 @@ export default function (server: any): void {
 
 		const channel =
 			request.resourceURL.pathname === '/' ? homeStream :
-			request.resourceURL.pathname === '/talk' ? talkingStream :
+			request.resourceURL.pathname === '/messaging' ? messagingStream :
 			null;
 
 		if (channel !== null) {
@@ -70,11 +70,11 @@ function homeStream(request: websocket.request, connection: websocket.connection
 	});
 }
 
-function talkingStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
+function messagingStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	const otherparty = request.resourceURL.query.otherparty;
 
-	// Subscribe talking stream
-	subscriber.subscribe(`misskey:talking-stream:${user._id}-${otherparty}`);
+	// Subscribe messaging stream
+	subscriber.subscribe(`misskey:messaging-stream:${user._id}-${otherparty}`);
 	subscriber.on('message', (_: any, data: any) => {
 		connection.send(data);
 	});

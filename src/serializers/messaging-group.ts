@@ -4,7 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Group from '../models/talk-group';
+import Group from '../models/messaging-group';
 import serializeUser from './user';
 const deepcopy = require('deepcopy');
 

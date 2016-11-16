@@ -4,10 +4,10 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
-import Message from '../../models/talk-message';
-import Group from '../../models/talk-group';
+import Message from '../../models/messaging-message';
+import Group from '../../models/messaging-group';
 import User from '../../models/user';
-import serialize from '../../serializers/talk-message';
+import serialize from '../../serializers/messaging-message';
 import { publishTalkingStream } from '../../event';
 
 /**
