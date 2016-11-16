@@ -17,13 +17,13 @@ import serialize from '../../serializers/user';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'user' parameter
+	// Get 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
 		return rej('user is required');
 	}
 
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
@@ -36,7 +36,7 @@ module.exports = (params, me) =>
 		limit = 10;
 	}
 
-	// Init 'offset' parameter
+	// Get 'offset' parameter
 	let offset = params.offset;
 	if (offset !== undefined && offset !== null) {
 		offset = parseInt(offset, 10);
@@ -44,7 +44,7 @@ module.exports = (params, me) =>
 		offset = 0;
 	}
 
-	// Init 'sort' parameter
+	// Get 'sort' parameter
 	let sort = params.sort || 'desc';
 
 	// Lookup user

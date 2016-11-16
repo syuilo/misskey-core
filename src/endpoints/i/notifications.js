@@ -17,7 +17,7 @@ import serialize from '../../serializers/notification';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);

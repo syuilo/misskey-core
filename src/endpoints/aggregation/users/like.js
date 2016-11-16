@@ -16,7 +16,7 @@ import Like from '../../../models/like';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'user' parameter
+	// Get 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
 		return rej('user is required');

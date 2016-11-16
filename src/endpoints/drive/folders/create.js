@@ -20,7 +20,7 @@ module.exports = (params, user) =>
 {
 	const follower = user;
 
-	// Init 'name' parameter
+	// Get 'name' parameter
 	let name = params.name;
 	if (name !== undefined && name !== null) {
 		name = name.trim();
@@ -39,7 +39,7 @@ module.exports = (params, user) =>
 		name = '無題のフォルダー';
 	}
 
-	// Init 'folder' parameter
+	// Get 'folder' parameter
 	let parentId = params.folder;
 	if (parentId === undefined || parentId === null) {
 		parentId = null;

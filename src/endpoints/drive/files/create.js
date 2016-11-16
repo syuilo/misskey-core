@@ -25,7 +25,7 @@ module.exports = (file, params, user) =>
 	const buffer = fs.readFileSync(file.path);
 	fs.unlink(file.path);
 
-	// Init 'name' parameter
+	// Get 'name' parameter
 	let name = file.originalname;
 	if (name !== undefined && name !== null) {
 		name = name.trim();
@@ -40,7 +40,7 @@ module.exports = (file, params, user) =>
 		name = null;
 	}
 
-	// Init 'folder' parameter
+	// Get 'folder' parameter
 	let folder = params.folder;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;

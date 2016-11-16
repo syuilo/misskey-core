@@ -74,7 +74,7 @@ module.exports = (params, user) =>
 		return rej('need translate');
 	}
 
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);

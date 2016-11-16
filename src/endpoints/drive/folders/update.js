@@ -35,7 +35,7 @@ module.exports = (params, user) =>
 		return rej('folder-not-found');
 	}
 
-	// Init 'parent' parameter
+	// Get 'parent' parameter
 	let parentId = params.parent;
 	if (parentId !== undefined && parentId !== 'null') {
 		parentId = new mongo.ObjectID(parentId);

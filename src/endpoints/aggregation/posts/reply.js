@@ -15,7 +15,7 @@ import Post from '../../../models/post';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'post' parameter
+	// Get 'post' parameter
 	const postId = params.post;
 	if (postId === undefined || postId === null) {
 		return rej('post is required');

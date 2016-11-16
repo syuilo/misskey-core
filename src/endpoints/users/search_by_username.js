@@ -17,7 +17,7 @@ import serialize from '../../serializers/user';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'query' parameter
+	// Get 'query' parameter
 	let query = params.query;
 	if (query === undefined || query === null || query.trim() === '') {
 		return rej('query is required');
@@ -29,7 +29,7 @@ module.exports = (params, me) =>
 		return rej('invalid query');
 	}
 
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
@@ -42,7 +42,7 @@ module.exports = (params, me) =>
 		limit = 10;
 	}
 
-	// Init 'offset' parameter
+	// Get 'offset' parameter
 	let offset = params.offset;
 	if (offset !== undefined && offset !== null) {
 		offset = parseInt(offset, 10);

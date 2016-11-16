@@ -19,7 +19,7 @@ import User from '../../../models/user';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'post' parameter
+	// Get 'post' parameter
 	let postId = params.post;
 	if (postId === undefined || postId === null) {
 		return rej('post is required');

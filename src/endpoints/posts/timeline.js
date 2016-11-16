@@ -19,7 +19,7 @@ import serialize from '../../serializers/post';
 module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);

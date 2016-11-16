@@ -21,7 +21,7 @@ module.exports = (params, user) =>
 {
 	const follower = user;
 
-	// Init 'user' parameter
+	// Get 'user' parameter
 	let userId = params.user;
 	if (userId === undefined || userId === null) {
 		return rej('user is required');

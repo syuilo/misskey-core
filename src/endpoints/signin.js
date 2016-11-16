@@ -21,13 +21,13 @@ import event from '../event';
 module.exports = async (params, reply, _1, _2, isWeb) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'username' parameter
+	// Get 'username' parameter
 	const username = params.username;
 	if (username === undefined || username === null || username === '') {
 		return rej('username is required');
 	}
 
-	// Init 'password' parameter
+	// Get 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
 		return rej('password is required');

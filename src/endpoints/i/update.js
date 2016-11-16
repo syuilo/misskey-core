@@ -20,7 +20,7 @@ import es from '../../db/elasticsearch';
 module.exports = async (params, user, _, isWeb) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'name' parameter
+	// Get 'name' parameter
 	const name = params.name;
 	if (name !== undefined && name !== null) {
 		if (name.length > 50) {
@@ -30,7 +30,7 @@ module.exports = async (params, user, _, isWeb) =>
 		user.name = name;
 	}
 
-	// Init 'location' parameter
+	// Get 'location' parameter
 	const location = params.location;
 	if (location !== undefined && location !== null) {
 		if (location.length > 50) {
@@ -40,7 +40,7 @@ module.exports = async (params, user, _, isWeb) =>
 		user.location = location;
 	}
 
-	// Init 'bio' parameter
+	// Get 'bio' parameter
 	const bio = params.bio;
 	if (bio !== undefined && bio !== null) {
 		if (bio.length > 500) {
@@ -50,13 +50,13 @@ module.exports = async (params, user, _, isWeb) =>
 		user.bio = bio;
 	}
 
-	// Init 'avatar' parameter
+	// Get 'avatar' parameter
 	const avatar = params.avatar;
 	if (avatar !== undefined && avatar !== null) {
 		user.avatar = new mongo.ObjectID(avatar);
 	}
 
-	// Init 'banner' parameter
+	// Get 'banner' parameter
 	const banner = params.banner;
 	if (banner !== undefined && banner !== null) {
 		user.banner = new mongo.ObjectID(banner);

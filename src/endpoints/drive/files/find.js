@@ -23,7 +23,7 @@ module.exports = (params, user) =>
 		return rej('name is required');
 	}
 
-	// Init 'folder' parameter
+	// Get 'folder' parameter
 	let folder = params.folder;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;

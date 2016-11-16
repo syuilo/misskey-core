@@ -29,7 +29,7 @@ const maxTextLength = 500;
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'user' parameter
+	// Get 'user' parameter
 	let recipient = params.user;
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
@@ -43,7 +43,7 @@ module.exports = (params, user) =>
 		recipient = null;
 	}
 
-	// Init 'group' parameter
+	// Get 'group' parameter
 	let group = params.group;
 	if (group !== undefined && group !== null) {
 		group = await Group.findOne({
@@ -74,7 +74,7 @@ module.exports = (params, user) =>
 		return rej('need translate');
 	}
 
-	// Init 'text' parameter
+	// Get 'text' parameter
 	let text = params.text;
 	if (text !== undefined && text !== null) {
 		text = text.trim();
@@ -87,7 +87,7 @@ module.exports = (params, user) =>
 		text = null;
 	}
 
-	// Init 'file' parameter
+	// Get 'file' parameter
 	let file = params.file;
 	if (file !== undefined && file !== null) {
 		file = await DriveFile.findOne({

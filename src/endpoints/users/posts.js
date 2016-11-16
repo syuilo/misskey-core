@@ -18,13 +18,13 @@ import serialize from '../../serializers/post';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'user' parameter
+	// Get 'user' parameter
 	const userId = params.user;
 	if (userId === undefined || userId === null) {
 		return rej('user is required');
 	}
 
-	// Init 'with_images' parameter
+	// Get 'with_images' parameter
 	let withImages = params.with_images;
 	if (withImages !== undefined && withImages !== null && withImages === 'true') {
 		withImages = true;
@@ -32,7 +32,7 @@ module.exports = (params, me) =>
 		withImages = false;
 	}
 
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);

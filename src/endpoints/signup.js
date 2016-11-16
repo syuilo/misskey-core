@@ -18,7 +18,7 @@ import es from '../db/elasticsearch';
 module.exports = async (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'username' parameter
+	// Get 'username' parameter
 	const username = params.username;
 	if (username === undefined || username === null || username === '') {
 		return rej('username is required');
@@ -29,7 +29,7 @@ module.exports = async (params) =>
 		return rej('invalid username');
 	}
 
-	// Init 'password' parameter
+	// Get 'password' parameter
 	const password = params.password;
 	if (password === undefined || password === null || password === '') {
 		return rej('password is required');

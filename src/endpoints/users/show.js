@@ -17,13 +17,13 @@ import serialize from '../../serializers/user';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'id' parameter
+	// Get 'id' parameter
 	let userId = params.id;
 	if (userId === undefined || userId === null || userId === '') {
 		userId = null;
 	}
 
-	// Init 'username' parameter
+	// Get 'username' parameter
 	let username = params.username;
 	if (username === undefined || username === null || username === '') {
 		username = null;

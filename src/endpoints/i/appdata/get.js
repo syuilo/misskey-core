@@ -17,7 +17,7 @@ import Appdata from '../../../models/appdata';
 module.exports = (params, user, app, isWeb) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'key' parameter
+	// Get 'key' parameter
 	let key = params.key;
 	if (key === undefined) {
 		key = null;

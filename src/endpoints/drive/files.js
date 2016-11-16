@@ -18,7 +18,7 @@ import serialize from '../../serializers/drive-file';
 module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'limit' parameter
+	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
 		limit = parseInt(limit, 10);
@@ -39,7 +39,7 @@ module.exports = (params, user, app) =>
 		return rej('cannot set since and max');
 	}
 
-	// Init 'folder' parameter
+	// Get 'folder' parameter
 	let folder = params.folder;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;

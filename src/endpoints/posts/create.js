@@ -38,7 +38,7 @@ const maxFileLength = 4;
 module.exports = (params, user, app) =>
 	new Promise(async (res, rej) =>
 {
-	// Init 'text' parameter
+	// Get 'text' parameter
 	let text = params.text;
 	if (text !== undefined && text !== null) {
 		text = text.trim();
@@ -51,7 +51,7 @@ module.exports = (params, user, app) =>
 		text = null;
 	}
 
-	// Init 'images' parameter
+	// Get 'images' parameter
 	let images = params.images;
 	let files = [];
 	if (images !== undefined && images !== null) {
@@ -86,7 +86,7 @@ module.exports = (params, user, app) =>
 		files = null;
 	}
 
-	// Init 'repost' parameter
+	// Get 'repost' parameter
 	let repost = params.repost;
 	if (repost !== undefined && repost !== null) {
 		// Get repostee
@@ -127,7 +127,7 @@ module.exports = (params, user, app) =>
 		repost = null;
 	}
 
-	// Init 'reply_to' parameter
+	// Get 'reply_to' parameter
 	let replyTo = params.reply_to;
 	if (replyTo !== undefined && replyTo !== null) {
 		replyTo = await Post.findOne({
