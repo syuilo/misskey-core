@@ -83,23 +83,27 @@ app.use(subdomain({
 /**
  * Routing
  */
+
 app.get('/api:url', require('./service/url-preview').default);
 app.post('/api:rss-proxy', require('./service/rss-proxy').default);
 
+// authorize form
 app.get('/__/auth/*', (req, res) => {
 	res.sendFile(`${__dirname}/web/auth/view.html`, {
 		maxAge: ms('7 days')
 	});
 });
 
+// developer center
 app.get('/__/dev/*', (req, res) => {
 	res.sendFile(`${__dirname}/web/dev/view.html`, {
 		maxAge: ms('7 days')
 	});
 });
 
+// client
 app.get('*', (req, res) => {
-	res.sendFile(`${__dirname}/web/client.html`, {
+	res.sendFile(`${__dirname}/web/client/view.html`, {
 		maxAge: ms('7 days')
 	});
 });
