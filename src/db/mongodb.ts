@@ -1,5 +1,5 @@
 import * as mongodb from 'mongodb';
-import { IConfig } from '../iconfig';
+import { IConfig } from '../config';
 
 export default async function(config: IConfig): Promise<mongodb.Db> {
 	const uri = config.mongodb.user && config.mongodb.pass

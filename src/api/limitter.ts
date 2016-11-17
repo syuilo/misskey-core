@@ -1,5 +1,5 @@
 import * as Limiter from 'ratelimiter';
-import limiterDB from './db/redis';
+import limiterDB from '../db/redis';
 import { IEndpoint } from './endpoints';
 import { IAuthContext } from './authenticate';
 

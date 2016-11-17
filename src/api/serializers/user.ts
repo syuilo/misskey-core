@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import User from '../models/user';
 import Following from '../models/following';
-import config from '../config';
+import config from '../../config';
 
 /**
  * Serialize a user

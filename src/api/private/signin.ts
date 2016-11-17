@@ -4,7 +4,7 @@ import User from '../models/user';
 import Signin from '../models/signin';
 //import event from '../event';
 
-import config from '../config';
+import config from '../../config';
 
 export default async (req: express.Request, res: express.Response): Promise<any> => {
 	const username = req.body['username'];

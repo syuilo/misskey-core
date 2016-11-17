@@ -38,21 +38,20 @@ import * as chalk from 'chalk';
 import * as del from 'del';
 const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
-import argv from './argv';
 import yesno from './utils/cli/yesno';
 import ProgressBar from './utils/cli/progressbar';
-import config from './load-config';
-import configGenerator from './config-generator';
+import config from './config';
+import configGenerator from './utils/config-generator';
 import initdb from './db/mongodb';
-import checkDependencies from './check-dependencies';
+import checkDependencies from './utils/check-dependencies';
 
 // Init babel
 require('babel-core/register');
 require('babel-polyfill');
 
 const env = process.env.NODE_ENV;
-global.IS_PRODUCTION = env === 'production';
-global.IS_DEBUG = !global.IS_PRODUCTION;
+const IS_PRODUCTION = env === 'production';
+const IS_DEBUG = !IS_PRODUCTION;
 
 /**
  * Initialize state
@@ -210,10 +209,7 @@ async function init(): Promise<State> {
 	logDone('Success to load configuration');
 	logInfo(`maintainer: ${conf.maintainer}`);
 
-	// Check dependencies
-	if (!argv.options.hasOwnProperty('skip-check-dependencies')) {
-		checkDependencies();
-	}
+	checkDependencies();
 
 	// Check if a port is being used
 	if (await portUsed.check(conf.port)) {

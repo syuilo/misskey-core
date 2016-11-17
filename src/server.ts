@@ -22,10 +22,6 @@ import appleTouchIcon from './utils/apple-touch-icon';
 import * as ms from 'ms';
 
 // internal modules
-import router from './router';
-import api from './api-server';
-import streaming from './streaming';
-
 import config from './config';
 
 /**
@@ -42,7 +38,7 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use(vhost(`api.${config.host}`, api));
+app.use(vhost(`api.${config.host}`, require('./api/server')));
 
 app.locals.compileDebug = false;
 app.locals.cache = true;
@@ -87,7 +83,30 @@ app.use(subdomain({
 /**
  * Routing
  */
-app.use(router);
+router.get('/api:url', require('./service/url-preview').default);
+router.post('/api:rss-proxy', require('./service/rss-proxy').default);
+
+router.get('/__/auth/', (req, res) => {
+	res.redirect(config.url);
+});
+
+router.get('/__/auth/*', (req, res) => {
+	res.sendFile(`${__dirname}/web/auth/view.html`, {
+		maxAge: ms('7 days')
+	});
+});
+
+router.get('/__/dev/*', (req, res) => {
+	res.sendFile(`${__dirname}/web/dev/view.html`, {
+		maxAge: ms('7 days')
+	});
+});
+
+router.get('*', (req, res) => {
+	res.sendFile(`${__dirname}/web/client.html`, {
+		maxAge: ms('7 days')
+	});
+});
 
 /**
  * Create server
@@ -110,4 +129,4 @@ server.listen(config.port, () => {
 /**
  * Steaming
  */
-streaming(server);
+require('./api/streaming')(server);

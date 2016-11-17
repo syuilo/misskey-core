@@ -17,6 +17,7 @@
 	"include": [
 		"./node_modules/typescript/lib/lib.es6.d.ts",
 		"./typings/bundle.d.ts",
-		"./src/**/*.ts"
+		"./src/**/*.ts",
+		"!./src/web/**/*.ts"
 	]
 }

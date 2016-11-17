@@ -4,9 +4,9 @@ import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
 import User from '../models/user';
 import serialize from '../serializers/user';
-import es from '../db/elasticsearch';
+import es from '../../db/elasticsearch';
 
-import config from '../config';
+import config from '../../config';
 
 export default (req: express.Request, res: express.Response) => {
 	request({

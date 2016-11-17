@@ -7,7 +7,7 @@ import DriveFile from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
-import es from '../db/elasticsearch';
+import es from '../../db/elasticsearch';
 
 /**
  * Add file to drive

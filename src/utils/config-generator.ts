@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as inquirer from 'inquirer';
-import {IConfig} from './iconfig';
-import {configPath, configDirPath} from './meta';
+import { IConfig, configPath, configDirPath } from '../config';
 
 export default async function(): Promise<void> {
 	const as: any = await inquirer.prompt([

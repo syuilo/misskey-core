@@ -1,10 +1,10 @@
+import * as http from 'http';
 import * as websocket from 'websocket';
 import * as redis from 'redis';
 import User from './models/user';
-import config from './config';
+import config from '../config';
 
-export default function (server: any): void {
-
+module.exports = (server: http.Server) => {
 	/**
 	 * Init websocket server
 	 */
@@ -37,7 +37,7 @@ export default function (server: any): void {
 			connection.close();
 		}
 	});
-}
+};
 
 function authenticate(connection: websocket.connection): Promise<any> {
 	return new Promise((resolve, reject) => {
