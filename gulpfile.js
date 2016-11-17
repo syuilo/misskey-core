@@ -46,12 +46,8 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	exec(`gulp build --url=${config.url} --proxy-url=${config.proxy.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
 	cd('../../');
 
-	return gulp.src([
-		'./src/web/built/**/*',
-		'!**/*.ts',
-		'!**/*.ls',
-		'!**/*.styl'
-	]).pipe(gulp.dest('./built/web/'));
+	return gulp.src('./src/web/built/**/*')
+		.pipe(gulp.dest('./built/web/'));
 });
 
 gulp.task('build:copy', () => {
