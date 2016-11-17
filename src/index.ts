@@ -190,6 +190,7 @@ async function init(): Promise<State> {
 		logWarn('Config not found');
 		if (await yesno('Do you want setup now?', true)) {
 			await configGenerator();
+			delete require.cache[require.resolve('./config')];
 		} else {
 			logFailed('Failed to load configuration');
 			return State.failed;
