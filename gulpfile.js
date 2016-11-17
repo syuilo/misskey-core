@@ -5,7 +5,6 @@ const gulp = require('gulp');
 const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
-const es = require('event-stream');
 
 const project = ts.createProject('tsconfig.json');
 
@@ -16,10 +15,8 @@ gulp.task('build', [
 ]);
 
 gulp.task('buildall', [
-	'build:js',
-	'build:ts',
-	'build:client',
-	'build:copy'
+	'build',
+	'build:client'
 ]);
 
 gulp.task('build:js', () =>
@@ -48,21 +45,20 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	exec('npm install');
 	exec('bower install --allow-root');
 	exec(`gulp build --url=${config.url} --theme-color=${meta.themeColor} --proxy-url=${config.proxy.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
+	cd('../../');
+
+	return gulp.src([
+		'./src/web/built/**/*',
+		'!**/*.ts',
+		'!**/*.ls',
+		'!**/*.styl'
+	]).pipe(gulp.dest('./built/web/'));
 });
 
 gulp.task('build:copy', () => {
-	let copyResources = gulp.src([
-			'./src/resources/**/*'
-		]).pipe(gulp.dest('./built/resources/'));
-
-	let copyWeb = gulp.src([
-			'./src/web/**/*',
-			'!**/*.ts',
-			'!**/*.ls',
-			'!**/*.styl'
-		]).pipe(gulp.dest('./built/web/'));
-
-	return es.merge(copyResources, copyWeb);
+	return gulp.src([
+		'./src/resources/**/*'
+	]).pipe(gulp.dest('./built/resources/'));
 });
 
 gulp.task('test', ['lint', 'build']);

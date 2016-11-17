@@ -1,57 +1,93 @@
-//////////////////////////////////////////////////
-// API SERVER
-//////////////////////////////////////////////////
+/**
+ * Core Server
+ */
 
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
+
+// express modules
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as favicon from 'serve-favicon';
-import * as cors from 'cors';
-import * as multer from 'multer';
+import * as compression from 'compression';
+const vhost = require('vhost');
+const subdomain = require('subdomain');
+
+import manifest from './utils/manifest';
+import appleTouchIcon from './utils/apple-touch-icon';
+
+// utility module
+import * as ms from 'ms';
+
+// internal modules
+import router from './router';
+import api from './api-server';
+import streaming from './streaming';
 
 import config from './config';
-import endpoints from './endpoints';
-import streaming from './streaming';
 
 /**
  * Init app
  */
 const app = express();
-
 app.disable('x-powered-by');
 
+/**
+ * Initialize requests
+ */
+app.use((req, res, next) => {
+	res.header('X-Frame-Options', 'DENY');
+	next();
+});
+
+app.use(vhost(`api.${config.host}`, api));
+
 app.locals.compileDebug = false;
-app.locals.cache = false;
-
-app.set('etag', false);
-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.locals.cache = true;
 
 /**
- * CORS
+ * Compressions
  */
-app.use(cors());
+app.use(compression());
 
 /**
  * Statics
  */
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
-app.use('/', express.static(__dirname + '/web/built'));
+app.use(manifest);
+app.use(appleTouchIcon);
+app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
+	maxAge: ms('7 days')
+}));
 
-const upload = multer({ dest: 'uploads/' });
-endpoints.forEach(endpoint => {
-	if (endpoint.withFile) {
-		app.post('/' + endpoint.name, upload.single('file'), handler);
-	} else {
-		app.post('/' + endpoint.name, handler);
-	}
+/**
+ * Server status
+ */
+//app.use(require('express-status-monitor')({
+//	title: 'Misskey Web Status',
+//	path: '/__/about/status'
+//}));
 
-	function handler(req: express.Request, res: express.Response): void {
-		require('./api-handler').default(endpoint, req, res);
-	}
-});
+/**
+ * Basic parsers
+ */
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+/**
+ * Subdomain
+ */
+app.use(subdomain({
+	base: config.host,
+	prefix: '__'
+}));
+
+/**
+ * Routing
+ */
+app.use(router);
 
 /**
  * Create server

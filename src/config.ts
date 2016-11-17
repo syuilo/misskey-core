@@ -1,14 +1,11 @@
 import { IConfig } from './iconfig';
 import load from './load-config';
 
-let conf: IConfig;
+// Load and parse the config
+const conf = load() as IConfig & {
+	host: string;
+};
 
-try {
-	// Load and parse the config
-	conf = load() as IConfig;
-} catch (e) {
-	console.error('Failed to load config: ' + e);
-	process.exit(1);
-}
+conf.host = conf.url.substr(conf.url.indexOf('://') + 3);
 
 export default conf;

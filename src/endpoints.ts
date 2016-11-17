@@ -17,8 +17,6 @@ export interface IEndpoint {
 
 export default [
 	{ name: 'meta',   shouldBeSignin: false },
-	{ name: 'signin', shouldBeSignin: false, webOnly: true },
-	{ name: 'signup', shouldBeSignin: false, webOnly: true },
 
 	{ name: 'username/available', shouldBeSignin: false },
 
