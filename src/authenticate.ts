@@ -2,7 +2,6 @@ import * as express from 'express';
 import App from './models/app';
 import User from './models/user';
 import Userkey from './models/userkey';
-import config from './config';
 
 export interface IAuthContext {
 	/**
@@ -37,11 +36,6 @@ export default (req: express.Request) =>
 			user: user,
 			isWeb: true
 		});
-	}
-
-	const webKey = req.body['_web'];
-	if (webKey && webKey === config.webSecret) {
-		return resolve({ app: null, user: null, isWeb: true });
 	}
 
 	const userkey = req.headers['userkey'] || req.body['_userkey'];

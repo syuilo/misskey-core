@@ -26,8 +26,6 @@ app.locals.compileDebug = false;
 app.locals.cache = false;
 
 app.set('etag', false);
-app.set('view engine', 'pug');
-app.set('views', __dirname + '/web/');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -40,14 +38,7 @@ app.use(cors());
  * Statics
  */
 app.use(favicon(`${__dirname}/resources/favicon.ico`));
-app.use('/resources', express.static(__dirname + '/resources'));
-
-/**
- * Routing
- */
-app.get('/', (req, res) => {
-	res.render('index');
-});
+app.use('/', express.static(__dirname + '/web/built'));
 
 const upload = multer({ dest: 'uploads/' });
 endpoints.forEach(endpoint => {

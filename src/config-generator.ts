@@ -42,13 +42,13 @@ export default async function(): Promise<void> {
 		},
 		{
 			type: 'input',
-			name: 'web_secret',
-			message: 'Web secret key:'
+			name: 'drive_url',
+			message: 'Drive(misskey-file server)\'s url:'
 		},
 		{
 			type: 'input',
-			name: 'drive_url',
-			message: 'Drive(misskey-file server)\'s url:'
+			name: 'proxy_url',
+			message: 'Proxy URL:'
 		},
 		{
 			type: 'input',
@@ -111,6 +111,16 @@ export default async function(): Promise<void> {
 			type: 'password',
 			name: 'es_pass',
 			message: 'Elasticsearch\'s password:'
+		},
+		{
+			type: 'input',
+			name: 'recaptcha_site',
+			message: 'reCAPTCHA\'s site key:'
+		},
+		{
+			type: 'input',
+			name: 'recaptcha_secret',
+			message: 'reCAPTCHA\'s secret key:'
 		}
 	]);
 
@@ -123,9 +133,11 @@ export default async function(): Promise<void> {
 			cert: as.https_cert || null,
 			ca: as.https_ca || null
 		},
-		webSecret: as.web_secret,
 		drive: {
 			url: as.drive_url
+		},
+		proxy: {
+			url: as.proxy_url
 		},
 		mongodb: {
 			host: as.mongo_host,
@@ -143,6 +155,10 @@ export default async function(): Promise<void> {
 			host: as.es_host,
 			port: parseInt(as.es_port, 10),
 			pass: as.es_pass
+		},
+		recaptcha: {
+			siteKey: as.recaptcha_site,
+			secretKey: as.recaptcha_secret
 		}
 	};
 

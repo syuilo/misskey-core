@@ -1,6 +1,5 @@
 export interface IConfig {
 	maintainer: string;
-	webSecret: string;
 	port: number;
 	https: {
 		enable: boolean;
@@ -9,6 +8,9 @@ export interface IConfig {
 		ca: string;
 	};
 	drive: {
+		url: string;
+	};
+	proxy: {
 		url: string;
 	};
 	mongodb: {
@@ -27,5 +29,9 @@ export interface IConfig {
 		host: string;
 		port: number;
 		pass: string;
+	};
+	recaptcha: {
+		siteKey: string;
+		secretKey: string;
 	};
 }
