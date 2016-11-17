@@ -83,22 +83,22 @@ app.use(subdomain({
 /**
  * Routing
  */
-router.get('/api:url', require('./service/url-preview').default);
-router.post('/api:rss-proxy', require('./service/rss-proxy').default);
+app.get('/api:url', require('./service/url-preview').default);
+app.post('/api:rss-proxy', require('./service/rss-proxy').default);
 
-router.get('/__/auth/*', (req, res) => {
+app.get('/__/auth/*', (req, res) => {
 	res.sendFile(`${__dirname}/web/auth/view.html`, {
 		maxAge: ms('7 days')
 	});
 });
 
-router.get('/__/dev/*', (req, res) => {
+app.get('/__/dev/*', (req, res) => {
 	res.sendFile(`${__dirname}/web/dev/view.html`, {
 		maxAge: ms('7 days')
 	});
 });
 
-router.get('*', (req, res) => {
+app.get('*', (req, res) => {
 	res.sendFile(`${__dirname}/web/client.html`, {
 		maxAge: ms('7 days')
 	});
