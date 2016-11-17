@@ -20,8 +20,12 @@ Build
 1. `git clone git://github.com/syuilo/misskey-core.git`
 2. `cd misskey-core`
 3. `npm install`
-4. `npm run dtsm`
-5. `npm run build`
+4. `npm install gulp bower -g`
+5. `npm run dtsm`
+6. `gulp build`
+7. `npm start`
+8. 表示されるウィザードに従って設定ファイルを生成してください。
+9. `gulp buildall`
 
 Launch
 ------
