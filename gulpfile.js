@@ -39,7 +39,6 @@ gulp.task('build:ts', () =>
 
 gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	const config = require('./built/config').default;
-	const meta = require('./built/meta');
 
 	cd('./src/web');
 	exec('npm install');
