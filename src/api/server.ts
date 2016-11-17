@@ -23,17 +23,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 /**
- * Subdomain
- */
-app.use(subdomain({
-	base: config.host,
-	prefix: '__'
-}));
-
-app.post('/__/signup/', require('./private/signup').default);
-app.post('/__/signin/', require('./private/signin').default);
-
-/**
  * Register endpoint handlers
  */
 endpoints.forEach(endpoint =>
@@ -44,5 +33,16 @@ endpoints.forEach(endpoint =>
 		app.post('/' + endpoint.name,
 			require('./api-handler').default.bind(null, endpoint))
 );
+
+/**
+ * Subdomain
+ */
+app.use(subdomain({
+	base: config.host,
+	prefix: '__'
+}));
+
+app.post('/__/signup/', require('./private/signup').default);
+app.post('/__/signin/', require('./private/signin').default);
 
 module.exports = app;
