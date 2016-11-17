@@ -1,6 +1,6 @@
-/.*
+/.config
+/.vscode
 /node_modules
 /built
 /typings
 npm-debug.log
-/tmp
