@@ -86,10 +86,6 @@ app.use(subdomain({
 router.get('/api:url', require('./service/url-preview').default);
 router.post('/api:rss-proxy', require('./service/rss-proxy').default);
 
-router.get('/__/auth/', (req, res) => {
-	res.redirect(config.url);
-});
-
 router.get('/__/auth/*', (req, res) => {
 	res.sendFile(`${__dirname}/web/auth/view.html`, {
 		maxAge: ms('7 days')
