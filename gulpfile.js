@@ -1,5 +1,6 @@
 'use strict';
 
+require('shelljs/global');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
@@ -14,8 +15,15 @@ gulp.task('build', [
 	'build:copy'
 ]);
 
+gulp.task('buildall', [
+	'build:js',
+	'build:ts',
+	'build:client',
+	'build:copy'
+]);
+
 gulp.task('build:js', () =>
-	gulp.src('./src/**/*.js')
+	gulp.src(['./src/**/*.js', '!./src/web/**/*.js'])
 		.pipe(babel({
 			presets: ['es2015', 'stage-3']
 		}))
@@ -31,6 +39,16 @@ gulp.task('build:ts', () =>
 		}))
 		.pipe(gulp.dest('./built/'))
 );
+
+gulp.task('build:client', ['build:ts', 'build:js'], () => {
+	const config = require('./built/config').default;
+	const meta = require('./built/meta');
+
+	cd('./src/web');
+	exec('npm install');
+	exec('./node_modules/.bin/bower install --allow-root');
+	exec(`gulp build --url=${config.url} --theme-color=${meta.themeColor} --proxy-url=${config.proxy.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
+});
 
 gulp.task('build:copy', () => {
 	let copyResources = gulp.src([

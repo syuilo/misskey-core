@@ -13,6 +13,11 @@ export default async function(): Promise<void> {
 		},
 		{
 			type: 'input',
+			name: 'url',
+			message: 'WWW URL:'
+		},
+		{
+			type: 'input',
 			name: 'port',
 			message: 'Listen port:'
 		},
@@ -126,6 +131,7 @@ export default async function(): Promise<void> {
 
 	const conf: IConfig = {
 		maintainer: as.maintainer,
+		url: as.url,
 		port: parseInt(as.port, 10),
 		https: {
 			enable: as.https,

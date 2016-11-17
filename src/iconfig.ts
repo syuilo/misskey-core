@@ -1,5 +1,6 @@
 export interface IConfig {
 	maintainer: string;
+	url: string;
 	port: number;
 	https: {
 		enable: boolean;
