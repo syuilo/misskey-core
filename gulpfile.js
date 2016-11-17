@@ -46,7 +46,7 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 
 	cd('./src/web');
 	exec('npm install');
-	exec('./node_modules/.bin/bower install --allow-root');
+	exec('bower install --allow-root');
 	exec(`gulp build --url=${config.url} --theme-color=${meta.themeColor} --proxy-url=${config.proxy.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
 });
 
