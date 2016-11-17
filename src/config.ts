@@ -9,7 +9,7 @@ let config: IConfig;
 try {
 	config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8')) as IConfig;
 } catch (e) {
-
+	// nope
 }
 
 export default Object.assign(config || {}, {
