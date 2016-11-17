@@ -57,7 +57,8 @@ module.exports = (params, me) =>
 	// Get following
 	const following = await Following
 		.find({
-			follower: user._id
+			follower: user._id,
+			deleted_at: { $exists: false }
 		}, {}, {
 			limit: limit,
 			skip: offset,

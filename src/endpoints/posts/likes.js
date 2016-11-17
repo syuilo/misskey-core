@@ -58,7 +58,10 @@ module.exports = (params, user) =>
 
 	// Issue query
 	const likes = await Like
-		.find({ post: post._id }, {}, {
+		.find({
+			post: post._id,
+			deleted_at: { $exists: false }
+		}, {}, {
 			limit: limit,
 			skip: offset,
 			sort: {
