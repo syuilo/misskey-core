@@ -13,7 +13,12 @@ export default async function(): Promise<void> {
 		{
 			type: 'input',
 			name: 'url',
-			message: 'WWW URL:'
+			message: 'PRIMARY URL:'
+		},
+		{
+			type: 'input',
+			name: 'secondary_url',
+			message: 'SECONDARY URL:'
 		},
 		{
 			type: 'input',
@@ -48,11 +53,6 @@ export default async function(): Promise<void> {
 			type: 'input',
 			name: 'drive_url',
 			message: 'Drive(misskey-file server)\'s url:'
-		},
-		{
-			type: 'input',
-			name: 'proxy_url',
-			message: 'Proxy URL:'
 		},
 		{
 			type: 'input',
@@ -131,6 +131,7 @@ export default async function(): Promise<void> {
 	const conf: IConfig = {
 		maintainer: as.maintainer,
 		url: as.url,
+		secondary_url: as.secondary_url,
 		port: parseInt(as.port, 10),
 		https: {
 			enable: as.https,
@@ -140,9 +141,6 @@ export default async function(): Promise<void> {
 		},
 		drive: {
 			url: as.drive_url
-		},
-		proxy: {
-			url: as.proxy_url
 		},
 		mongodb: {
 			host: as.mongo_host,

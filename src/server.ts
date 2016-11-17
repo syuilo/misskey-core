@@ -30,6 +30,12 @@ import config from './config';
 const app = express();
 app.disable('x-powered-by');
 
+app.use(vhost(`api.${config.host}`, require('./api/server')));
+app.use(vhost(`proxy.${config.secondary_host}`, require('./service/forward-proxy/server')));
+
+app.locals.compileDebug = false;
+app.locals.cache = true;
+
 /**
  * Initialize requests
  */
@@ -37,11 +43,6 @@ app.use((req, res, next) => {
 	res.header('X-Frame-Options', 'DENY');
 	next();
 });
-
-app.use(vhost(`api.${config.host}`, require('./api/server')));
-
-app.locals.compileDebug = false;
-app.locals.cache = true;
 
 /**
  * Compressions

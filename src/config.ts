@@ -13,14 +13,21 @@ try {
 }
 
 export default Object.assign(config || {}, {
-	host: config ? config.url.substr(config.url.indexOf('://') + 3) : undefined
+	host: config ? config.url.substr(config.url.indexOf('://') + 3) : undefined,
+	scheme: config ? config.url.substr(0, config.url.indexOf('://')) : undefined,
+	secondary_host: config ? config.secondary_url.substr(config.secondary_url.indexOf('://') + 3) : undefined,
+	secondary_scheme: config ? config.secondary_url.substr(0, config.secondary_url.indexOf('://')) : undefined
 }) as IConfig & {
 	host: string;
+	scheme: string;
+	secondary_host: string;
+	secondary_scheme: string;
 };
 
 export interface IConfig {
 	maintainer: string;
 	url: string;
+	secondary_url: string;
 	port: number;
 	https: {
 		enable: boolean;
@@ -29,9 +36,6 @@ export interface IConfig {
 		ca: string;
 	};
 	drive: {
-		url: string;
-	};
-	proxy: {
 		url: string;
 	};
 	mongodb: {

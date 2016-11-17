@@ -43,7 +43,7 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	cd('./src/web');
 	exec('npm install');
 	exec('bower install --allow-root');
-	exec(`gulp build --url=${config.url} --proxy-url=${config.proxy.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
+	exec(`gulp build --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
 	cd('../../');
 
 	return gulp.src('./src/web/built/**/*')
