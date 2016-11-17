@@ -4,14 +4,19 @@ import * as yaml from 'js-yaml';
 export const configDirPath = `${__dirname}/../.config`;
 export const configPath = `${configDirPath}/config.yml`;
 
-// Load and parse the config
-const conf = yaml.safeLoad(fs.readFileSync(configPath, 'utf8')) as IConfig & {
+let config: IConfig;
+
+try {
+	config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8')) as IConfig;
+} catch (e) {
+
+}
+
+export default Object.assign(config || {}, {
+	host: config ? config.url.substr(config.url.indexOf('://') + 3) : undefined
+}) as IConfig & {
 	host: string;
 };
-
-conf.host = conf.url.substr(conf.url.indexOf('://') + 3);
-
-export default conf;
 
 export interface IConfig {
 	maintainer: string;

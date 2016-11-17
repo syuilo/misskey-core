@@ -31,6 +31,7 @@ Error.stackTraceLimit = Infinity;
 /**
  * Module dependencies
  */
+import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
 import { logInfo, logDone, logWarn, logFailed } from 'log-cool';
@@ -40,7 +41,6 @@ const Git = require('nodegit');
 const portUsed = require('tcp-port-used');
 import yesno from './utils/cli/yesno';
 import ProgressBar from './utils/cli/progressbar';
-import config from './config';
 import configGenerator from './utils/config-generator';
 import initdb from './db/mongodb';
 import checkDependencies from './utils/check-dependencies';
@@ -110,7 +110,7 @@ async function master(): Promise<void> {
 			break;
 	}
 
-	const conf = config();
+	const conf = require('./config').default;
 
 	// Spawn workers
 	spawn(() => {
@@ -141,7 +141,7 @@ async function master(): Promise<void> {
  */
 function worker(): void {
 	// Init mongo
-	initdb(config()).then(db => {
+	initdb(require('./config').default).then(db => {
 		(global as any).db = db;
 
 		// start server
@@ -186,25 +186,18 @@ async function init(): Promise<State> {
 	// Clean
 	await del(__dirname + '/../tmp/');
 
-	// Load config
-	let conf: any;
-	try {
-		conf = config();
-	} catch (e) {
-		if (e.code !== 'ENOENT') {
-			logFailed('Failed to load configuration');
-			return State.failed;
-		}
-
+	if (!fs.existsSync(require('./config').configPath)) {
 		logWarn('Config not found');
 		if (await yesno('Do you want setup now?', true)) {
 			await configGenerator();
-			conf = config();
 		} else {
 			logFailed('Failed to load configuration');
 			return State.failed;
 		}
 	}
+
+	// Load config
+	const conf = require('./config').default;
 
 	logDone('Success to load configuration');
 	logInfo(`maintainer: ${conf.maintainer}`);
