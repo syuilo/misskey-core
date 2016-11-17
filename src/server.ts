@@ -62,7 +62,7 @@ app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
  * Server status
  */
 //app.use(require('express-status-monitor')({
-//	title: 'Misskey Web Status',
+//	title: 'Misskey Server Status',
 //	path: '/__/about/status'
 //}));
 
