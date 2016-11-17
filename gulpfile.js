@@ -56,7 +56,7 @@ gulp.task('build:copy', () => {
 	]).pipe(gulp.dest('./built/resources/'));
 });
 
-gulp.task('test', ['lint', 'build']);
+gulp.task('test', ['lint', 'buildall']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')
