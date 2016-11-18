@@ -61,10 +61,10 @@
     "serve-favicon": "2.3.2",
     "shelljs": "0.7.5",
     "subdomain": "1.2.0",
-    "summaly": "^1.2.6",
+    "summaly": "1.2.6",
     "tcp-port-used": "0.1.2",
     "vhost": "3.0.2",
     "websocket": "1.0.23",
-    "xml2json": "^0.10.0"
+    "xml2json": "0.10.0"
   }
 }
