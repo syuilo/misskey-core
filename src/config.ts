@@ -15,6 +15,9 @@ try {
 const mixin: Mixin = {} as Mixin;
 
 if (config) {
+	config.url = normalizeUrl(config.url);
+	config.secondary_url = normalizeUrl(config.secondary_url);
+
 	mixin.host = config.url.substr(config.url.indexOf('://') + 3);
 	mixin.scheme = config.url.substr(0, config.url.indexOf('://'));
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
@@ -23,6 +26,10 @@ if (config) {
 }
 
 export default Object.assign(config || {}, mixin) as IConfig & Mixin;
+
+function normalizeUrl(url: string): string {
+	return url[url.length - 1] === '/' ? url.substr(0, url.length - 1) : url;
+}
 
 interface Mixin {
 	host: string;
