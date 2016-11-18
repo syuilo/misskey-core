@@ -122,7 +122,7 @@ const form = [
 	}
 ];
 
-export default async function(): Promise<void> {
+export default async () => {
 	const as = await inquirer.prompt(form);
 
 	// Mapping answers
