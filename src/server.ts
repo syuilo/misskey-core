@@ -53,7 +53,7 @@ app.use(compression());
 /**
  * Statics
  */
-app.use(favicon(`${__dirname}/resources/favicon.ico`));
+app.use(favicon(`${__dirname}/../resources/favicon.ico`));
 app.use(manifest);
 app.use(appleTouchIcon);
 app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
