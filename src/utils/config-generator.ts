@@ -51,11 +51,6 @@ export default async function(): Promise<void> {
 		},
 		{
 			type: 'input',
-			name: 'drive_url',
-			message: 'Drive(misskey-file server)\'s url:'
-		},
-		{
-			type: 'input',
 			name: 'mongo_host',
 			message: 'MongoDB\'s host:',
 			default: 'localhost'
@@ -138,9 +133,6 @@ export default async function(): Promise<void> {
 			key: as.https_key || null,
 			cert: as.https_cert || null,
 			ca: as.https_ca || null
-		},
-		drive: {
-			url: as.drive_url
 		},
 		mongodb: {
 			host: as.mongo_host,

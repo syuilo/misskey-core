@@ -12,17 +12,25 @@ try {
 	// nope
 }
 
-export default Object.assign(config || {}, {
-	host: config ? config.url.substr(config.url.indexOf('://') + 3) : undefined,
-	scheme: config ? config.url.substr(0, config.url.indexOf('://')) : undefined,
-	secondary_host: config ? config.secondary_url.substr(config.secondary_url.indexOf('://') + 3) : undefined,
-	secondary_scheme: config ? config.secondary_url.substr(0, config.secondary_url.indexOf('://')) : undefined
-}) as IConfig & {
+const mixin: Mixin = {} as Mixin;
+
+if (config) {
+	mixin.host = config.url.substr(config.url.indexOf('://') + 3);
+	mixin.scheme = config.url.substr(0, config.url.indexOf('://'));
+	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
+	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
+	mixin.drive_url = mixin.secondary_scheme + '://file.' + mixin.secondary_host;
+}
+
+export default Object.assign(config || {}, mixin) as IConfig & Mixin;
+
+interface Mixin {
 	host: string;
 	scheme: string;
 	secondary_host: string;
 	secondary_scheme: string;
-};
+	drive_url: string;
+}
 
 export interface IConfig {
 	maintainer: string;
@@ -34,9 +42,6 @@ export interface IConfig {
 		key: string;
 		cert: string;
 		ca: string;
-	};
-	drive: {
-		url: string;
 	};
 	mongodb: {
 		host: string;

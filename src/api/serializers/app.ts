@@ -55,8 +55,8 @@ export default (
 	}
 
 	_app.icon_url = _app.icon != null
-		? `${config.drive.url}/${_app.icon}`
-		: `${config.drive.url}/app-default.jpg`;
+		? `${config.drive_url}/${_app.icon}`
+		: `${config.drive_url}/app-default.jpg`;
 
 	resolve(_app);
 });

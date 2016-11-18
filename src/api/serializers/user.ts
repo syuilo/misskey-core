@@ -78,11 +78,11 @@ export default (
 	}
 
 	_user.avatar_url = _user.avatar != null
-		? `${config.drive.url}/${_user.avatar}`
-		: `${config.drive.url}/default-avatar.jpg`;
+		? `${config.drive_url}/${_user.avatar}`
+		: `${config.drive_url}/default-avatar.jpg`;
 
 	_user.banner_url = _user.banner != null
-		? `${config.drive.url}/${_user.banner}`
+		? `${config.drive_url}/${_user.banner}`
 		: null;
 
 	if (!opts.includeProfileImageIds) {
