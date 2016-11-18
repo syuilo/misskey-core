@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as request from 'request';
-import * as xml2json from 'xml2json';
+const xml2json = require('xml2json');
 
 export default function (req: express.Request, res: express.Response): void {
 	const url: string = req.body.url;

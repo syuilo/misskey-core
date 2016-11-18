@@ -30,11 +30,10 @@ Build
 2. `cd misskey-core`
 3. `npm install`
 4. `npm install gulp bower -g`
-5. `npm run dtsm`
-6. `gulp build`
-7. `npm start`
-8. 表示されるウィザードに従って設定ファイルを生成してください。
-9. `gulp buildall`
+5. `gulp build`
+6. `npm start`
+7. 表示されるウィザードに従って設定ファイルを生成してください。
+8. `gulp buildall`
 
 Launch
 ------
