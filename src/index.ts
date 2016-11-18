@@ -10,9 +10,10 @@ Error.stackTraceLimit = Infinity;
 import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
+const prominence = require('prominence');
 import { logInfo, logDone, logWarn, logFailed } from 'log-cool';
 import * as chalk from 'chalk';
-const Git = require('nodegit');
+const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
 import yesno from './utils/cli/yesno';
 import ProgressBar from './utils/cli/progressbar';
@@ -137,11 +138,10 @@ async function init(): Promise<State> {
 
 	let warn = false;
 
-	// Get repository info
-	const repository = await Git.Repository.open(__dirname + '/../');
-	const commit = await repository.getHeadCommit();
-	console.log(`commit: ${commit.sha()}`);
-	console.log(`        ${commit.date()}`);
+	// Get commit info
+	const commit = await prominence(git).getLastCommit();
+	console.log(`commit: ${commit.shortHash} ${commit.author.name} <${commit.author.email}>`);
+	console.log(`        ${new Date(parseInt(commit.committedOn, 10) * 1000)}`);
 
 	console.log('\nInitializing...\n');
 
