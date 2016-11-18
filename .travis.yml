@@ -3,6 +3,8 @@ node_js:
   - "7.0.0"
 env:
   - CXX=g++-4.8
+before_script:
+  - "mkdir -p ./.config && cp ./.ci-files/config.yml ./.config"
 addons:
   apt:
     sources:
