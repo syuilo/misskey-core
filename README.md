@@ -29,7 +29,7 @@ Build
 1. `git clone git://github.com/syuilo/misskey-core.git`
 2. `cd misskey-core`
 3. `npm install`
-4. `npm install gulp bower -g`
+4. `npm install gulp -g`
 5. `gulp build`
 6. `npm start`
 7. 表示されるウィザードに従って設定ファイルを生成してください。
