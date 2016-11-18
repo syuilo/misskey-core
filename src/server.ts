@@ -31,6 +31,7 @@ const app = express();
 app.disable('x-powered-by');
 
 app.use(vhost(`api.${config.host}`, require('./api/server')));
+app.use(vhost(config.secondary_host, require('./service/himasaku/server')));
 app.use(vhost(`file.${config.secondary_host}`, require('./file/server')));
 app.use(vhost(`proxy.${config.secondary_host}`, require('./service/forward-proxy/server')));
 
