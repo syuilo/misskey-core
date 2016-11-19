@@ -65,6 +65,8 @@ module.exports = (params, user, app) =>
 		images = images.filter((x, i, self) => self.indexOf(x) === i);
 
 		// Fetch files
+		// forEach だと途中でエラーなどがあっても return できないので
+		// 敢えて for を使っています。
 		for (let i = 0; i < images.length; i++) {
 			const image = images[i];
 
