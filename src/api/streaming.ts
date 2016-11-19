@@ -64,8 +64,7 @@ function authenticate(connection: websocket.connection): Promise<any> {
 function homeStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
 	// Subscribe Home stream channel
 	subscriber.subscribe(`misskey:user-stream:${user._id}`);
-	subscriber.on('message', (_: any, data: any) => {
-		console.log(data);
+	subscriber.on('message', (_, data) => {
 		connection.send(data);
 	});
 }
@@ -75,7 +74,7 @@ function messagingStream(request: websocket.request, connection: websocket.conne
 
 	// Subscribe messaging stream
 	subscriber.subscribe(`misskey:messaging-stream:${user._id}-${otherparty}`);
-	subscriber.on('message', (_: any, data: any) => {
+	subscriber.on('message', (_, data) => {
 		connection.send(data);
 	});
 }
