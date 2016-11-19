@@ -61,14 +61,13 @@ module.exports = (params, user, app) =>
 			return rej('too many images');
 		}
 
-		// 重複チェック
+		// Drop duplicates
 		images = images.filter((x, i, self) => self.indexOf(x) === i);
 
-		// Check file entities
+		// Fetch files
 		for (let i = 0; i < images.length; i++) {
 			const image = images[i];
 
-			// Get drive file
 			const entity = await DriveFile.findOne({
 				_id: new mongo.ObjectID(image),
 				user: user._id
