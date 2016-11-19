@@ -60,7 +60,7 @@ export default (
 	_user.id = _user._id;
 	delete _user._id;
 
-	delete _user._web;
+	delete _user.token;
 	delete _user.username_lower;
 
 	// Remove private properties

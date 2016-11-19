@@ -29,7 +29,7 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		}
 
 		const expires = 1000 * 60 * 60 * 24 * 365; // One Year
-		res.cookie('i', user._web, {
+		res.cookie('i', user.token, {
 			path: '/',
 			domain: `.${config.host}`,
 			secure: config.url.substr(0, 5) === 'https',

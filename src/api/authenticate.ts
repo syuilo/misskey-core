@@ -22,10 +22,10 @@ export interface IAuthContext {
 
 export default (req: express.Request) =>
 	new Promise<IAuthContext>(async (resolve, reject) => {
-	const webToken = req.body['_i'];
+	const webToken = req.body['i'];
 	if (webToken) {
 		const user = await User
-			.findOne({ _web: webToken });
+			.findOne({ token: webToken });
 
 		if (user === null) {
 			return reject('user not found');

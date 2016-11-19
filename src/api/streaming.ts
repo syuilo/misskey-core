@@ -47,7 +47,7 @@ function authenticate(connection: websocket.connection): Promise<any> {
 
 			// Get user data
 			const user = await User
-				.findOne({ _web: msg.i });
+				.findOne({ token: msg.i });
 
 			if (user === null) {
 				connection.close();

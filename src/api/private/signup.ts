@@ -51,7 +51,7 @@ export default (req: express.Request, res: express.Response) => {
 
 		// Create account
 		const inserted = await User.insert({
-			_web: secret,
+			token: secret,
 			avatar: null,
 			banner: null,
 			birthday: null,
