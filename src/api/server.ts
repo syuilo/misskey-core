@@ -6,11 +6,8 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as multer from 'multer';
-const subdomain = require('subdomain');
 
 import endpoints from './endpoints';
-
-import config from '../config';
 
 /**
  * Init app
@@ -34,15 +31,7 @@ endpoints.forEach(endpoint =>
 			require('./api-handler').default.bind(null, endpoint))
 );
 
-/**
- * Subdomain
- */
-app.use(subdomain({
-	base: config.host,
-	prefix: '__'
-}));
-
-app.post('/__/signup/', require('./private/signup').default);
-app.post('/__/signin/', require('./private/signin').default);
+app.post('/signup', require('./private/signup').default);
+app.post('/signin', require('./private/signin').default);
 
 module.exports = app;

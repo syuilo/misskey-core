@@ -7,6 +7,9 @@ import Signin from '../models/signin';
 import config from '../../config';
 
 export default async (req: express.Request, res: express.Response): Promise<any> => {
+	res.header('Access-Control-Allow-Credentials', 'true');
+	res.header('Access-Control-Allow-Origin', config.url);
+
 	const username = req.body['username'];
 	const password = req.body['password'];
 
