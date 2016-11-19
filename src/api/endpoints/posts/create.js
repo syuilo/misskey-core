@@ -61,11 +61,13 @@ module.exports = (params, user, app) =>
 			return rej('too many images');
 		}
 
-		// Drop duplicates
+		// 重複チェック
 		images = images.filter((x, i, self) => self.indexOf(x) === i);
 
-		// Fetch files
-		images.forEach(image => {
+		// Check file entities
+		for (let i = 0; i < images.length; i++) {
+			const image = images[i];
+
 			// Get drive file
 			const entity = await DriveFile.findOne({
 				_id: new mongo.ObjectID(image),
@@ -79,7 +81,7 @@ module.exports = (params, user, app) =>
 			} else {
 				files.push(entity);
 			}
-		});
+		}
 	} else {
 		files = null;
 	}
