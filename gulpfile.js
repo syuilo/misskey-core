@@ -41,9 +41,8 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	const config = require('./built/config').default;
 
 	cd('./src/web');
-	exec('npm install');
-	exec('./node_modules/.bin/bower install --allow-root');
-	exec(`gulp build --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
+	exec('npm install && $(npm bin)/bower install --allow-root');
+	exec(`npm run build -- --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
 	cd('../../');
 
 	return gulp.src('./src/web/built/**/*')
