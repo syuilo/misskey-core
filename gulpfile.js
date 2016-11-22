@@ -6,6 +6,10 @@ const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
 
+const env = process.env.NODE_ENV;
+const isProduction = env === 'production';
+const isDebug = !isProduction;
+
 const project = ts.createProject('tsconfig.json');
 
 gulp.task('build', [
@@ -40,12 +44,12 @@ gulp.task('build:ts', () =>
 gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	const config = require('./built/config').default;
 
-	cd('./src/web');
+	cd(isProduction ? './src/web' : './../misskey-web/');
 	exec('npm install && $(npm bin)/bower install --allow-root');
 	exec(`npm run build -- --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
-	cd('../../');
+	cd(__dirname);
 
-	return gulp.src('./src/web/built/**/*')
+	return gulp.src(isProduction ? './src/web/built/**/*' : './../misskey-web/built/**/*')
 		.pipe(gulp.dest('./built/web/'));
 });
 
