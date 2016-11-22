@@ -125,7 +125,7 @@ const server = config.https.enable ?
  * Server listen
  */
 server.listen(config.port, () => {
-	process.send('listening');
+	process.send('ready');
 });
 
 /**

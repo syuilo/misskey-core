@@ -207,8 +207,8 @@ function spawn(callback: any): void {
 	// Create a worker for each CPU
 	for (let i = 0; i < cpuCount; i++) {
 		const worker = cluster.fork();
-		worker.on('message', (message: any) => {
-			if (message === 'listening') {
+		worker.on('message', message => {
+			if (message === 'ready') {
 				progress.increment();
 			}
 		});
