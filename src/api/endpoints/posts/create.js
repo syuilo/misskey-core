@@ -15,7 +15,7 @@ import serialize from '../../serializers/post';
 import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
-import es from '../../db/elasticsearch';
+import es from '../../../db/elasticsearch';
 
 /**
  * 最大文字数
