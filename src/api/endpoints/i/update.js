@@ -6,7 +6,7 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
-import es from '../../db/elasticsearch';
+import es from '../../../db/elasticsearch';
 
 /**
  * Update myself
