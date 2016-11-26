@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import User from '../../models/user';
 import Following from '../../models/following';
 import serialize from '../../serializers/user';
 
@@ -48,7 +49,9 @@ module.exports = (params, me) =>
 	let sort = params.sort || 'desc';
 
 	// Lookup user
-	const user = await User.findOne({_id: new mongo.ObjectID(userId)});
+	const user = await User.findOne({
+		_id: new mongo.ObjectID(userId)
+	});
 
 	if (user === null) {
 		return rej('user not found');

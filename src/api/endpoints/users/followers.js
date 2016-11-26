@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import * as mongo from 'mongodb';
+import User from '../../models/user';
 import Following from '../../models/following';
 import serialize from '../../serializers/user';
 
