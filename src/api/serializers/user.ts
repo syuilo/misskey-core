@@ -7,6 +7,7 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import User from '../models/user';
 import Following from '../models/following';
+import getFriends from '../common/get-friends';
 import config from '../../config';
 
 /**
@@ -112,23 +113,11 @@ export default (
 	}
 
 	if (me && me.toString() !== _user.id.toString() && opts.detail) {
-		// Fetch relation to other users who the user follows
-		// SELECT followee
-		const myfollowing = await Following
-			.find({
-				follower: me,
-				deleted_at: { $exists: false }
-			}, { followee: true })
-			.toArray();
-
-		// ID list of the user itself and other users who the user follows
-		const myfollowingIds = myfollowing.length !== 0
-			? [...myfollowing.map(follow => follow.followee), me]
-			: [me];
+		const myFollowingIds = await getFriends(me);
 
 		// Get following you know count
 		const followingYouKnowCount = await Following.count({
-			follower: { $in: myfollowingIds },
+			follower: { $in: myFollowingIds },
 			followee: _user.id,
 			deleted_at: { $exists: false }
 		});
@@ -137,7 +126,7 @@ export default (
 		// Get followers you know count
 		const followersYouKnowCount = await Following.count({
 			follower: _user.id,
-			followee: { $in: myfollowingIds },
+			followee: { $in: myFollowingIds },
 			deleted_at: { $exists: false }
 		});
 		_user.followers_you_know_count = followersYouKnowCount;
