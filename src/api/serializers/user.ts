@@ -131,8 +131,8 @@ export default (
 
 		// Get followers you know count
 		const followersYouKnowCount = await Following.count({
-			follower: { $in: myfollowingIds },
-			followee: _user.id,
+			follower: _user.id,
+			followee: { $in: myfollowingIds },
 			deleted_at: { $exists: false }
 		});
 		_user.followers_you_know_count = followersYouKnowCount;
