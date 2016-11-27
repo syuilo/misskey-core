@@ -21,16 +21,19 @@ export default (
 	user: any,
 	me?: any,
 	options?: {
+		detail: boolean,
 		includePrivates: boolean,
 		includeSecrets: boolean,
 		includeProfileImageIds: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
-	const opts = options || {
+
+	const opts = Object.assign({
+		detail: false,
 		includePrivates: false,
 		includeSecrets: false,
 		includeProfileImageIds: false
-	};
+	}, options);
 
 	let _user: any;
 
@@ -106,7 +109,9 @@ export default (
 			deleted_at: { $exists: false }
 		});
 		_user.is_followed = follow2 !== null;
+	}
 
+	if (me && me.toString() !== _user.id.toString() && opts.detail) {
 		// Fetch relation to other users who the user follows
 		// SELECT followee
 		const myfollowing = await Following

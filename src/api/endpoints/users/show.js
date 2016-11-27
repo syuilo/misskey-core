@@ -43,5 +43,7 @@ module.exports = (params, me) =>
 	}
 
 	// Send response
-	res(await serialize(user, me));
+	res(await serialize(user, me, {
+		detail: true
+	}));
 });

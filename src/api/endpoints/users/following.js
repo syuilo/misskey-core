@@ -86,7 +86,7 @@ module.exports = (params, me) =>
 
 	// Serialize
 	const users = await Promise.all(following.map(async f =>
-		await serialize(f.followee, me)));
+		await serialize(f.followee, me, { detail: true })));
 
 	// Response
 	res({

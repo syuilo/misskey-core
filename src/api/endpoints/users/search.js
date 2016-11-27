@@ -72,6 +72,6 @@ module.exports = (params, me) =>
 
 		// Serialize
 		res(await Promise.all(users.map(async user =>
-			await serialize(user, me))));
+			await serialize(user, me, { detail: true }))));
 	});
 });
