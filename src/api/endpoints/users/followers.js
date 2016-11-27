@@ -7,6 +7,7 @@ import * as mongo from 'mongodb';
 import User from '../../models/user';
 import Following from '../../models/following';
 import serialize from '../../serializers/user';
+import getFriends from '../../common/get-friends';
 
 /**
  * Get followers of a user
@@ -24,6 +25,9 @@ module.exports = (params, me) =>
 		return rej('user is required');
 	}
 
+	// Get 'iknow' parameter
+	const iknow = params.iknow === 'true';
+
 	// Get 'limit' parameter
 	let limit = params.limit;
 	if (limit !== undefined && limit !== null) {
@@ -37,13 +41,8 @@ module.exports = (params, me) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
-
-	// Check if both of since and max is specified
-	if (since !== null && max !== null) {
-		return rej('cannot set since and max');
-	}
+	// Get 'cursor' parameter
+	const cursor = params.cursor || null;
 
 	// Lookup user
 	const user = await User.findOne({
@@ -55,33 +54,40 @@ module.exports = (params, me) =>
 	}
 
 	// Construct query
-	const sort = { _id: -1 };
 	const query = {
 		followee: user._id,
 		deleted_at: { $exists: false }
 	};
 
-	if (since) {
-		sort._id = 1;
-		query._id = {
-			$gt: new mongo.ObjectID(since)
+	// ログインしていてかつ iknow フラグがあるとき
+	if (me && iknow) {
+		// Get my friends
+		const myFriends = await getFriends(me._id);
+
+		query.followee = {
+			$in: myFriends
 		};
-	} else if (max) {
+	}
+
+	// カーソルが指定されている場合
+	if (cursor) {
 		query._id = {
-			$lt: new mongo.ObjectID(max)
+			$lt: new mongo.ObjectID(cursor)
 		};
 	}
 
 	// Get followers
 	const following = await Following
 		.find(query, {}, {
-			limit: limit,
-			sort: sort
+			limit: limit + 1,
+			sort: { _id: -1 }
 		})
 		.toArray();
 
-	if (following.length === 0) {
-		return res([]);
+	// 「次のページ」があるかどうか
+	const inStock = following.length === limit + 1;
+	if (inStock) {
+		following.pop();
 	}
 
 	// Serialize
@@ -91,7 +97,6 @@ module.exports = (params, me) =>
 	// Response
 	res({
 		users: users,
-		next: following[following.length - 1]._id,
-		prev: following[0]._id
+		next: inStock ? following[following.length - 1]._id : null,
 	});
 });
