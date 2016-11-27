@@ -64,7 +64,7 @@ module.exports = (params, me) =>
 		// Get my friends
 		const myFriends = await getFriends(me._id);
 
-		query.followee = {
+		query.follower = {
 			$in: myFriends
 		};
 	}
