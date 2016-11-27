@@ -106,6 +106,36 @@ export default (
 			deleted_at: { $exists: false }
 		});
 		_user.is_followed = follow2 !== null;
+
+		// Fetch relation to other users who the user follows
+		// SELECT followee
+		const myfollowing = await Following
+			.find({
+				follower: me,
+				deleted_at: { $exists: false }
+			}, { followee: true })
+			.toArray();
+
+		// ID list of the user itself and other users who the user follows
+		const myfollowingIds = myfollowing.length !== 0
+			? [...myfollowing.map(follow => follow.followee), me]
+			: [me];
+
+		// Get following you know count
+		const followingYouKnowCount = await Following.count({
+			follower: { $in: myfollowingIds },
+			followee: _user.id,
+			deleted_at: { $exists: false }
+		});
+		_user.following_you_know_count = followingYouKnowCount;
+
+		// Get followers you know count
+		const followersYouKnowCount = await Following.count({
+			follower: { $in: myfollowingIds },
+			followee: _user.id,
+			deleted_at: { $exists: false }
+		});
+		_user.followers_you_know_count = followersYouKnowCount;
 	}
 
 	resolve(_user);
