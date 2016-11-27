@@ -37,16 +37,13 @@ module.exports = (params, me) =>
 		limit = 10;
 	}
 
-	// Get 'offset' parameter
-	let offset = params.offset;
-	if (offset !== undefined && offset !== null) {
-		offset = parseInt(offset, 10);
-	} else {
-		offset = 0;
-	}
+	const since = params.since || null;
+	const max = params.max || null;
 
-	// Get 'sort' parameter
-	let sort = params.sort || 'desc';
+	// Check if both of since and max is specified
+	if (since !== null && max !== null) {
+		return rej('cannot set since and max');
+	}
 
 	// Lookup user
 	const user = await User.findOne({
@@ -57,17 +54,29 @@ module.exports = (params, me) =>
 		return rej('user not found');
 	}
 
+	// Construct query
+	const sort = { _id: -1 };
+	const query = {
+		follower: user._id,
+		deleted_at: { $exists: false }
+	};
+
+	if (since) {
+		sort._id = 1;
+		query._id = {
+			$gt: new mongo.ObjectID(since)
+		};
+	} else if (max) {
+		query._id = {
+			$lt: new mongo.ObjectID(max)
+		};
+	}
+
 	// Get following
 	const following = await Following
-		.find({
-			follower: user._id,
-			deleted_at: { $exists: false }
-		}, {}, {
+		.find(query, {}, {
 			limit: limit,
-			skip: offset,
-			sort: {
-				_id: sort == 'asc' ? 1 : -1
-			}
+			sort: sort
 		})
 		.toArray();
 
@@ -76,6 +85,13 @@ module.exports = (params, me) =>
 	}
 
 	// Serialize
-	res(await Promise.all(following.map(async f =>
-		await serialize(f.followee, me))));
+	const users = await Promise.all(following.map(async f =>
+		await serialize(f.followee, me)));
+
+	// Response
+	res({
+		users: users,
+		next: following[following.length - 1]._id,
+		prev: following[0]._id
+	});
 });
