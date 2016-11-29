@@ -195,6 +195,9 @@ module.exports = (params, user, app) =>
 
 	// Update replyee status
 	if (replyTo) {
+		// Publish event
+		event(replyTo.user, 'reply', postObj);
+
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
 				replies_count: 1
@@ -257,6 +260,13 @@ module.exports = (params, user, app) =>
 
 			// Notify
 			if (mentionedUser._id.toString() !== user._id.toString()) {
+				if (replyTo && replyTo.user.toString() == mentionedUser._id.toString()) return;
+				if (repost && repost.user.toString() == mentionedUser._id.toString()) return;
+
+				// Publish event
+				event(mentionedUser._id, 'mention', postObj);
+
+				// Create notification
 				notify(mentionedUser._id, 'mention', {
 					post: post._id
 				});
