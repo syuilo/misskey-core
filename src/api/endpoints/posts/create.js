@@ -256,7 +256,9 @@ module.exports = (params, user, app) =>
 		// Extract a mentions
 		const mentions = tokens
 			.filter(t => t.type == 'mention')
-			.map(m => m.username);
+			.map(m => m.username)
+			// Drop dupulicates
+			.filter((v, i, s) => s.indexOf(v) == i);
 
 		mentions.forEach(async (mention) => {
 			// Fetch mentioned user
