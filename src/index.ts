@@ -10,6 +10,7 @@ Error.stackTraceLimit = Infinity;
 import * as fs from 'fs';
 import * as os from 'os';
 import * as cluster from 'cluster';
+import * as accesses from 'accesses';
 const prominence = require('prominence');
 import { logInfo, logDone, logWarn, logFailed } from 'log-cool';
 import * as chalk from 'chalk';
@@ -87,6 +88,13 @@ async function master(): Promise<void> {
 	}
 
 	const conf = require('./config').default;
+
+	// Monitor
+	accesses.serve({
+		appName: 'Misskey',
+		port: 616,
+		hashIp: true
+	});
 
 	// Spawn workers
 	spawn(() => {

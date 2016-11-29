@@ -48,6 +48,7 @@
     "typescript": "2.0.10"
   },
   "dependencies": {
+    "accesses": "1.2.0",
     "argv": "0.0.2",
     "babel-core": "6.18.2",
     "babel-polyfill": "6.16.0",

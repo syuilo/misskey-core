@@ -12,6 +12,7 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
+import * as accesses from 'accesses';
 const vhost = require('vhost');
 const subdomain = require('subdomain');
 
@@ -29,6 +30,8 @@ import config from './config';
  */
 const app = express();
 app.disable('x-powered-by');
+
+app.use(accesses.express());
 
 app.use(vhost(`api.${config.host}`, require('./api/server')));
 app.use(vhost(config.secondary_host, require('./service/himasaku/server')));
