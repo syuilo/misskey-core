@@ -70,7 +70,7 @@
     "log-cool": "1.1.0",
     "mime-types": "2.1.13",
     "misskey-text": "1.0.4",
-    "mongodb": "2.2.11",
+    "mongodb": "2.2.12",
     "ms": "0.7.2",
     "multer": "1.2.0",
     "prominence": "0.2.0",
@@ -83,7 +83,7 @@
     "subdomain": "1.2.0",
     "summaly": "1.2.6",
     "tcp-port-used": "0.1.2",
-    "uuid": "3.0.0",
+    "uuid": "3.0.1",
     "vhost": "3.0.2",
     "websocket": "1.0.23",
     "xml2json": "0.10.0"
