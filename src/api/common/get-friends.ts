@@ -22,4 +22,4 @@ export default async (me: mongodb.ObjectID, includeMe: boolean = true) => {
 	}
 
 	return myfollowingIds;
-}
+};
