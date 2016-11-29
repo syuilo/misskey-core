@@ -92,7 +92,7 @@ async function master(): Promise<void> {
 	// Monitor
 	accesses.serve({
 		appName: 'Misskey',
-		port: 616,
+		port: 8080,
 		hashIp: true
 	});
 
