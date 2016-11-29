@@ -47,6 +47,10 @@ export default (notification: any) => new Promise<Object>(async (resolve, reject
 			// Populate post
 			_notification.post = await serializePost(_notification.post, i);
 			break;
+		case 'reply':
+			// Populate post
+			_notification.post = await serializePost(_notification.post, i);
+			break;
 		case 'like':
 			// Populate user
 			_notification.user = await serializeUser(_notification.user, i);

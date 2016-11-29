@@ -198,6 +198,11 @@ module.exports = (params, user, app) =>
 		// Publish event
 		event(replyTo.user, 'reply', postObj);
 
+		// Create notification
+		notify(replyTo.user, 'reply', {
+			post: post._id
+		});
+
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
 				replies_count: 1
