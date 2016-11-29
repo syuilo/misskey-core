@@ -26,7 +26,7 @@ Required
 
 Build
 -----
-1. `git clone git://github.com/syuilo/misskey-core.git`
+1. `git clone git://github.com/syuilo/misskey-core.git --recursive`
 2. `cd misskey-core`
 3. `npm install`
 4. `npm run build`
