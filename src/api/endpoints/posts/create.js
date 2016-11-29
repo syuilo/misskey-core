@@ -195,13 +195,15 @@ module.exports = (params, user, app) =>
 
 	// Update replyee status
 	if (replyTo) {
-		// Publish event
-		event(replyTo.user, 'reply', postObj);
+		if (replyTo.user.toString() !== user._id.toString()) {
+			// Publish event
+			event(replyTo.user, 'reply', postObj);
 
-		// Create notification
-		notify(replyTo.user, 'reply', {
-			post: post._id
-		});
+			// Create notification
+			notify(replyTo.user, 'reply', {
+				post: post._id
+			});
+		}
 
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
