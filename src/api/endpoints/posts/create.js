@@ -205,6 +205,13 @@ module.exports = (params, user, app) =>
 			});
 		}
 
+		// Create mention
+		Mention.insert({
+			post: post._id,
+			_post_user_id: user._id, // 非正規データ
+			user: replyTo.user
+		});
+
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
 				replies_count: 1
@@ -222,6 +229,13 @@ module.exports = (params, user, app) =>
 				post: post._id
 			});
 		}
+
+		// Create mention
+		Mention.insert({
+			post: post._id,
+			_post_user_id: user._id, // 非正規データ
+			user: repost.user
+		});
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
@@ -274,6 +288,13 @@ module.exports = (params, user, app) =>
 
 				// Publish event
 				event(mentionedUser._id, 'mention', postObj);
+
+				// Create mention
+				Mention.insert({
+					post: post._id,
+					_post_user_id: user._id, // 非正規データ
+					user: mentionedUser._id
+				});
 
 				// Create notification
 				notify(mentionedUser._id, 'mention', {
