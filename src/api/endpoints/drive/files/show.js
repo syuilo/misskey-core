@@ -20,7 +20,7 @@ module.exports = (params, user) =>
 	const fileId = params.file;
 
 	if (fileId === undefined || fileId === null) {
-		return rej('fileId is required');
+		return rej('file is required');
 	}
 
 	const file = await DriveFile
