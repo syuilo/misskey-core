@@ -18,9 +18,10 @@ import serialize from '../../serializers/user';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const postId = params.id;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('id is required', 'EMPTY_QUERY');
+		return rej('post_id is required');
 	}
 
 	// Get 'limit' parameter
@@ -53,7 +54,7 @@ module.exports = (params, user) =>
 	});
 
 	if (post === null) {
-		return rej('post not found', 'POST_NOT_FOUND');
+		return rej('post not found');
 	}
 
 	// Issue query
