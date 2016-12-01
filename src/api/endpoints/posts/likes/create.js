@@ -87,13 +87,13 @@ module.exports = (params, user) =>
 	});
 
 	// Notify
-	notify(post.user, 'like', {
+	notify(post.user_id, 'like', {
 		user_id: user._id,
 		post_id: post._id
 	});
 
 	// Publish like event
-	event(post.user, 'like', {
+	event(post.user_id, 'like', {
 		user_id: await serializeUser(user, post.user_id),
 		post_id: await serializePost(post, post.user_id)
 	});
