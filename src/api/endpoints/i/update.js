@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
+import event from '../../event';
 import es from '../../../db/elasticsearch';
 
 /**
@@ -67,10 +68,16 @@ module.exports = async (params, user, _, isWeb) =>
 	});
 
 	// Serialize
-	res(await serialize(user, user, {
+	const iObj = await serialize(user, user, {
 		detail: true,
 		includeSecrets: isWeb
-	}));
+	})
+
+	// Send response
+	res(iObj);
+
+	// Publish i updated event
+	event(user._id, 'i_updated', iObj);
 
 	// Update search index
 	es.index({
