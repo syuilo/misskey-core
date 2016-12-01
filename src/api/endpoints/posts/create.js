@@ -279,9 +279,6 @@ module.exports = (params, user, app) =>
 		if (replyTo && replyTo.user_id.equals(mentionedUser._id)) return;
 		if (repost && repost.user_id.equals(mentionedUser._id)) return;
 
-		// Publish event
-		event(mentionedUser._id, 'mention', postObj);
-
 		// Create notification
 		notify(mentionedUser._id, 'mention', {
 			post_id: post._id
@@ -299,6 +296,9 @@ module.exports = (params, user, app) =>
 			user_id: mention,
 			is_read: false
 		});
+		
+		// Publish event
+		event(mention, 'mention', postObj);
 	});
 
 	if (text) {
