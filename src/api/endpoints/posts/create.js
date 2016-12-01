@@ -205,12 +205,12 @@ module.exports = (params, user, app) =>
 			});
 		}
 
-		// Create mention
+		/*// Create mention
 		Mention.insert({
 			post_id: post._id,
 			_post_user_id: user._id, // 非正規データ
 			user_id: replyTo.user_id
-		});
+		});*/
 
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
@@ -231,11 +231,11 @@ module.exports = (params, user, app) =>
 		}
 
 		// Create mention
-		Mention.insert({
+		/*Mention.insert({
 			post_id: post._id,
 			_post_user_id: user._id, // 非正規データ
 			user_id: repost.user_id
-		});
+		});*/
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
@@ -289,12 +289,12 @@ module.exports = (params, user, app) =>
 				// Publish event
 				event(mentionedUser._id, 'mention', postObj);
 
-				// Create mention
+				/*// Create mention
 				Mention.insert({
 					post_id: post._id,
 					_post_user_id: user._id, // 非正規データ
 					user_id: mentionedUser._id
-				});
+				});*/
 
 				// Create notification
 				notify(mentionedUser._id, 'mention', {
