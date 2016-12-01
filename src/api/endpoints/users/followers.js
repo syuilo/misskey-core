@@ -19,10 +19,10 @@ import getFriends from '../../common/get-friends';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	const userId = params.user;
+	// Get 'user_id' parameter
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
-		return rej('user is required');
+		return rej('user_id is required');
 	}
 
 	// Get 'iknow' parameter
@@ -55,7 +55,7 @@ module.exports = (params, me) =>
 
 	// Construct query
 	const query = {
-		followee: user._id,
+		followee_id: user._id,
 		deleted_at: { $exists: false }
 	};
 
@@ -64,7 +64,7 @@ module.exports = (params, me) =>
 		// Get my friends
 		const myFriends = await getFriends(me._id);
 
-		query.follower = {
+		query.follower_id = {
 			$in: myFriends
 		};
 	}
@@ -92,7 +92,7 @@ module.exports = (params, me) =>
 
 	// Serialize
 	const users = await Promise.all(following.map(async f =>
-		await serialize(f.follower, me, { detail: true })));
+		await serialize(f.follower_id, me, { detail: true })));
 
 	// Response
 	res({

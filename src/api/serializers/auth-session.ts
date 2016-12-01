@@ -24,7 +24,7 @@ export default (
 	delete _session._id;
 
 	// Populate app
-	_session.app = await serializeApp(_session.app);
+	_session.app = await serializeApp(_session.app_id);
 
 	resolve(_session);
 });

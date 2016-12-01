@@ -40,8 +40,8 @@ module.exports = (params, user, app, isWeb) =>
 			select['data.' + key] = true;
 		}
 		const appdata = await Appdata.findOne({
-			app: app._id,
-			user: user._id
+			app_id: app._id,
+			user_id: user._id
 		}, select);
 
 		if (appdata) {

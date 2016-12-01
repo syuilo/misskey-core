@@ -20,16 +20,16 @@ import event from '../../../event';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const fileId = params.file;
-
+	// Get 'file_id' parameter
+	const fileId = params.file_id;
 	if (fileId === undefined || fileId === null) {
-		return rej('file is required');
+		return rej('file_id is required');
 	}
 
 	const file = await DriveFile
 		.findOne({
 			_id: new mongo.ObjectID(fileId),
-			user: user._id
+			user_id: user._id
 		}, {
 			data: false
 		});
@@ -49,8 +49,8 @@ module.exports = (params, user) =>
 		}
 	}
 
-	// Get 'folder' parameter
-	let folderId = params.folder;
+	// Get 'folder_id' parameter
+	let folderId = params.folder_id;
 	if (folderId !== undefined && folderId !== 'null') {
 		folderId = new mongo.ObjectID(folderId);
 	}
@@ -58,19 +58,19 @@ module.exports = (params, user) =>
 	let folder = null;
 	if (folderId !== undefined && folderId !== null) {
 		if (folderId === 'null') {
-			file.folder = null;
+			file.folder_id = null;
 		} else {
 			folder = await DriveFolder
 				.findOne({
 					_id: folderId,
-					user: user._id
+					user_id: user._id
 				});
 
 			if (folder === null) {
 				return reject('folder-not-found');
 			}
 
-			file.folder = folder._id;
+			file.folder_id = folder._id;
 		}
 	}
 

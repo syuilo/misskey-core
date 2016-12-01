@@ -17,10 +17,10 @@ import serialize from '../../serializers/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const postId = params.id;
-
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('id is required');
+		return rej('post_id is required');
 	}
 
 	// Get post

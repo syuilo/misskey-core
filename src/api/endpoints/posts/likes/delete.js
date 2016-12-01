@@ -19,10 +19,10 @@ import User from '../../../models/user';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post' parameter
-	let postId = params.post;
+	// Get 'post_id' parameter
+	let postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('post is required');
+		return rej('post_id is required');
 	}
 
 	// Get likee
@@ -36,8 +36,8 @@ module.exports = (params, user) =>
 
 	// Check arleady liked
 	const exist = await Like.findOne({
-		post: post._id,
-		user: user._id,
+		post_id: post._id,
+		user_id: user._id,
 		deleted_at: { $exists: false }
 	});
 
@@ -72,7 +72,7 @@ module.exports = (params, user) =>
 	});
 
 	// Decrement user liked count
-	User.updateOne({ _id: post.user }, {
+	User.updateOne({ _id: post.user_id }, {
 		$inc: {
 			liked_count: -1
 		}

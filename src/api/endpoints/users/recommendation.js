@@ -4,8 +4,8 @@
  * Module dependencies
  */
 import User from '../../models/user';
-import Following from '../../models/following';
 import serialize from '../../serializers/user';
+import getFriends from '../../common/get-friends';
 
 /**
  * Get recommended users
@@ -38,19 +38,8 @@ module.exports = (params, me) =>
 		offset = 0;
 	}
 
-	// Fetch relation to other users who the user follows
-	// SELECT followee
-	const following = await Following
-		.find({
-			follower: me._id,
-			deleted_at: { $exists: false }
-		}, { followee: true })
-		.toArray();
-
 	// ID list of the user itself and other users who the user follows
-	const followingIds = following.length !== 0
-		? [...following.map(follow => follow.followee), me._id]
-		: [me._id];
+	const followingIds = await getFriends(me._id);
 
 	const users = await User
 		.find({

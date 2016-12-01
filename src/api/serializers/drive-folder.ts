@@ -39,9 +39,9 @@ const self = (
 	_folder.id = _folder._id;
 	delete _folder._id;
 
-	if (opts.includeParent && _folder.folder) {
+	if (opts.includeParent && _folder.parent_id) {
 		// Populate parent folder
-		_folder.folder = await self(_folder.folder, {
+		_folder.parent = await self(_folder.parent_id, {
 			includeParent: true
 		});
 	}

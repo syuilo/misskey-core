@@ -17,8 +17,8 @@ import serialize from '../../serializers/user';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'id' parameter
-	let userId = params.id;
+	// Get 'user_id' parameter
+	let userId = params.user_id;
 	if (userId === undefined || userId === null || userId === '') {
 		userId = null;
 	}
@@ -30,7 +30,7 @@ module.exports = (params, me) =>
 	}
 
 	if (userId === null && username === null) {
-		return rej('id or username is required', 'EMPTY_QUERY');
+		return rej('user_id or username is required');
 	}
 
 	// Lookup user

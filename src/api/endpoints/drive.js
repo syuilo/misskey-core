@@ -17,7 +17,7 @@ module.exports = (params, user) =>
 {
 	// Fetch all files to calculate drive usage
 	const files = await DriveFile
-		.find({ user: user._id }, {
+		.find({ user_id: user._id }, {
 			datasize: true,
 			_id: false
 		})

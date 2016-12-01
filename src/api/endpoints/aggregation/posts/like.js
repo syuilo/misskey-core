@@ -16,10 +16,10 @@ import Like from '../../../models/like';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post' parameter
-	const postId = params.post;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('post is required');
+		return rej('post_id is required');
 	}
 
 	// Lookup post
@@ -33,7 +33,7 @@ module.exports = (params) =>
 
 	const datas = await Like
 		.aggregate([
-			{ $match: { post: post._id } },
+			{ $match: { post_id: post._id } },
 			{ $project: {
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
@@ -44,7 +44,7 @@ module.exports = (params) =>
 					day: { $dayOfMonth: '$created_at' }
 				}
 			}},
-			{ $group: {
+			{ $group_id: {
 				_id: '$date',
 				count: { $sum: 1 }
 			}}

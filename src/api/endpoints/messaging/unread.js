@@ -17,7 +17,7 @@ module.exports = (params, user) =>
 {
 	const count = await Message
 		.count({
-			recipient: user._id,
+			recipient_id: user._id,
 			is_read: false
 		});
 

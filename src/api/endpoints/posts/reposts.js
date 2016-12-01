@@ -17,9 +17,10 @@ import serialize from '../../serializers/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const postId = params.id;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('id is required', 'EMPTY_QUERY');
+		return rej('post_id is required');
 	}
 
 	// Get 'limit' parameter
@@ -35,12 +36,12 @@ module.exports = (params, user) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
+	const since = params.since_id || null;
+	const max = params.max_id || null;
 
-	// Check if both of since and max is specified
+	// Check if both of since_id and max_id is specified
 	if (since !== null && max !== null) {
-		return rej('cannot set since and max');
+		return rej('cannot set since_id and max_id');
 	}
 
 	// Lookup post
@@ -57,7 +58,7 @@ module.exports = (params, user) =>
 		created_at: -1
 	};
 	const query = {
-		repost: post._id
+		repost_id: post._id
 	};
 	if (since !== null) {
 		sort.created_at = 1;

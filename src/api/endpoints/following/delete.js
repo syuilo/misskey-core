@@ -21,10 +21,10 @@ module.exports = (params, user) =>
 {
 	const follower = user;
 
-	// Get 'user' parameter
-	let userId = params.user;
+	// Get 'user_id' parameter
+	let userId = params.user_id;
 	if (userId === undefined || userId === null) {
-		return rej('user is required');
+		return rej('user_id is required');
 	}
 
 	// Check if the followee is yourself
@@ -43,8 +43,8 @@ module.exports = (params, user) =>
 
 	// Check not following
 	const exist = await Following.findOne({
-		follower: follower._id,
-		followee: followee._id,
+		follower_id: follower._id,
+		followee_id: followee._id,
 		deleted_at: { $exists: false }
 	});
 

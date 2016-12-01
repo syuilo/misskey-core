@@ -17,9 +17,10 @@ import serialize from '../../serializers/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const postId = params.id;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('id is required', 'EMPTY_QUERY');
+		return rej('post_id is required');
 	}
 
 	// Get 'limit' parameter
@@ -57,7 +58,7 @@ module.exports = (params, user) =>
 
 	// Issue query
 	const replies = await Post
-		.find({ reply_to: post._id }, {}, {
+		.find({ reply_to_id: post._id }, {}, {
 			limit: limit,
 			skip: offset,
 			sort: {

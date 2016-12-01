@@ -56,7 +56,7 @@ export default (
 	if (!force) {
 		// Check if there is a file with the same hash and same data size (to be safe)
 		const much = await DriveFile.findOne({
-			user: user._id,
+			user_id: user._id,
 			hash: hash,
 			datasize: size
 		});
@@ -69,7 +69,7 @@ export default (
 
 	// Fetch all files to calculate drive usage
 	const files = await DriveFile
-		.find({ user: user._id }, {
+		.find({ user_id: user._id }, {
 			datasize: true,
 			_id: false
 		})
@@ -89,7 +89,7 @@ export default (
 		folder = await DriveFolder
 			.findOne({
 				_id: folderId,
-				user: user._id
+				user_id: user._id
 			});
 
 		if (folder === null) {
@@ -113,8 +113,8 @@ export default (
 	// Create DriveFile document
 	const res = await DriveFile.insert({
 		created_at: new Date(),
-		user: user._id,
-		folder: folder !== null ? folder._id : null,
+		user_id: user._id,
+		folder_id: folder !== null ? folder._id : null,
 		data: data,
 		datasize: size,
 		type: mime,
@@ -141,7 +141,7 @@ export default (
 		id: file._id.toString(),
 		body: {
 			name: file.name,
-			user: user._id.toString()
+			user_id: user._id.toString()
 		}
 	});
 });

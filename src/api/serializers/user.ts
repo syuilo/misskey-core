@@ -23,17 +23,13 @@ export default (
 	me?: any,
 	options?: {
 		detail: boolean,
-		includePrivates: boolean,
-		includeSecrets: boolean,
-		includeProfileImageIds: boolean
+		includeSecrets: boolean
 	}
 ) => new Promise<any>(async (resolve, reject) => {
 
 	const opts = Object.assign({
 		detail: false,
-		includePrivates: false,
-		includeSecrets: false,
-		includeProfileImageIds: false
+		includeSecrets: false
 	}, options);
 
 	let _user: any;
@@ -64,16 +60,10 @@ export default (
 	_user.id = _user._id;
 	delete _user._id;
 
-	delete _user.token;
-	delete _user.username_lower;
-
 	// Remove private properties
 	delete _user.password;
-
-	// Visible by only owner
-	if (!opts.includePrivates) {
-		delete _user.drive_capacity;
-	}
+	delete _user.token;
+	delete _user.username_lower;
 
 	// Visible via only the official client
 	if (!opts.includeSecrets) {
@@ -81,32 +71,34 @@ export default (
 		delete _user.email;
 	}
 
-	_user.avatar_url = _user.avatar != null
-		? `${config.drive_url}/${_user.avatar}`
+	_user.avatar_url = _user.avatar_id != null
+		? `${config.drive_url}/${_user.avatar_id}`
 		: `${config.drive_url}/default-avatar.jpg`;
 
-	_user.banner_url = _user.banner != null
-		? `${config.drive_url}/${_user.banner}`
+	_user.banner_url = _user.banner_id != null
+		? `${config.drive_url}/${_user.banner_id}`
 		: null;
 
-	if (!opts.includeProfileImageIds) {
-		delete _user.avatar;
-		delete _user.banner;
+	if (!me || me.toString() !== _user.id.toString() || !opts.detail) {
+		delete _user.avatar_id;
+		delete _user.banner_id;
+
+		delete _user.drive_capacity;
 	}
 
 	if (me && me.toString() !== _user.id.toString()) {
 		// If the user is following
 		const follow = await Following.findOne({
-			follower: me,
-			followee: _user.id,
+			follower_id: me,
+			followee_id: _user.id,
 			deleted_at: { $exists: false }
 		});
 		_user.is_following = follow !== null;
 
 		// If the user is followed
 		const follow2 = await Following.findOne({
-			follower: _user.id,
-			followee: me,
+			follower_id: _user.id,
+			followee_id: me,
 			deleted_at: { $exists: false }
 		});
 		_user.is_followed = follow2 !== null;
@@ -117,16 +109,16 @@ export default (
 
 		// Get following you know count
 		const followingYouKnowCount = await Following.count({
-			followee: { $in: myFollowingIds },
-			follower: _user.id,
+			followee_id: { $in: myFollowingIds },
+			follower_id: _user.id,
 			deleted_at: { $exists: false }
 		});
 		_user.following_you_know_count = followingYouKnowCount;
 
 		// Get followers you know count
 		const followersYouKnowCount = await Following.count({
-			followee: _user.id,
-			follower: { $in: myFollowingIds },
+			followee_id: _user.id,
+			follower_id: { $in: myFollowingIds },
 			deleted_at: { $exists: false }
 		});
 		_user.followers_you_know_count = followersYouKnowCount;
@@ -134,3 +126,14 @@ export default (
 
 	resolve(_user);
 });
+/*
+function img(url) {
+	return {
+		thumbnail: {
+			large: `${url}`,
+			medium: '',
+			small: ''
+		}
+	};
+}
+*/

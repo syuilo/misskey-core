@@ -55,29 +55,29 @@ const self = (
 	delete _post._id;
 
 	// Populate user
-	_post.user = await serializeUser(_post.user, me);
+	_post.user = await serializeUser(_post.user_id, me);
 
-	if (_post.images) {
-		// Populate images
-		_post.images = await Promise.all(_post.images.map(async (file: any) =>
-			await serializeDriveFile(file)
+	if (_post.media_ids) {
+		// Populate media
+		_post.media = await Promise.all(_post.media_ids.map(async fileId =>
+			await serializeDriveFile(fileId)
 		));
 	}
 
-	if (_post.reply_to && opts.serializeReplyTo) {
+	if (_post.reply_to_id && opts.serializeReplyTo) {
 		// Populate reply to post
-		_post.reply_to = await self(_post.reply_to, me, {
+		_post.reply_to = await self(_post.reply_to_id, me, {
 			serializeReplyTo: false,
-			serializeRepost: false,
+			serializeRepost_id: false,
 			includeIsLiked: false
 		});
 	}
 
-	if (_post.repost && opts.serializeRepost) {
+	if (_post.repost_id && opts.serializeRepost) {
 		// Populate repost
-		_post.repost = await self(_post.repost, me, {
+		_post.repost = await self(_post.repost_id, me, {
 			serializeReplyTo: _post.text == null,
-			serializeRepost: _post.text == null,
+			serializeRepost_id: _post.text == null,
 			includeIsLiked: _post.text == null
 		});
 	}
@@ -86,8 +86,8 @@ const self = (
 	if (me && opts.includeIsLiked) {
 		const liked = await Like
 			.count({
-				user: me._id,
-				post: id
+				user_id: me._id,
+				post_id: id
 			}, {
 				limit: 1
 			});

@@ -17,10 +17,10 @@ import Post from '../../models/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post' parameter
-	let postId = params.post;
+	// Get 'post_id' parameter
+	let postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('post is required');
+		return rej('post_id is required');
 	}
 
 	// Get favoritee
@@ -34,8 +34,8 @@ module.exports = (params, user) =>
 
 	// Check arleady favorited
 	const exist = await Favorite.findOne({
-		post: post._id,
-		user: user._id
+		post_id: post._id,
+		user_id: user._id
 	});
 
 	if (exist === null) {

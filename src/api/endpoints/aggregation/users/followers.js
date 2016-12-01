@@ -16,10 +16,10 @@ import Following from '../../../models/following';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	const userId = params.user;
+	// Get 'user_id' parameter
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
-		return rej('user is required');
+		return rej('user_id is required');
 	}
 
 	// Lookup user
@@ -35,15 +35,15 @@ module.exports = (params) =>
 
 	const following = await Following
 		.find({
-			followee: user._id,
+			followee_id: user._id,
 			$or: [
 				{ deleted_at: { $exists: false } },
 				{ deleted_at: { $gt: startTime } }
 			]
 		}, {
 			_id: false,
-			follower: false,
-			followee: false
+			follower_id: false,
+			followee_id: false
 		}, {
 			sort: { created_at: -1 }
 		})

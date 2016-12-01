@@ -17,9 +17,10 @@ import serialize from '../../serializers/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const postId = params.id;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('id is required', 'EMPTY_QUERY');
+		return rej('post_id is required');
 	}
 
 	// Get 'limit' parameter
@@ -67,13 +68,13 @@ module.exports = (params, user) =>
 			return;
 		}
 
-		if (p.reply_to) {
-			await get(p.reply_to);
+		if (p.reply_to_id) {
+			await get(p.reply_to_id);
 		}
 	}
 
-	if (post.reply_to) {
-		await get(post.reply_to);
+	if (post.reply_to_id) {
+		await get(post.reply_to_id);
 	}
 
 	// Serialize

@@ -39,7 +39,7 @@ module.exports = (params, user) =>
 	}
 
 	const query = {
-		user: user._id
+		user_id: user._id
 	};
 
 	// Execute query

@@ -16,7 +16,7 @@ import config from '../../config';
  * @param {Object} options?
  * @return {Promise<Object>}
  */
-const self = (
+export default (
 	file: any,
 	options?: {
 		includeTags: boolean
@@ -62,5 +62,3 @@ const self = (
 
 	resolve(_file);
 });
-
-export default self;

@@ -18,8 +18,6 @@ import event from '../../../event';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const follower = user;
-
 	// Get 'name' parameter
 	let name = params.name;
 	if (name !== undefined && name !== null) {
@@ -39,8 +37,8 @@ module.exports = (params, user) =>
 		name = '無題のフォルダー';
 	}
 
-	// Get 'folder' parameter
-	let parentId = params.folder;
+	// Get 'folder_id' parameter
+	let parentId = params.folder_id;
 	if (parentId === undefined || parentId === null) {
 		parentId = null;
 	} else {
@@ -53,11 +51,11 @@ module.exports = (params, user) =>
 		parent = await DriveFolder
 			.findOne({
 				_id: parentId,
-				user: user._id
+				user_id: user._id
 			});
 
 		if (parent === null) {
-			return reject('folder-not-found');
+			return reject('parent-not-found');
 		}
 	}
 
@@ -65,8 +63,8 @@ module.exports = (params, user) =>
 	const inserted = await DriveFolder.insert({
 		created_at: new Date(),
 		name: name,
-		folder: parent !== null ? parent._id : null,
-		user: user._id
+		parent_id: parent !== null ? parent._id : null,
+		user_id: user._id
 	});
 
 	const folder = inserted.ops[0];

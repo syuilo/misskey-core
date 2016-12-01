@@ -21,8 +21,8 @@ import { publishMessagingStream } from '../../event';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	let recipient = params.user;
+	// Get 'user_id' parameter
+	let recipient = params.user_id;
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
 			_id: new mongo.ObjectID(recipient)
@@ -87,12 +87,12 @@ module.exports = (params, user) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
+	const since = params.since_id || null;
+	const max = params.max_id || null;
 
-	// Check if both of since and max is specified
+	// Check if both of since_id and max_id is specified
 	if (since !== null && max !== null) {
-		return rej('cannot set since and max');
+		return rej('cannot set since_id and max_id');
 	}
 
 	let query;
@@ -104,16 +104,16 @@ module.exports = (params, user) =>
 	if (recipient) {
 		query = {
 			$or: [{
-				user: user._id,
-				recipient: recipient._id
+				user_id: user._id,
+				recipient_id: recipient._id
 			}, {
-				user: recipient._id,
-				recipient: user._id
+				user_id: recipient._id,
+				recipient_id: user._id
 			}]
 		};
 	} else if (group) {
 		query = {
-			group: group._id
+			group_id: group._id
 		};
 	}
 
@@ -166,7 +166,7 @@ module.exports = (params, user) =>
 
 			const count = await Message
 				.count({
-					recipient: user._id,
+					recipient_id: user._id,
 					is_read: false
 				});
 

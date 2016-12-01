@@ -43,7 +43,7 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		// Append signin history
 		Signin.insert({
 			created_at: new Date(),
-			user: user._id,
+			user_id: user._id,
 			ip: req.ip,
 			headers: req.headers
 		});

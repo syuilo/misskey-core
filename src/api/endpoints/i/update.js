@@ -50,16 +50,16 @@ module.exports = async (params, user, _, isWeb) =>
 		user.bio = bio;
 	}
 
-	// Get 'avatar' parameter
-	const avatar = params.avatar;
+	// Get 'avatar_id' parameter
+	const avatar = params.avatar_id;
 	if (avatar !== undefined && avatar !== null) {
-		user.avatar = new mongo.ObjectID(avatar);
+		user.avatar_id = new mongo.ObjectID(avatar);
 	}
 
-	// Get 'banner' parameter
-	const banner = params.banner;
+	// Get 'banner_id' parameter
+	const banner = params.banner_id;
 	if (banner !== undefined && banner !== null) {
-		user.banner = new mongo.ObjectID(banner);
+		user.banner_id = new mongo.ObjectID(banner);
 	}
 
 	await User.updateOne({ _id: user._id }, {
@@ -68,9 +68,8 @@ module.exports = async (params, user, _, isWeb) =>
 
 	// Serialize
 	res(await serialize(user, user, {
-		includePrivates: true,
-		includeSecrets: isWeb,
-		includeProfileImageIds: isWeb
+		detail: true,
+		includeSecrets: isWeb
 	}));
 
 	// Update search index

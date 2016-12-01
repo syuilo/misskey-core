@@ -33,7 +33,7 @@ module.exports = (params, user) =>
 	// Get history
 	const history = await History
 		.find({
-			user: user._id
+			user_id: user._id
 		}, {}, {
 			limit: limit,
 			sort: {

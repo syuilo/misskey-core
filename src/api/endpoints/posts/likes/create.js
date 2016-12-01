@@ -22,10 +22,10 @@ import serializePost from '../../../serializers/post';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post' parameter
-	let postId = params.post;
+	// Get 'post_id' parameter
+	let postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('post is required');
+		return rej('post_id is required');
 	}
 
 	// Get likee
@@ -38,14 +38,14 @@ module.exports = (params, user) =>
 	}
 
 	// Myself
-	if (post.user.toString() === user._id.toString()) {
+	if (post.user_id.toString() === user._id.toString()) {
 		return rej('-need-translate-');
 	}
 
 	// Check arleady liked
 	const exist = await Like.findOne({
-		post: post._id,
-		user: user._id,
+		post_id: post._id,
+		user_id: user._id,
 		deleted_at: { $exists: false }
 	});
 
@@ -56,8 +56,8 @@ module.exports = (params, user) =>
 	// Create like
 	const inserted = await Like.insert({
 		created_at: new Date(),
-		post: post._id,
-		user: user._id
+		post_id: post._id,
+		user_id: user._id
 	});
 
 	const like = inserted.ops[0];
@@ -80,7 +80,7 @@ module.exports = (params, user) =>
 	});
 
 	// Increment user liked count
-	User.updateOne({ _id: post.user }, {
+	User.updateOne({ _id: post.user_id }, {
 		$inc: {
 			liked_count: 1
 		}
@@ -88,13 +88,13 @@ module.exports = (params, user) =>
 
 	// Notify
 	notify(post.user, 'like', {
-		user: user._id,
-		post: post._id
+		user_id: user._id,
+		post_id: post._id
 	});
 
 	// Publish like event
 	event(post.user, 'like', {
-		user: await serializeUser(user, post.user),
-		post: await serializePost(post, post.user)
+		user_id: await serializeUser(user, post.user_id),
+		post_id: await serializePost(post, post.user_id)
 	});
 });

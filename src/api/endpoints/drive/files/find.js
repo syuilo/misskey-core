@@ -17,14 +17,14 @@ import serialize from '../../../serializers/drive-file';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
+	// Get 'name' parameter
 	const name = params.name;
-
 	if (name === undefined || name === null) {
 		return rej('name is required');
 	}
 
-	// Get 'folder' parameter
-	let folder = params.folder;
+	// Get 'folder_id' parameter
+	let folder = params.folder_id;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;
 	} else {
@@ -35,8 +35,8 @@ module.exports = (params, user) =>
 	const files = await DriveFile
 		.find({
 			name: name,
-			user: user._id,
-			folder: folder
+			user_id: user._id,
+			folder_id: folder
 		}, {
 			data: false
 		})

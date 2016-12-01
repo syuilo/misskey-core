@@ -17,16 +17,16 @@ import serialize from '../../../serializers/drive-file';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const fileId = params.file;
-
+	// Get 'file_id' parameter
+	const fileId = params.file_id;
 	if (fileId === undefined || fileId === null) {
-		return rej('file is required');
+		return rej('file_id is required');
 	}
 
 	const file = await DriveFile
 		.findOne({
 			_id: new mongo.ObjectID(fileId),
-			user: user._id
+			user_id: user._id
 		});
 
 	if (file === null) {

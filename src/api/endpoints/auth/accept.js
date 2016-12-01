@@ -36,16 +36,16 @@ module.exports = (params, user) =>
 
 	// Fetch exist userkey
 	const exist = await Userkey.findOne({
-		app: session.app,
-		user: user._id,
+		app_id: session.app_id,
+		user_id: user._id,
 	});
 
 	if (exist === null) {
 		// Insert userkey doc
 		await Userkey.insert({
 			created_at: new Date(),
-			app: session.app,
-			user: user._id,
+			app_id: session.app_id,
+			user_id: user._id,
 			key: key
 		});
 	}
@@ -55,7 +55,7 @@ module.exports = (params, user) =>
 		_id: session._id
 	}, {
 		$set: {
-			user: user._id
+			user_id: user._id
 		}
 	});
 

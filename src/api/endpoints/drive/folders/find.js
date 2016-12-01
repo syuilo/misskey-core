@@ -17,26 +17,26 @@ import serialize from '../../../serializers/drive-folder';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
+	// Get 'name' parameter
 	const name = params.name;
-
 	if (name === undefined || name === null) {
 		return rej('name is required');
 	}
 
-	// Get 'folder' parameter
-	let folder = params.folder;
-	if (folder === undefined || folder === null || folder === 'null') {
-		folder = null;
+	// Get 'parent_id' parameter
+	let parentId = params.parent_id;
+	if (parentId === undefined || parentId === null || parentId === 'null') {
+		parentId = null;
 	} else {
-		folder = new mongo.ObjectID(folder);
+		parentId = new mongo.ObjectID(parentId);
 	}
 
 	// Issue query
 	const folders = await DriveFolder
 		.find({
 			name: name,
-			user: user._id,
-			folder: folder
+			user_id: user._id,
+			parent_id: parentId
 		})
 		.toArray();
 

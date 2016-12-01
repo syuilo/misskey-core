@@ -18,25 +18,25 @@ import event from '../../../event';
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	const folderId = params.folder;
-
+	// Get 'folder_id' parameter
+	const folderId = params.folder_id;
 	if (folderId === undefined || folderId === null) {
-		return rej('folder is required');
+		return rej('folder_id is required');
 	}
 
-	// Get folder
+	// Fetch folder
 	const folder = await DriveFolder
 		.findOne({
 			_id: new mongo.ObjectID(folderId),
-			user: user._id
+			user_id: user._id
 		});
 
 	if (folder === null) {
 		return rej('folder-not-found');
 	}
 
-	// Get 'parent' parameter
-	let parentId = params.parent;
+	// Get 'parent_id' parameter
+	let parentId = params.parent_id;
 	if (parentId !== undefined && parentId !== 'null') {
 		parentId = new mongo.ObjectID(parentId);
 	}
@@ -44,13 +44,13 @@ module.exports = (params, user) =>
 	let parent = null;
 	if (parentId !== undefined && parentId !== null) {
 		if (parentId === 'null') {
-			folder.folder = null;
+			folder.parent_id = null;
 		} else {
 			// Get parent folder
 			parent = await DriveFolder
 				.findOne({
 					_id: parentId,
-					user: user._id
+					user_id: user._id
 				});
 
 			if (parent === null) {
@@ -58,24 +58,31 @@ module.exports = (params, user) =>
 			}
 
 			// Check if the circular reference will be occured
-			async function checkCircle(f) {
-				f = await DriveFolder.findOne({ _id: f }, { _id: true, folder: true });
-				if (f._id.toString() === folder._id.toString()) {
+			async function checkCircle(folderId) {
+				// Fetch folder
+				const folder2 = await DriveFolder.findOne({
+					_id: folderId
+				}, {
+					_id: true,
+					parent_id: true
+				});
+
+				if (folder2._id.toString() === folder._id.toString()) {
 					return true;
-				} else if (f.folder !== null) {
-					return await checkCircle(f.folder);
+				} else if (folder2.parent_id) {
+					return await checkCircle(folder2.parent_id);
 				} else {
 					return false;
 				}
 			}
 
-			if (parent.folder !== null) {
-				if (await checkCircle(parent.folder)) {
+			if (parent.parent_id !== null) {
+				if (await checkCircle(parent.parent_id)) {
 					return rej('detected-circular-definition');
 				}
 			}
 
-			folder.folder = parent._id;
+			folder.parent_id = parent._id;
 		}
 	}
 

@@ -27,7 +27,7 @@ export default (
 		populateMembers: true
 	};
 
-	let _group: any;
+	let _group_id: any;
 
 	// Populate the group if 'group' is ID
 	if (mongo.ObjectID.prototype.isPrototypeOf(group)) {

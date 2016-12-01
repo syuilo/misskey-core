@@ -43,7 +43,7 @@ module.exports = (params) =>
 	// Get favorites
 	const favorites = await Favorites
 		.find({
-			user: user._id
+			user_id: user._id
 		}, {}, {
 			limit: limit,
 			skip: offset,

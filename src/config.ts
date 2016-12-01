@@ -54,7 +54,7 @@ export interface IConfig {
 		host: string;
 		port: number;
 		db: string;
-		user: string;
+		user_id: string;
 		pass: string;
 	};
 	redis: {

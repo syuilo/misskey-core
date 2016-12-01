@@ -42,7 +42,7 @@ module.exports = (params) =>
 	const session = await AuthSess
 		.findOne({
 			token: token,
-			app: app._id
+			app_id: app._id
 		});
 
 	if (session === null) {
@@ -55,8 +55,8 @@ module.exports = (params) =>
 
 	// Lookup userkey
 	const userkey = await Userkey.findOne({
-		app: app._id,
-		user: session.user
+		app_id: app._id,
+		user_id: session.user
 	});
 
 	// Delete session

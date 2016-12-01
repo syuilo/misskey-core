@@ -18,18 +18,18 @@ import serialize from '../../serializers/post';
 module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	const userId = params.user;
+	// Get 'user_id' parameter
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
-		return rej('user is required');
+		return rej('user_id is required');
 	}
 
-	// Get 'with_images' parameter
-	let withImages = params.with_images;
-	if (withImages !== undefined && withImages !== null && withImages === 'true') {
-		withImages = true;
+	// Get 'with_media' parameter
+	let withMedia = params.with_media;
+	if (withMedia !== undefined && withMedia !== null && withMedia === 'true') {
+		withMedia = true;
 	} else {
-		withImages = false;
+		withMedia = false;
 	}
 
 	// Get 'limit' parameter
@@ -45,12 +45,12 @@ module.exports = (params, me) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
+	const since = params.since_id || null;
+	const max = params.max_id || null;
 
-	// Check if both of since and max is specified
+	// Check if both of since_id and max_id is specified
 	if (since !== null && max !== null) {
-		return rej('cannot set since and max');
+		return rej('cannot set since_id and max_id');
 	}
 
 	// Lookup user
@@ -67,7 +67,7 @@ module.exports = (params, me) =>
 		_id: -1
 	};
 	const query = {
-		user: user._id
+		user_id: user._id
 	};
 	if (since !== null) {
 		sort._id = 1;
@@ -80,8 +80,8 @@ module.exports = (params, me) =>
 		};
 	}
 
-	if (withImages) {
-		query.images = {
+	if (withMedia) {
+		query.media_ids = {
 			$exists: true,
 			$ne: null
 		};

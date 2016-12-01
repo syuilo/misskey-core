@@ -29,8 +29,8 @@ const maxTextLength = 500;
 module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	let recipient = params.user;
+	// Get 'user_id' parameter
+	let recipient = params.user_id;
 	if (recipient !== undefined && recipient !== null) {
 		recipient = await User.findOne({
 			_id: new mongo.ObjectID(recipient)
@@ -87,12 +87,12 @@ module.exports = (params, user) =>
 		text = null;
 	}
 
-	// Get 'file' parameter
-	let file = params.file;
+	// Get 'file_id' parameter
+	let file = params.file_id;
 	if (file !== undefined && file !== null) {
 		file = await DriveFile.findOne({
 			_id: new mongo.ObjectID(file),
-			user: user._id
+			user_id: user._id
 		}, {
 			data: false
 		});
@@ -112,11 +112,11 @@ module.exports = (params, user) =>
 	// メッセージを作成
 	const inserted = await Message.insert({
 		created_at: new Date(),
-		file: file ? file._id : undefined,
-		recipient: recipient ? recipient._id : undefined,
-		group: group ? group._id : undefined,
+		file_id: file ? file._id : undefined,
+		recipient_id: recipient ? recipient._id : undefined,
+		group_id: group ? group._id : undefined,
 		text: text ? text : undefined,
-		user: user._id,
+		user_id: user._id,
 		is_read: recipient ? false : undefined,
 		read: group ? false : undefined
 	});
@@ -179,11 +179,11 @@ module.exports = (params, user) =>
 	if (recipient) {
 		// 自分
 		History.updateOne({
-			user: user._id,
+			user_id: user._id,
 			partner: recipient._id
 		}, {
 			updated_at: new Date(),
-			user: user._id,
+			user_id: user._id,
 			partner: recipient._id,
 			message: message._id
 		}, {
@@ -192,11 +192,11 @@ module.exports = (params, user) =>
 
 		// 相手
 		History.updateOne({
-			user: recipient._id,
+			user_id: recipient._id,
 			partner: user._id
 		}, {
 			updated_at: new Date(),
-			user: recipient._id,
+			user_id: recipient._id,
 			partner: user._id,
 			message: message._id
 		}, {
@@ -208,12 +208,12 @@ module.exports = (params, user) =>
 	if (group) {
 		group.members.forEach(member => {
 			History.updateOne({
-				user: member,
-				group: group._id
+				user_id: member,
+				group_id: group._id
 			}, {
 				updated_at: new Date(),
-				user: member._id,
-				group: group._id,
+				user_id: member._id,
+				group_id: group._id,
 				message: message._id
 			}, {
 				upsert: true

@@ -40,8 +40,8 @@ module.exports = (file, params, user) =>
 		name = null;
 	}
 
-	// Get 'folder' parameter
-	let folder = params.folder;
+	// Get 'folder_id' parameter
+	let folder = params.folder_id;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;
 	} else {

@@ -16,10 +16,10 @@ import Post from '../../../models/post';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'user' parameter
-	const userId = params.user;
+	// Get 'user_id' parameter
+	const userId = params.user_id;
 	if (userId === undefined || userId === null) {
-		return rej('user is required');
+		return rej('user_id is required');
 	}
 
 	// Lookup user
@@ -33,9 +33,9 @@ module.exports = (params) =>
 
 	const datas = await Post
 		.aggregate([
-			{ $match: { user: user._id } },
+			{ $match: { user_id: user._id } },
 			{ $project: {
-				repost: '$repost',
+				repost_id: '$repost',
 				reply_to: '$reply_to',
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
@@ -59,12 +59,12 @@ module.exports = (params) =>
 					}
 				}}
 			},
-			{ $group: { _id: {
+			{ $group_id: { _id: {
 				date: '$date',
 				type: '$type'
 			}, count: { $sum: 1 } } },
-			{ $group: {
-				_id: '$_id.date', 
+			{ $group_id: {
+				_id: '$_id.date',
 				data: { $addToSet: {
 					type: '$_id.type',
 					count: '$count'

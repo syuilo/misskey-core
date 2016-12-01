@@ -16,10 +16,10 @@ import Like from '../../../models/like';
 module.exports = (params) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'post' parameter
-	const postId = params.post;
+	// Get 'post_id' parameter
+	const postId = params.post_id;
 	if (postId === undefined || postId === null) {
-		return rej('post is required');
+		return rej('post_id is required');
 	}
 
 	// Lookup post
@@ -35,14 +35,14 @@ module.exports = (params) =>
 
 	const likes = await Like
 		.find({
-			post: post._id,
+			post_id: post._id,
 			$or: [
 				{ deleted_at: { $exists: false } },
 				{ deleted_at: { $gt: startTime } }
 			]
 		}, {
 			_id: false,
-			post: false
+			post_id: false
 		}, {
 			sort: { created_at: -1 }
 		})

@@ -31,16 +31,16 @@ module.exports = (params, user, app) =>
 		limit = 10;
 	}
 
-	const since = params.since || null;
-	const max = params.max || null;
+	const since = params.since_id || null;
+	const max = params.max_id || null;
 
-	// Check if both of since and max is specified
+	// Check if both of since_id and max_id is specified
 	if (since !== null && max !== null) {
-		return rej('cannot set since and max');
+		return rej('cannot set since_id and max_id');
 	}
 
-	// Get 'folder' parameter
-	let folder = params.folder;
+	// Get 'folder_id' parameter
+	let folder = params.folder_id;
 	if (folder === undefined || folder === null || folder === 'null') {
 		folder = null;
 	} else {
@@ -52,8 +52,8 @@ module.exports = (params, user, app) =>
 		_id: -1
 	};
 	const query = {
-		user: user._id,
-		folder: folder
+		user_id: user._id,
+		folder_id: folder
 	};
 	if (since !== null) {
 		sort._id = 1;

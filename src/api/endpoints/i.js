@@ -19,8 +19,7 @@ module.exports = (params, user, _, isWeb) =>
 {
 	// Serialize
 	res(await serialize(user, user, {
-		includePrivates: true,
-		includeSecrets: isWeb,
-		includeProfileImageIds: isWeb
+		detail: true,
+		includeSecrets: isWeb
 	}));
 });

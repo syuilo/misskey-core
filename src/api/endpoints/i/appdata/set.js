@@ -33,8 +33,8 @@ module.exports = (params, user, app, isWeb) =>
 		res(204);
 	} else {
 		const appdata = await Appdata.findOne({
-			app: app._id,
-			user: user._id
+			app_id: app._id,
+			user_id: user._id
 		});
 		const set = {
 			$set: {
@@ -42,11 +42,11 @@ module.exports = (params, user, app, isWeb) =>
 			}
 		};
 		await Appdata.updateOne({
-			app: app._id,
-			user: user._id
+			app_id: app._id,
+			user_id: user._id
 		}, Object.assign({
-			app: app._id,
-			user: user._id
+			app_id: app._id,
+			user_id: user._id
 		}, set), {
 			upsert: true
 		});

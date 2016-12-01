@@ -25,7 +25,7 @@ const maxTextLength = 300;
 /**
  * 添付できるファイルの数
  */
-const maxFileLength = 4;
+const maxMediaCount = 4;
 
 /**
  * Create a post
@@ -51,28 +51,28 @@ module.exports = (params, user, app) =>
 		text = null;
 	}
 
-	// Get 'images' parameter
-	let images = params.images;
+	// Get 'media_ids' parameter
+	let media = params.media_ids;
 	let files = [];
-	if (images !== undefined && images !== null) {
-		images = images.split(',');
+	if (media !== undefined && media !== null) {
+		media = media.split(',');
 
-		if (images.length > maxFileLength) {
-			return rej('too many images');
+		if (media.length > maxMediaCount) {
+			return rej('too many media');
 		}
 
 		// Drop duplicates
-		images = images.filter((x, i, self) => self.indexOf(x) === i);
+		media = media.filter((x, i, self) => self.indexOf(x) === i);
 
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
 		// 敢えて for を使っています。
-		for (let i = 0; i < images.length; i++) {
-			const image = images[i];
+		for (let i = 0; i < media.length; i++) {
+			const image = media[i];
 
 			const entity = await DriveFile.findOne({
 				_id: new mongo.ObjectID(image),
-				user: user._id
+				user_id: user._id
 			}, {
 				data: false
 			});
@@ -87,23 +87,23 @@ module.exports = (params, user, app) =>
 		files = null;
 	}
 
-	// Get 'repost' parameter
-	let repost = params.repost;
+	// Get 'repost_id' parameter
+	let repost = params.repost_id;
 	if (repost !== undefined && repost !== null) {
-		// Get repostee
+		// Fetch repost to post
 		repost = await Post.findOne({
 			_id: new mongo.ObjectID(repost)
 		});
 
 		if (repost === null) {
 			return rej('repostee is not found');
-		} else if (repost.repost && !repost.text && !repost.images) {
-			return rej('cannot repost from repost');
+		} else if (repost.repost_id && !repost.text && !repost.media_ids) {
+			return rej('cannot repost to repost');
 		}
 
 		// Get recently post
 		const latestPost = await Post.findOne({
-			user: user._id
+			user_id: user._id
 		}, {}, {
 			sort: {
 				_id: -1
@@ -112,8 +112,8 @@ module.exports = (params, user, app) =>
 
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
-				latestPost.repost &&
-				latestPost.repost.toString() === repost._id.toString() &&
+				latestPost.repost_id &&
+				latestPost.repost_id.toString() === repost._id.toString() &&
 				text === null && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
@@ -128,8 +128,8 @@ module.exports = (params, user, app) =>
 		repost = null;
 	}
 
-	// Get 'reply_to' parameter
-	let replyTo = params.reply_to;
+	// Get 'reply_to_id' parameter
+	let replyTo = params.reply_to_id;
 	if (replyTo !== undefined && replyTo !== null) {
 		replyTo = await Post.findOne({
 			_id: new mongo.ObjectID(replyTo)
@@ -140,7 +140,7 @@ module.exports = (params, user, app) =>
 		}
 
 		// 返信対象が引用でないRepostだったらエラー
-		if (replyTo.repost && !replyTo.text && !replyTo.images) {
+		if (replyTo.repost_id && !replyTo.text && !replyTo.media_ids) {
 			return rej('cannot reply to repost');
 		}
 	} else {
@@ -149,18 +149,18 @@ module.exports = (params, user, app) =>
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
 	if (text === null && files === null && repost === null) {
-		return rej('text, images or repost is required');
+		return rej('text, media or repost_id is required');
 	}
 
 	// 投稿を作成
 	const inserted = await Post.insert({
 		created_at: new Date(),
-		images: images ? files.map(file => file._id) : undefined,
-		reply_to: replyTo ? replyTo._id : undefined,
-		repost: repost ? repost._id : undefined,
+		media_ids: media ? files.map(file => file._id) : undefined,
+		reply_to_id: replyTo ? replyTo._id : undefined,
+		repost_id: repost ? repost._id : undefined,
 		text: text,
-		user: user._id,
-		app: app ? app._id : null
+		user_id: user._id,
+		app_id: app ? app._id : null
 	});
 
 	const post = inserted.ops[0];
@@ -175,15 +175,15 @@ module.exports = (params, user, app) =>
 	event(user._id, 'post', postObj);
 
 	const followers = await Following
-		.find({ followee: user._id }, {
-			follower: true,
+		.find({ followee_id: user._id }, {
+			follower_id: true,
 			_id: false
 		})
 		.toArray();
 
 	// 自分のフォロワーのストリーム
 	followers.forEach(following => {
-		event(following.follower, 'post', postObj);
+		event(following.follower_id, 'post', postObj);
 	});
 
 	// Increment my posts count
@@ -195,21 +195,21 @@ module.exports = (params, user, app) =>
 
 	// Update replyee status
 	if (replyTo) {
-		if (replyTo.user.toString() !== user._id.toString()) {
+		if (replyTo.user_id.toString() !== user._id.toString()) {
 			// Publish event
-			event(replyTo.user, 'reply', postObj);
+			event(replyTo.user_id, 'reply', postObj);
 
 			// Create notification
-			notify(replyTo.user, 'reply', {
-				post: post._id
+			notify(replyTo.user_id, 'reply', {
+				post_id: post._id
 			});
 		}
 
 		// Create mention
 		Mention.insert({
-			post: post._id,
+			post_id: post._id,
 			_post_user_id: user._id, // 非正規データ
-			user: replyTo.user
+			user_id: replyTo.user_id
 		});
 
 		Post.updateOne({ _id: replyTo._id }, {
@@ -221,26 +221,26 @@ module.exports = (params, user, app) =>
 
 	if (repost) {
 		// Publish event
-		event(repost.user, 'repost', postObj);
+		event(repost.user_id, 'repost', postObj);
 
 		// Notify
-		if (repost.user.toString() !== user._id.toString()) {
-			notify(repost.user, 'repost', {
-				post: post._id
+		if (repost.user_id.toString() !== user._id.toString()) {
+			notify(repost.user_id, 'repost', {
+				post_id: post._id
 			});
 		}
 
 		// Create mention
 		Mention.insert({
-			post: post._id,
+			post_id: post._id,
 			_post_user_id: user._id, // 非正規データ
-			user: repost.user
+			user_id: repost.user_id
 		});
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
-			user: user._id,
-			repost: repost._id,
+			user_id: user._id,
+			repost_id: repost._id,
 			_id: {
 				$ne: post._id
 			}
@@ -283,22 +283,22 @@ module.exports = (params, user, app) =>
 
 			// Notify
 			if (mentionedUser._id.toString() !== user._id.toString()) {
-				if (replyTo && replyTo.user.toString() == mentionedUser._id.toString()) return;
-				if (repost && repost.user.toString() == mentionedUser._id.toString()) return;
+				if (replyTo && replyTo.user_id.toString() == mentionedUser._id.toString()) return;
+				if (repost && repost.user_id.toString() == mentionedUser._id.toString()) return;
 
 				// Publish event
 				event(mentionedUser._id, 'mention', postObj);
 
 				// Create mention
 				Mention.insert({
-					post: post._id,
+					post_id: post._id,
 					_post_user_id: user._id, // 非正規データ
-					user: mentionedUser._id
+					user_id: mentionedUser._id
 				});
 
 				// Create notification
 				notify(mentionedUser._id, 'mention', {
-					post: post._id
+					post_id: post._id
 				});
 			}
 		});

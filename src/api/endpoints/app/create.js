@@ -58,7 +58,7 @@ module.exports = async (params, user) =>
 	// Create account
 	const inserted = await App.insert({
 		created_at: new Date(),
-		user: user._id,
+		user_id: user._id,
 		name: name,
 		name_id: nameId,
 		name_id_lower: nameId.toLowerCase(),
