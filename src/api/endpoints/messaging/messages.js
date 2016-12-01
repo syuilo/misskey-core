@@ -149,7 +149,7 @@ module.exports = (params, user) =>
 		if (recipient) {
 			const ids = messages
 				.filter(m => m.is_read == false)
-				.filter(m => m.recipient.toString() == user._id.toString())
+				.filter(m => m.recipient.equals(user._id))
 				.map(m => m._id);
 
 			// Update documents

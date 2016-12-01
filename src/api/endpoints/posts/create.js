@@ -113,14 +113,14 @@ module.exports = (params, user, app) =>
 		// 直近と同じRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
 				latestPost.repost_id &&
-				latestPost.repost_id.toString() === repost._id.toString() &&
+				latestPost.repost_id.equals(repost._id) &&
 				text === null && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
 
 		// 直近がRepost対象かつ引用じゃなかったらエラー
 		if (latestPost &&
-				latestPost._id.toString() === repost._id.toString() &&
+				latestPost._id.equals(repost._id) &&
 				text === null && files === null) {
 			return rej('二重Repostです(NEED TRANSLATE)');
 		}
@@ -195,7 +195,7 @@ module.exports = (params, user, app) =>
 
 	// Update replyee status
 	if (replyTo) {
-		if (replyTo.user_id.toString() !== user._id.toString()) {
+		if (!replyTo.user_id.equals(user._id)) {
 			// Publish event
 			event(replyTo.user_id, 'reply', postObj);
 
@@ -224,7 +224,7 @@ module.exports = (params, user, app) =>
 		event(repost.user_id, 'repost', postObj);
 
 		// Notify
-		if (repost.user_id.toString() !== user._id.toString()) {
+		if (!repost.user_id.equals(user._id)) {
 			notify(repost.user_id, 'repost', {
 				post_id: post._id
 			});
@@ -282,9 +282,9 @@ module.exports = (params, user, app) =>
 				.findOne({ username_lower: mention.toLowerCase() });
 
 			// Notify
-			if (mentionedUser._id.toString() !== user._id.toString()) {
-				if (replyTo && replyTo.user_id.toString() == mentionedUser._id.toString()) return;
-				if (repost && repost.user_id.toString() == mentionedUser._id.toString()) return;
+			if (!mentionedUser._id.equals(user._id)) {
+				if (replyTo && replyTo.user_id.equals(mentionedUser._id)) return;
+				if (repost && repost.user_id.equals(mentionedUser._id)) return;
 
 				// Publish event
 				event(mentionedUser._id, 'mention', postObj);

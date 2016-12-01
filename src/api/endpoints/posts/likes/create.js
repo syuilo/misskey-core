@@ -38,7 +38,7 @@ module.exports = (params, user) =>
 	}
 
 	// Myself
-	if (post.user_id.toString() === user._id.toString()) {
+	if (post.user_id.equals(user._id)) {
 		return rej('-need-translate-');
 	}
 

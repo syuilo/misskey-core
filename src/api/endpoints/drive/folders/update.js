@@ -67,7 +67,7 @@ module.exports = (params, user) =>
 					parent_id: true
 				});
 
-				if (folder2._id.toString() === folder._id.toString()) {
+				if (folder2._id.equals(folder._id)) {
 					return true;
 				} else if (folder2.parent_id) {
 					return await checkCircle(folder2.parent_id);

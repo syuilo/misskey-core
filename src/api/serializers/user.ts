@@ -79,14 +79,14 @@ export default (
 		? `${config.drive_url}/${_user.banner_id}`
 		: null;
 
-	if (!me || me.toString() !== _user.id.toString() || !opts.detail) {
+	if (!me || !me.equals(_user.id) || !opts.detail) {
 		delete _user.avatar_id;
 		delete _user.banner_id;
 
 		delete _user.drive_capacity;
 	}
 
-	if (me && me.toString() !== _user.id.toString()) {
+	if (me && !me.equals(_user.id)) {
 		// If the user is following
 		const follow = await Following.findOne({
 			follower_id: me,
@@ -104,7 +104,7 @@ export default (
 		_user.is_followed = follow2 !== null;
 	}
 
-	if (me && me.toString() !== _user.id.toString() && opts.detail) {
+	if (me && !me.equals(_user.id) && opts.detail) {
 		const myFollowingIds = await getFriends(me);
 
 		// Get following you know count

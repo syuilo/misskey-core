@@ -46,6 +46,6 @@ module.exports = (params, user, _, isWeb) =>
 
 	// Send response
 	res(await serialize(app, {
-		includeSecret: isWeb && app.user.toString() === user._id.toString()
+		includeSecret: isWeb && app.user_id.equals(user._id)
 	}));
 });

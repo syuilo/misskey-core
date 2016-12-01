@@ -28,7 +28,7 @@ module.exports = (params, user) =>
 	}
 
 	// Check if the followee is yourself
-	if (userId === user._id.toString()) {
+	if (user._id.equals(userId)) {
 		return rej('followee is yourself');
 	}
 

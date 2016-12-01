@@ -85,7 +85,7 @@ module.exports = (params, user) =>
 			.toArray();
 
 		posts.map(post => {
-			post._highlight = response.hits.hits.filter(hit => hit._id == post._id.toString())[0].highlight.text[0];
+			post._highlight = response.hits.hits.filter(hit => post._id.equals(hit._id))[0].highlight.text[0];
 		});
 
 		// Serialize

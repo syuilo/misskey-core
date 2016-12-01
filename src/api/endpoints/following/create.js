@@ -29,7 +29,7 @@ module.exports = (params, user) =>
 	}
 
 	// 自分自身
-	if (userId === user._id.toString()) {
+	if (user._id.equals(userId)) {
 		return rej('followee is yourself');
 	}
 
