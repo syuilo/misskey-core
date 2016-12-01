@@ -6,6 +6,7 @@
 import * as mongo from 'mongodb';
 import parse from 'misskey-text';
 import Post from '../../models/post';
+import Mention from '../../models/mention';
 import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
@@ -149,7 +150,7 @@ module.exports = (params, user, app) =>
 
 	// テキストが無いかつ添付ファイルが無いかつRepostも無かったらエラー
 	if (text === null && files === null && repost === null) {
-		return rej('text, media or repost_id is required');
+		return rej('text, media_ids or repost_id is required');
 	}
 
 	// 投稿を作成
@@ -193,8 +194,21 @@ module.exports = (params, user, app) =>
 		}
 	});
 
+	const mentions = [];
+
 	// Update replyee status
 	if (replyTo) {
+		// Add mention
+		mentions.push(replyTo.user_id);
+
+		// Increment replies count
+		Post.updateOne({ _id: replyTo._id }, {
+			$inc: {
+				replies_count: 1
+			}
+		});
+
+		// 自分自身へのリプライでない限りは通知を作成
 		if (!replyTo.user_id.equals(user._id)) {
 			// Publish event
 			event(replyTo.user_id, 'reply', postObj);
@@ -204,19 +218,6 @@ module.exports = (params, user, app) =>
 				post_id: post._id
 			});
 		}
-
-		/*// Create mention
-		Mention.insert({
-			post_id: post._id,
-			_post_user_id: user._id, // 非正規データ
-			user_id: replyTo.user_id
-		});*/
-
-		Post.updateOne({ _id: replyTo._id }, {
-			$inc: {
-				replies_count: 1
-			}
-		});
 	}
 
 	if (repost) {
@@ -229,13 +230,6 @@ module.exports = (params, user, app) =>
 				post_id: post._id
 			});
 		}
-
-		// Create mention
-		/*Mention.insert({
-			post_id: post._id,
-			_post_user_id: user._id, // 非正規データ
-			user_id: repost.user_id
-		});*/
 
 		// 今までで同じ投稿をRepostしているか
 		const existRepost = await Post.findOne({
@@ -256,50 +250,65 @@ module.exports = (params, user, app) =>
 		}
 	}
 
-	// Register to search database
-	if (text != null) {
+	// Extract a mentions
+	const mentionsInText = text ?
+		parse(text)
+			.filter(t => t.type == 'mention')
+			.map(m => m.username)
+			// Drop dupulicates
+			.filter((v, i, s) => s.indexOf(v) == i)
+		: [];
+
+	// Notify for each found mentions
+	mentionsInText.forEach(async (mention) => {
+		// Fetch mentioned user
+		// SELECT _id
+		const mentionedUser = await User
+			.findOne({ username_lower: mention.toLowerCase() }, { _id: true });
+
+		// When mentioned user not found
+		if (mentionedUser == null) return;
+
+		// Add mention
+		mentions.push(mentionedUser._id);
+
+		// Ignore myself mention
+		if (mentionedUser._id.equals(user._id)) return;
+
+		// 既に言及されたユーザーに対する返信や引用repostの場合も無視
+		if (replyTo && replyTo.user_id.equals(mentionedUser._id)) return;
+		if (repost && repost.user_id.equals(mentionedUser._id)) return;
+
+		// Publish event
+		event(mentionedUser._id, 'mention', postObj);
+
+		// Create notification
+		notify(mentionedUser._id, 'mention', {
+			post_id: post._id
+		});
+	});
+
+	// Create document for each mentions
+	mentions
+	.filter((v, i, s) => s.indexOf(v) == i) // Drop dupulicates
+	.forEach(async (mention) => {
+		// Create mention
+		Mention.insert({
+			post_id: post._id,
+			_post_user_id: user._id, // 非正規データ
+			user_id: mention,
+			is_read: false
+		});
+	});
+
+	if (text) {
+		// Register to search database
 		es.index({
 			index: 'misskey',
 			type: 'post',
 			id: post._id.toString(),
 			body: {
 				text: post.text
-			}
-		});
-
-		const tokens = parse(text);
-
-		// Extract a mentions
-		const mentions = tokens
-			.filter(t => t.type == 'mention')
-			.map(m => m.username)
-			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i);
-
-		mentions.forEach(async (mention) => {
-			// Fetch mentioned user
-			const mentionedUser = await User
-				.findOne({ username_lower: mention.toLowerCase() });
-
-			// Notify
-			if (!mentionedUser._id.equals(user._id)) {
-				if (replyTo && replyTo.user_id.equals(mentionedUser._id)) return;
-				if (repost && repost.user_id.equals(mentionedUser._id)) return;
-
-				// Publish event
-				event(mentionedUser._id, 'mention', postObj);
-
-				/*// Create mention
-				Mention.insert({
-					post_id: post._id,
-					_post_user_id: user._id, // 非正規データ
-					user_id: mentionedUser._id
-				});*/
-
-				// Create notification
-				notify(mentionedUser._id, 'mention', {
-					post_id: post._id
-				});
 			}
 		});
 
