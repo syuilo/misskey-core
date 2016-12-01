@@ -1,7 +1,6 @@
 {
 	"rules": {
 		// TypeScript Specific
-		"adjacent-overload-signatures": true,
 		"member-access": false,
 		"member-ordering": [true,
 			"static-before-instance",
@@ -87,7 +86,6 @@
 		"arrow-parens": false,
 		"class-name": true,
 		"comment-format": false,
-		"file-header": false,
 		"interface-name": false,
 		"jsdoc-format": true,
 		"new-parens": true,
@@ -95,7 +93,6 @@
 		"no-consecutive-blank-lines": true,
 		"no-constructor-vars": true,
 		"object-literal-key-quotes": [true, "as-needed"],
-		"object-literal-shorthand": false,
 		"one-line": [true,
 			"check-catch",
 			"check-finally",
