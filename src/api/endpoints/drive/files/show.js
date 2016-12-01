@@ -27,6 +27,8 @@ module.exports = (params, user) =>
 		.findOne({
 			_id: new mongo.ObjectID(fileId),
 			user_id: user._id
+		}, {
+			data: false
 		});
 
 	if (file === null) {
