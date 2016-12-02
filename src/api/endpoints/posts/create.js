@@ -42,7 +42,7 @@ module.exports = (params, user, app) =>
 	let text = params.text;
 	if (text !== undefined && text !== null) {
 		text = text.trim();
-		if (text.length === 0) {
+		if (text.length == 0) {
 			text = null;
 		} else if (text.length > maxTextLength) {
 			return rej('too long text');
@@ -62,7 +62,7 @@ module.exports = (params, user, app) =>
 		}
 
 		// Drop duplicates
-		media = media.filter((x, i, self) => self.indexOf(x) === i);
+		media = media.filter((x, i, s) => s.indexOf(x) == i);
 
 		// Fetch files
 		// forEach だと途中でエラーなどがあっても return できないので
@@ -70,11 +70,13 @@ module.exports = (params, user, app) =>
 		for (let i = 0; i < media.length; i++) {
 			const image = media[i];
 
+			// Fetch file
+			// SELECT _id
 			const entity = await DriveFile.findOne({
 				_id: new mongo.ObjectID(image),
 				user_id: user._id
 			}, {
-				data: false
+				_id: true
 			});
 
 			if (entity === null) {
@@ -95,13 +97,13 @@ module.exports = (params, user, app) =>
 			_id: new mongo.ObjectID(repost)
 		});
 
-		if (repost === null) {
+		if (repost == null) {
 			return rej('repostee is not found');
 		} else if (repost.repost_id && !repost.text && !repost.media_ids) {
 			return rej('cannot repost to repost');
 		}
 
-		// Get recently post
+		// Fetch recently post
 		const latestPost = await Post.findOne({
 			user_id: user._id
 		}, {}, {
@@ -236,7 +238,8 @@ module.exports = (params, user, app) =>
 	if (repost) {
 		// Notify
 		if (!repost.user_id.equals(user._id)) {
-			notify(repost.user_id, user._id, text ? 'quote' : 'repost', {
+			const type = text ? 'quote' : 'repost';
+			notify(repost.user_id, user._id, type, {
 				post_id: post._id
 			});
 		}
