@@ -296,7 +296,7 @@ module.exports = (params, user, app) =>
 			user_id: mention,
 			is_read: false
 		});
-		
+
 		// Publish event
 		event(mention, 'mention', postObj);
 	});
