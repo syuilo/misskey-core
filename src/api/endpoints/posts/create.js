@@ -303,7 +303,7 @@ module.exports = (params, user, app) =>
 			if (mentionee == null) return;
 
 			// Add mention
-			mentions.push(mentionee);
+			mentions.push(mentionee._id);
 
 			// Ignore myself mention
 			if (mentionee._id.equals(user._id)) return;
