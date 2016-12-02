@@ -15,7 +15,7 @@ db(require('../config').default).then(async (db) => {
 		.find({})
 		.toArray();
 
-	posts.forEach(post => {
+	posts.forEach(async post => {
 
 		let mentions = [];
 
