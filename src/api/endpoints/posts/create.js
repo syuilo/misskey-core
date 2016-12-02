@@ -211,8 +211,47 @@ module.exports = (params, user, app) =>
 			}
 		});
 
-		// ハッシュタグ抽出
-		//const hashtags = extractHashtags(text);
+		// Analyze
+		const tokens = parse(text);
+
+		// Extract a mentions
+		const mentions = tokens
+			.filter(t => t.type == 'mention')
+			.map(m => m.username)
+			// Drop dupulicates
+			.filter((v, i, s) => s.indexOf(v) == i);
+
+		// Notify all mentions
+		mentions.map(async (mention) => {
+			// Fetch mentioned user
+			// SELECT _id
+			const mentionee = await User
+				.findOne({
+					username_lower: mention.toLowerCase()
+				}, { _id: true });
+
+			// When mentioned user not found
+			if (mentionee == null) return;
+
+			// Ignore myself mention
+			if (mentionee._id.equals(user._id)) return;
+
+			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
+			if (replyTo && replyTo.user_id.equals(mentionee._id)) return;
+			if (repost && repost.user_id.equals(mentionee._id)) return;
+
+			// Create notification
+			notify(mentionee._id, user._id, 'mention', {
+				post_id: post._id
+			});
+		});
+
+		// Extract a hashtags
+		const hashtags = tokens
+			.filter(t => t.type == 'hashtag')
+			.map(m => m.hashtag)
+			// Drop dupulicates
+			.filter((v, i, s) => s.indexOf(v) == i);
 
 		// ハッシュタグをデータベースに登録
 		//registerHashtags(user, hashtags);
@@ -262,38 +301,4 @@ module.exports = (params, user, app) =>
 			});
 		}
 	}
-
-	// Extract a mentions
-	const mentions = text ?
-		parse(text)
-			.filter(t => t.type == 'mention')
-			.map(m => m.username)
-			// Drop dupulicates
-			.filter((v, i, s) => s.indexOf(v) == i)
-		: [];
-
-	// Notify all mentions
-	mentions.map(async (mention) => {
-		// Fetch mentioned user
-		// SELECT _id
-		const mentionee = await User
-			.findOne({
-				username_lower: mention.toLowerCase()
-			}, { _id: true });
-
-		// When mentioned user not found
-		if (mentionee == null) return;
-
-		// Ignore myself mention
-		if (mentionee._id.equals(user._id)) return;
-
-		// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-		if (replyTo && replyTo.user_id.equals(mentionee._id)) return;
-		if (repost && repost.user_id.equals(mentionee._id)) return;
-
-		// Create notification
-		notify(mentionee._id, user._id, 'mention', {
-			post_id: post._id
-		});
-	});
 });
