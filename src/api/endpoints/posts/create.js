@@ -288,12 +288,12 @@ module.exports = (params, user, app) =>
 	// Create document for each mentions
 	mentions
 	.filter((v, i, s) => s.indexOf(v) == i) // Drop dupulicates
-	.forEach(async (mention) => {
+	.forEach(async (mentionedUserId) => {
 		// Create mention
 		Mention.insert({
 			post_id: post._id,
 			_post_user_id: user._id, // 非正規データ
-			user_id: mention,
+			user_id: mentionedUserId,
 			is_read: false
 		});
 
