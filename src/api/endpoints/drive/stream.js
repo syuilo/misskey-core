@@ -79,10 +79,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (files.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(files.map(async file =>
 		await serialize(file))));

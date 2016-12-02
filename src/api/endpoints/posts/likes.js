@@ -71,10 +71,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (likes.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(likes.map(async like =>
 		await serialize(like.user, user))));

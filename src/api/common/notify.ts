@@ -4,7 +4,8 @@ import event from '../event';
 import serialize from '../serializers/notification';
 
 export default (
-	i: mongo.ObjectID,
+	notifiee: mongo.ObjectID,
+	notifier: mongo.ObjectID,
 	type: string,
 	content: any
 ) => new Promise<any>(async (resolve, reject) => {
@@ -12,8 +13,10 @@ export default (
 	// Create notification
 	const res = await Notification.insert(Object.assign({
 		created_at: new Date(),
-		i: i,
-		type: type
+		notifiee_id: notifiee,
+		notifier_id: notifier,
+		type: type,
+		is_read: false
 	}, content));
 
 	const notification = res.ops[0];
@@ -21,5 +24,6 @@ export default (
 	resolve(notification);
 
 	// Publish notification event
-	event(notification.i, 'notification', await serialize(notification));
+	event(notifiee, 'notification',
+		await serialize(notification));
 });

@@ -40,10 +40,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (folders.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(folders.map(async folder =>
 		await serialize(folder))));

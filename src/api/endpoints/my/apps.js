@@ -53,10 +53,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (apps.length === 0) {
-		return res([]);
-	}
-
 	// Reply
 	res(await Promise.all(apps.map(async app =>
 		await serialize(app))));

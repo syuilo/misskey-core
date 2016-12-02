@@ -6,7 +6,6 @@
 import * as mongo from 'mongodb';
 import parse from 'misskey-text';
 import Post from '../../models/post';
-import Mention from '../../models/mention';
 import User from '../../models/user';
 import Following from '../../models/following';
 import DriveFile from '../../models/drive-file';
@@ -175,8 +174,13 @@ module.exports = (params, user, app) =>
 	// 自分のストリーム
 	event(user._id, 'post', postObj);
 
+	// Fetch all followers
 	const followers = await Following
-		.find({ followee_id: user._id }, {
+		.find({
+			followee_id: user._id,
+			// 削除されたドキュメントは除く
+			deleted_at: { $exists: false }
+		}, {
 			follower_id: true,
 			_id: false
 		})
@@ -212,13 +216,8 @@ module.exports = (params, user, app) =>
 		//registerHashtags(user, hashtags);
 	}
 
-	const mentions = [];
-
 	// Update replyee status
 	if (replyTo) {
-		// Add mention
-		mentions.push(replyTo.user_id);
-
 		// Increment replies count
 		Post.updateOne({ _id: replyTo._id }, {
 			$inc: {
@@ -228,19 +227,16 @@ module.exports = (params, user, app) =>
 
 		// 自分自身へのリプライでない限りは通知を作成
 		if (!replyTo.user_id.equals(user._id)) {
-			notify(replyTo.user_id, 'reply', {
+			notify(replyTo.user_id, user._id, 'reply', {
 				post_id: post._id
 			});
 		}
 	}
 
 	if (repost) {
-		// Publish event
-		event(repost.user_id, 'repost', postObj);
-
 		// Notify
 		if (!repost.user_id.equals(user._id)) {
-			notify(repost.user_id, 'repost', {
+			notify(repost.user_id, user._id, text ? 'quote' : 'repost', {
 				post_id: post._id
 			});
 		}
@@ -264,14 +260,8 @@ module.exports = (params, user, app) =>
 		}
 	}
 
-	// If quote repost
-	if (repost && text) {
-		// Add mention
-		mentions.push(repost.user_id);
-	}
-
 	// Extract a mentions
-	const mentionsInText = text ?
+	const mentions = text ?
 		parse(text)
 			.filter(t => t.type == 'mention')
 			.map(m => m.username)
@@ -279,49 +269,28 @@ module.exports = (params, user, app) =>
 			.filter((v, i, s) => s.indexOf(v) == i)
 		: [];
 
-	// Resolve all mentions
-	await Promise.all(mentionsInText.map(async (mention) => {
+	// Notify all mentions
+	mentions.map(async (mention) => {
 		// Fetch mentioned user
 		// SELECT _id
-		const mentionedUser = await User
-			.findOne({ username_lower: mention.toLowerCase() }, { _id: true });
+		const mentionee = await User
+			.findOne({
+				username_lower: mention.toLowerCase()
+			}, { _id: true });
 
 		// When mentioned user not found
-		if (mentionedUser == null) return;
-
-		// Add mention
-		mentions.push(mentionedUser._id);
+		if (mentionee == null) return;
 
 		// Ignore myself mention
-		if (mentionedUser._id.equals(user._id)) return;
+		if (mentionee._id.equals(user._id)) return;
 
 		// 既に言及されたユーザーに対する返信や引用repostの場合も無視
-		if (replyTo && replyTo.user_id.equals(mentionedUser._id)) return;
-		if (repost && repost.user_id.equals(mentionedUser._id)) return;
+		if (replyTo && replyTo.user_id.equals(mentionee._id)) return;
+		if (repost && repost.user_id.equals(mentionee._id)) return;
 
 		// Create notification
-		notify(mentionedUser._id, 'mention', {
+		notify(mentionee._id, user._id, 'mention', {
 			post_id: post._id
 		});
-
-		return;
-	}));
-
-	// Create document for each mentions
-	mentions
-		// Drop dupulicates
-		.filter((v, i, s) => s.map(x => x.toString()).indexOf(v.toString()) == i)
-		.forEach(async (mentionedUserId) =>
-	{
-		// Create mention
-		Mention.insert({
-			post_id: post._id,
-			_post_user_id: user._id, // 非正規データ
-			user_id: mentionedUserId,
-			is_read: false
-		});
-
-		// Publish event
-		event(mentionedUserId, 'mention', postObj);
 	});
 });

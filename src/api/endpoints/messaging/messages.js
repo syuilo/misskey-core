@@ -136,13 +136,13 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (messages.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(messages.map(async message =>
 		await serialize(message))));
+
+	if (messages.length === 0) {
+		return;
+	}
 
 	// Mark as read all
 	if (markAsRead) {

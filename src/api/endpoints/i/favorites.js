@@ -53,10 +53,6 @@ module.exports = (params) =>
 		})
 		.toArray();
 
-	if (favorites.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(favorites.map(async favorite =>
 		await serialize(favorite.post)

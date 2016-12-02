@@ -95,10 +95,6 @@ module.exports = (params, me) =>
 		})
 		.toArray();
 
-	if (posts.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(posts.map(async (post) =>
 		await serialize(post, me)

@@ -67,10 +67,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (replies.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(replies.map(async post =>
 		await serialize(post, user))));

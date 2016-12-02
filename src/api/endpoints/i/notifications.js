@@ -39,15 +39,15 @@ module.exports = (params, user) =>
 	}
 
 	const query = {
-		i: user._id
+		notifiee_id: user._id
 	};
 
 	const sort = {
-		created_at: -1
+		_id: -1
 	};
 
 	if (since !== null) {
-		sort.created_at = 1;
+		sort._id = 1;
 		query._id = {
 			$gt: new mongo.ObjectID(since)
 		};
@@ -64,10 +64,6 @@ module.exports = (params, user) =>
 			sort: sort
 		})
 		.toArray();
-
-	if (notifications.length === 0) {
-		return res([]);
-	}
 
 	// Serialize
 	res(await Promise.all(notifications.map(async notification =>

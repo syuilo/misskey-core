@@ -42,10 +42,6 @@ module.exports = (params, user) =>
 		})
 		.toArray();
 
-	if (history.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(history.map(async i =>
 		await serialize(i.message))));

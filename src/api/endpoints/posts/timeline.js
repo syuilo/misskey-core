@@ -71,10 +71,6 @@ module.exports = (params, user, app) =>
 		})
 		.toArray();
 
-	if (timeline.length === 0) {
-		return res([]);
-	}
-
 	// Serialize
 	res(await Promise.all(timeline.map(async post =>
 		await serialize(post, user)

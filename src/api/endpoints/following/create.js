@@ -82,7 +82,5 @@ module.exports = (params, user) =>
 	event(followee._id, 'followed', await serializeUser(follower, followee));
 
 	// Notify
-	notify(followee._id, 'follow', {
-		user_id: follower._id
-	});
+	notify(followee._id, follower._id, 'follow');
 });
