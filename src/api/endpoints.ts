@@ -85,7 +85,6 @@ export default [
 	{ name: 'posts/reposts',          shouldBeSignin: false },
 	{ name: 'posts/search',           shouldBeSignin: false },
 	{ name: 'posts/timeline',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
-	{ name: 'posts/mentions',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
 	{ name: 'posts/likes',            shouldBeSignin: true },
 	{ name: 'posts/likes/create',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
 	{ name: 'posts/likes/delete',     shouldBeSignin: true, limitDuration: hour, limitMax: 100, kind: 'like-write' },
