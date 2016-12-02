@@ -173,7 +173,10 @@ module.exports = (params, user, app) =>
 	// Reponse
 	res(postObj);
 
-	// 自分のストリーム
+	//--------------------------------
+	// Post processes
+
+	// Publish event to myself's stream
 	event(user._id, 'post', postObj);
 
 	// Fetch all followers
@@ -188,7 +191,7 @@ module.exports = (params, user, app) =>
 		})
 		.toArray();
 
-	// 自分のフォロワーのストリーム
+	// Publish event to followers stream
 	followers.forEach(following => {
 		event(following.follower_id, 'post', postObj);
 	});
@@ -200,6 +203,7 @@ module.exports = (params, user, app) =>
 		}
 	});
 
+	// If has text content
 	if (text) {
 		// Register to search database
 		es.index({
@@ -257,7 +261,7 @@ module.exports = (params, user, app) =>
 		//registerHashtags(user, hashtags);
 	}
 
-	// Update replyee status
+	// If has in reply to post
 	if (replyTo) {
 		// Increment replies count
 		Post.updateOne({ _id: replyTo._id }, {
@@ -274,6 +278,7 @@ module.exports = (params, user, app) =>
 		}
 	}
 
+	// If it is repost
 	if (repost) {
 		// Notify
 		if (!repost.user_id.equals(user._id)) {
@@ -292,13 +297,13 @@ module.exports = (params, user, app) =>
 			}
 		});
 
-		if (existRepost === null) {
-			// Update repostee status
-			Post.updateOne({ _id: repost._id }, {
-				$inc: {
-					repost_count: 1
-				}
-			});
-		}
+		if (existRepost == null) return;
+
+		// Update repostee status
+		Post.updateOne({ _id: repost._id }, {
+			$inc: {
+				repost_count: 1
+			}
+		});
 	}
 });
