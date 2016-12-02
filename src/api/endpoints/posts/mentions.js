@@ -7,6 +7,7 @@ import * as mongo from 'mongodb';
 import Mention from '../../models/mention';
 import getFriends from '../../common/get-friends';
 import serialize from '../../serializers/post';
+import publishUserStream from '../../event';
 
 /**
  * Get mentions of myself
