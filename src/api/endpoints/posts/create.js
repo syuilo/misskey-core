@@ -264,6 +264,12 @@ module.exports = (params, user, app) =>
 		}
 	}
 
+	// If quote repost
+	if (repost && text) {
+		// Add mention
+		mentions.push(repost.user_id);
+	}
+
 	// Extract a mentions
 	const mentionsInText = text ?
 		parse(text)
@@ -303,8 +309,10 @@ module.exports = (params, user, app) =>
 
 	// Create document for each mentions
 	mentions
-	.filter((v, i, s) => s.indexOf(v) == i) // Drop dupulicates
-	.forEach(async (mentionedUserId) => {
+		// Drop dupulicates
+		.filter((v, i, s) => s.map(x => x.toString()).indexOf(v.toString()) == i)
+		.forEach(async (mentionedUserId) =>
+	{
 		// Create mention
 		Mention.insert({
 			post_id: post._id,
