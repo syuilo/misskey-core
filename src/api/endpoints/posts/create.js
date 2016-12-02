@@ -298,7 +298,7 @@ module.exports = (params, user, app) =>
 		});
 
 		// Publish event
-		event(mention, 'mention', postObj);
+		event(mentionedUserId, 'mention', postObj);
 	});
 
 	if (text) {
