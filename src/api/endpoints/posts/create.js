@@ -228,10 +228,6 @@ module.exports = (params, user, app) =>
 
 		// 自分自身へのリプライでない限りは通知を作成
 		if (!replyTo.user_id.equals(user._id)) {
-			// Publish event
-			event(replyTo.user_id, 'reply', postObj);
-
-			// Create notification
 			notify(replyTo.user_id, 'reply', {
 				post_id: post._id
 			});
