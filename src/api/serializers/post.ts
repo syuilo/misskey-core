@@ -54,6 +54,8 @@ const self = (
 	_post.id = _post._id;
 	delete _post._id;
 
+	delete _post.mentions;
+
 	// Populate user
 	_post.user = await serializeUser(_post.user_id, me);
 
@@ -68,7 +70,7 @@ const self = (
 		// Populate reply to post
 		_post.reply_to = await self(_post.reply_to_id, me, {
 			serializeReplyTo: false,
-			serializeRepost_id: false,
+			serializeRepost: false,
 			includeIsLiked: false
 		});
 	}
@@ -77,7 +79,7 @@ const self = (
 		// Populate repost
 		_post.repost = await self(_post.repost_id, me, {
 			serializeReplyTo: _post.text == null,
-			serializeRepost_id: _post.text == null,
+			serializeRepost: _post.text == null,
 			includeIsLiked: _post.text == null
 		});
 	}
