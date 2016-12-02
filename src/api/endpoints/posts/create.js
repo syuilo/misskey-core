@@ -194,6 +194,24 @@ module.exports = (params, user, app) =>
 		}
 	});
 
+	if (text) {
+		// Register to search database
+		es.index({
+			index: 'misskey',
+			type: 'post',
+			id: post._id.toString(),
+			body: {
+				text: post.text
+			}
+		});
+
+		// ハッシュタグ抽出
+		//const hashtags = extractHashtags(text);
+
+		// ハッシュタグをデータベースに登録
+		//registerHashtags(user, hashtags);
+	}
+
 	const mentions = [];
 
 	// Update replyee status
@@ -259,8 +277,8 @@ module.exports = (params, user, app) =>
 			.filter((v, i, s) => s.indexOf(v) == i)
 		: [];
 
-	// Notify for each found mentions
-	mentionsInText.forEach(async (mention) => {
+	// Resolve all mentions
+	await Promise.all(mentionsInText.map(async (mention) => {
 		// Fetch mentioned user
 		// SELECT _id
 		const mentionedUser = await User
@@ -283,7 +301,9 @@ module.exports = (params, user, app) =>
 		notify(mentionedUser._id, 'mention', {
 			post_id: post._id
 		});
-	});
+
+		return;
+	}));
 
 	// Create document for each mentions
 	mentions
@@ -300,22 +320,4 @@ module.exports = (params, user, app) =>
 		// Publish event
 		event(mentionedUserId, 'mention', postObj);
 	});
-
-	if (text) {
-		// Register to search database
-		es.index({
-			index: 'misskey',
-			type: 'post',
-			id: post._id.toString(),
-			body: {
-				text: post.text
-			}
-		});
-
-		// ハッシュタグ抽出
-		//const hashtags = extractHashtags(text);
-
-		// ハッシュタグをデータベースに登録
-		//registerHashtags(user, hashtags);
-	}
 });
