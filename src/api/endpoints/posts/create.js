@@ -176,6 +176,17 @@ module.exports = (params, user, app) =>
 
 	let mentions = [];
 
+	function addMention(mentionee, type) {
+		// Reject if already added
+		if (mentions.some(x => x.equals(mentionee))) return;
+
+		// Add mention
+		mentions.push(mentionee);
+
+		// Publish event
+		event(mentionee, type, postObj);
+	}
+
 	// Publish event to myself's stream
 	event(user._id, 'post', postObj);
 
@@ -213,30 +224,29 @@ module.exports = (params, user, app) =>
 		});
 
 		// 自分自身へのリプライでない限りは通知を作成
-		if (!replyTo.user_id.equals(user._id)) {
-			notify(replyTo.user_id, user._id, 'reply', {
-				post_id: post._id
-			});
-		}
+		notify(replyTo.user_id, user._id, 'reply', {
+			post_id: post._id
+		});
 
 		// Add mention
-		mentions.push(replyTo.user_id);
+		addMention(replyTo.user_id, 'reply');
 	}
 
 	// If it is repost
 	if (repost) {
 		// Notify
-		if (!repost.user_id.equals(user._id)) {
-			const type = text ? 'quote' : 'repost';
-			notify(repost.user_id, user._id, type, {
-				post_id: post._id
-			});
-		}
+		const type = text ? 'quote' : 'repost';
+		notify(repost.user_id, user._id, type, {
+			post_id: post._id
+		});
 
 		// If it is quote repost
 		if (text) {
 			// Add mention
-			mentions.push(repost.user_id);
+			addMention(repost.user_id, 'quote');
+		} else {
+			// Publish event
+			event(repost.user_id, 'repost', postObj);
 		}
 
 		// 今までで同じ投稿をRepostしているか
@@ -248,35 +258,25 @@ module.exports = (params, user, app) =>
 			}
 		});
 
-		if (existRepost == null) return;
-
-		// Update repostee status
-		Post.updateOne({ _id: repost._id }, {
-			$inc: {
-				repost_count: 1
-			}
-		});
+		if (existRepost) {
+			// Update repostee status
+			Post.updateOne({ _id: repost._id }, {
+				$inc: {
+					repost_count: 1
+				}
+			});
+		}
 	}
 
 	// If has text content
 	if (text) {
-		// Register to search database
-		es.index({
-			index: 'misskey',
-			type: 'post',
-			id: post._id.toString(),
-			body: {
-				text: post.text
-			}
-		});
-
 		// Analyze
 		const tokens = parse(text);
 
 		// Extract a hashtags
 		const hashtags = tokens
 			.filter(t => t.type == 'hashtag')
-			.map(m => m.hashtag)
+			.map(t => t.hashtag)
 			// Drop dupulicates
 			.filter((v, i, s) => s.indexOf(v) == i);
 
@@ -290,7 +290,7 @@ module.exports = (params, user, app) =>
 			// Drop dupulicates
 			.filter((v, i, s) => s.indexOf(v) == i);
 
-		// Notify all mentions
+		// Resolve all mentions
 		await Promise.all(atMentions.map(async (mention) => {
 			// Fetch mentioned user
 			// SELECT _id
@@ -302,15 +302,12 @@ module.exports = (params, user, app) =>
 			// When mentioned user not found
 			if (mentionee == null) return;
 
-			// Add mention
-			mentions.push(mentionee._id);
-
-			// Ignore myself mention
-			if (mentionee._id.equals(user._id)) return;
-
 			// 既に言及されたユーザーに対する返信や引用repostの場合も無視
 			if (replyTo && replyTo.user_id.equals(mentionee._id)) return;
 			if (repost && repost.user_id.equals(mentionee._id)) return;
+
+			// Add mention
+			addMention(mentionee._id, 'mention');
 
 			// Create notification
 			notify(mentionee._id, user._id, 'mention', {
@@ -319,16 +316,19 @@ module.exports = (params, user, app) =>
 
 			return;
 		}));
+
+		// Register to search database
+		es.index({
+			index: 'misskey',
+			type: 'post',
+			id: post._id.toString(),
+			body: {
+				text: post.text
+			}
+		});
 	}
 
 	if (mentions.length == 0) return;
-
-	// Drop dupulicates
-	// ObjectID同士では比較できないのでtoStringする
-	mentions = mentions
-		.filter((v, i, s) =>
-			s.map(x => x.toString())
-			.indexOf(v.toString()) == i);
 
 	// Append mentions data
 	Post.updateOne({ _id: post._id }, {

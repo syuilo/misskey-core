@@ -9,6 +9,9 @@ export default (
 	type: string,
 	content: any
 ) => new Promise<any>(async (resolve, reject) => {
+	if (notifiee.equals(notifier)) {
+		resolve();
+	}
 
 	// Create notification
 	const res = await Notification.insert(Object.assign({
