@@ -73,5 +73,5 @@ module.exports = (params, user) =>
 
 	// Serialize
 	res(await Promise.all(likes.map(async like =>
-		await serialize(like.user, user))));
+		await serialize(like.user_id, user))));
 });
