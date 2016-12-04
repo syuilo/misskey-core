@@ -19,8 +19,8 @@ import serialize from '../../serializers/app';
 module.exports = (params, user, _, isWeb) =>
 	new Promise(async (res, rej) =>
 {
-	// Get 'id' parameter
-	let appId = params.id;
+	// Get 'app_id' parameter
+	let appId = params.app_id;
 	if (appId == null || appId == '') {
 		appId = null;
 	}
@@ -32,7 +32,7 @@ module.exports = (params, user, _, isWeb) =>
 	}
 
 	if (appId === null && nameId === null) {
-		return rej('id or name_id is required');
+		return rej('app_id or name_id is required');
 	}
 
 	// Lookup app
