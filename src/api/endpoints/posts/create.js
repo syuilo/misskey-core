@@ -258,7 +258,7 @@ module.exports = (params, user, app) =>
 			}
 		});
 
-		if (existRepost) {
+		if (!existRepost) {
 			// Update repostee status
 			Post.updateOne({ _id: repost._id }, {
 				$inc: {
