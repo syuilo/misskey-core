@@ -10,7 +10,7 @@ export default (
 	content: any
 ) => new Promise<any>(async (resolve, reject) => {
 	if (notifiee.equals(notifier)) {
-		resolve();
+		return resolve();
 	}
 
 	// Create notification
