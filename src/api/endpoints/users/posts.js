@@ -24,6 +24,14 @@ module.exports = (params, me) =>
 		return rej('user_id is required');
 	}
 
+	// Get 'with_replies' parameter
+	let withReplies = params.with_replies;
+	if (withReplies !== undefined && withReplies !== null && withReplies === 'true') {
+		withReplies = true;
+	} else {
+		withReplies = false;
+	}
+
 	// Get 'with_media' parameter
 	let withMedia = params.with_media;
 	if (withMedia !== undefined && withMedia !== null && withMedia === 'true') {
@@ -78,6 +86,10 @@ module.exports = (params, me) =>
 		query._id = {
 			$lt: new mongo.ObjectID(max)
 		};
+	}
+
+	if (!withReplies) {
+		query.reply_to_id = null;
 	}
 
 	if (withMedia) {
