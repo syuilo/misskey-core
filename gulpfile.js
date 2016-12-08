@@ -45,7 +45,7 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 	const config = require('./built/config').default;
 
 	cd(isProduction ? './src/web' : './../misskey-web/');
-	exec('npm install && ./node_modules/.bin/bower install --allow-root');
+	exec('npm install');
 	exec(`npm run build -- --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
 	cd(__dirname);
 
