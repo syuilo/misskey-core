@@ -110,7 +110,7 @@ module.exports = (params, user) =>
 	if (markAsRead) {
 		const ids = messages
 			.filter(m => m.is_read == false)
-			.filter(m => m.recipient.equals(user._id))
+			.filter(m => m.recipient_id.equals(user._id))
 			.map(m => m._id);
 
 		// Update documents
