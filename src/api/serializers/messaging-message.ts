@@ -48,16 +48,16 @@ export default (
 	delete _message._id;
 
 	// Populate user
-	_message.user = await serializeUser(_message.user, me);
+	_message.user = await serializeUser(_message.user_id, me);
 
 	if (_message.file) {
 		// Populate file
-		_message.file = await serializeDriveFile(_message.file);
+		_message.file = await serializeDriveFile(_message.file_id);
 	}
 
 	if (_message.recipient && opts.populateRecipient) {
 		// Populate recipient
-		_message.recipient = await serializeUser(_message.recipient, me);
+		_message.recipient = await serializeUser(_message.recipient_id, me);
 	}
 
 	resolve(_message);
