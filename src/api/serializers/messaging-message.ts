@@ -6,7 +6,6 @@
 import * as mongo from 'mongodb';
 import Message from '../models/messaging-message';
 import serializeUser from './user';
-import serializeGroup from './messaging-group';
 import serializeDriveFile from './drive-file';
 const deepcopy = require('deepcopy');
 
@@ -22,11 +21,11 @@ export default (
 	message: any,
 	me: any,
 	options?: {
-		populateRecipientAndGroup: boolean
+		populateRecipient: boolean
 	}
 ) => new Promise<Object>(async (resolve, reject) => {
 	const opts = options || {
-		populateRecipientAndGroup: true
+		populateRecipient: true
 	};
 
 	let _message: any;
@@ -56,14 +55,9 @@ export default (
 		_message.file = await serializeDriveFile(_message.file);
 	}
 
-	if (_message.recipient && opts.populateRecipientAndGroup) {
+	if (_message.recipient && opts.populateRecipient) {
 		// Populate recipient
 		_message.recipient = await serializeUser(_message.recipient, me);
-	}
-
-	if (_message.group && opts.populateRecipientAndGroup) {
-		// Populate group
-		_message.group = await serializeGroup(_message.group, me);
 	}
 
 	resolve(_message);

@@ -5,7 +5,6 @@
  */
 import * as mongo from 'mongodb';
 import Message from '../../../models/messaging-message';
-import Group from '../../../models/messaging-group';
 import History from '../../../models/messaging-history';
 import User from '../../../models/user';
 import DriveFile from '../../../models/drive-file';
@@ -40,38 +39,7 @@ module.exports = (params, user) =>
 			return rej('user not found');
 		}
 	} else {
-		recipient = null;
-	}
-
-	// Get 'group' parameter
-	let group = params.group;
-	if (group !== undefined && group !== null) {
-		group = await Group.findOne({
-			_id: new mongo.ObjectID(group)
-		});
-
-		if (group === null) {
-			return rej('group not found');
-		}
-
-		// このグループのメンバーじゃなかったらreject
-		if (group.members
-				.map(member => member.toString())
-				.indexOf(user._id.toString()) === -1) {
-			return rej('access denied');
-		}
-	} else {
-		group = null;
-	}
-
-	// ユーザーの指定がないかつグループの指定もなかったらエラー
-	if (recipient === null && group === null) {
-		return rej('user or group is required');
-	}
-
-	// ユーザーとグループ両方指定してたらエラー
-	if (recipient !== null && group !== null) {
-		return rej('need translate');
+		return rej('user_id is required');
 	}
 
 	// Get 'text' parameter
@@ -113,12 +81,10 @@ module.exports = (params, user) =>
 	const inserted = await Message.insert({
 		created_at: new Date(),
 		file_id: file ? file._id : undefined,
-		recipient_id: recipient ? recipient._id : undefined,
-		group_id: group ? group._id : undefined,
+		recipient_id: recipient._id,
 		text: text ? text : undefined,
 		user_id: user._id,
-		is_read: recipient ? false : undefined,
-		read: group ? false : undefined
+		is_read: false
 	});
 
 	const message = inserted.ops[0];
@@ -130,36 +96,18 @@ module.exports = (params, user) =>
 	res(messageObj);
 
 	// 自分のストリーム
-	publishMessagingStream(message.user, message.recipient, 'message', messageObj);
-	publishUserStream(message.user, 'messaging_message', messageObj);
+	publishMessagingStream(message.user_id, message.recipient, 'message', messageObj);
+	publishUserStream(message.user_id, 'messaging_message', messageObj);
 
-	if (message.recipient) {
-		// 相手のストリーム
-		publishMessagingStream(message.recipient, message.user, 'message', messageObj);
-		publishUserStream(message.recipient, 'messaging_message', messageObj);
-	} else if (message.group) {
-		// グループのストリーム
-		publishMessagingStream(message.recipient, message.user, 'message', messageObj);
-
-		const group = await Group.findOne({
-			_id: message.group
-		});
-
-		// メンバーのストリーム
-		group.members.forEach(member => {
-			publishUserStream(member, 'messaging_message', messageObj);
-		});
-	}
+	// 相手のストリーム
+	publishMessagingStream(message.recipient_id, message.user_id, 'message', messageObj);
+	publishUserStream(message.recipient_id, 'messaging_message', messageObj);
 
 	// 5秒経っても(今回作成した)メッセージが既読にならなかったら「未読のメッセージがありますよ」イベントを発行する
 	setTimeout(async () => {
-		if (message.recipient) {
-			const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
-			if (!freshMessage.is_read) {
-				publishUserStream(message.recipient, 'unread_messaging_message', messageObj);
-			}
-		} else if (message.group) {
-			// TODO
+		const freshMessage = await Message.findOne({ _id: message._id }, { is_read: true });
+		if (!freshMessage.is_read) {
+			publishUserStream(message.recipient_id, 'unread_messaging_message', messageObj);
 		}
 	}, 5000);
 
@@ -177,49 +125,29 @@ module.exports = (params, user) =>
 		});
 	}
 
-	// 履歴を作成しておく(対人)
-	if (recipient) {
-		// 自分
-		History.updateOne({
-			user_id: user._id,
-			partner: recipient._id
-		}, {
-			updated_at: new Date(),
-			user_id: user._id,
-			partner: recipient._id,
-			message: message._id
-		}, {
-			upsert: true
-		});
+	// 履歴作成(自分)
+	History.updateOne({
+		user_id: user._id,
+		partner: recipient._id
+	}, {
+		updated_at: new Date(),
+		user_id: user._id,
+		partner: recipient._id,
+		message: message._id
+	}, {
+		upsert: true
+	});
 
-		// 相手
-		History.updateOne({
-			user_id: recipient._id,
-			partner: user._id
-		}, {
-			updated_at: new Date(),
-			user_id: recipient._id,
-			partner: user._id,
-			message: message._id
-		}, {
-			upsert: true
-		});
-	}
-
-	// 履歴を作成しておく(グループ)
-	if (group) {
-		group.members.forEach(member => {
-			History.updateOne({
-				user_id: member,
-				group_id: group._id
-			}, {
-				updated_at: new Date(),
-				user_id: member._id,
-				group_id: group._id,
-				message: message._id
-			}, {
-				upsert: true
-			});
-		});
-	}
+	// 履歴作成(相手)
+	History.updateOne({
+		user_id: recipient._id,
+		partner: user._id
+	}, {
+		updated_at: new Date(),
+		user_id: recipient._id,
+		partner: user._id,
+		message: message._id
+	}, {
+		upsert: true
+	});
 });

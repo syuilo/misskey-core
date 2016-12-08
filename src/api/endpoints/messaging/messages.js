@@ -5,7 +5,6 @@
  */
 import * as mongo from 'mongodb';
 import Message from '../../models/messaging-message';
-import Group from '../../models/messaging-group';
 import User from '../../models/user';
 import serialize from '../../serializers/messaging-message';
 import publishUserStream from '../../event';
@@ -32,28 +31,7 @@ module.exports = (params, user) =>
 			return rej('user not found');
 		}
 	} else {
-		recipient = null;
-	}
-
-	// Get 'group' parameter
-	let group = params.group;
-	if (group !== undefined && group !== null) {
-		group = await Group.findOne({
-			_id: new mongo.ObjectID(group)
-		});
-
-		if (group === null) {
-			return rej('group not found');
-		}
-
-		// このグループのメンバーじゃなかったらreject
-		if (group.members
-				.map(member => member.toString())
-				.indexOf(user._id.toString()) === -1) {
-			return rej('access denied');
-		}
-	} else {
-		group = null;
+		return rej('user_id is required');
 	}
 
 	// Get 'mark_as_read' parameter
@@ -62,16 +40,6 @@ module.exports = (params, user) =>
 		markAsRead = true;
 	} else {
 		markAsRead = markAsRead === 'true';
-	}
-
-	// ユーザーの指定がないかつグループの指定もなかったらエラー
-	if (recipient === null && group === null) {
-		return rej('user or group is required');
-	}
-
-	// ユーザーとグループ両方指定してたらエラー
-	if (recipient !== null && group !== null) {
-		return rej('need translate');
 	}
 
 	// Get 'limit' parameter
@@ -95,27 +63,19 @@ module.exports = (params, user) =>
 		return rej('cannot set since_id and max_id');
 	}
 
-	let query;
+	const query = {
+		$or: [{
+			user_id: user._id,
+			recipient_id: recipient._id
+		}, {
+			user_id: recipient._id,
+			recipient_id: user._id
+		}]
+	};
 
 	const sort = {
 		created_at: -1
 	};
-
-	if (recipient) {
-		query = {
-			$or: [{
-				user_id: user._id,
-				recipient_id: recipient._id
-			}, {
-				user_id: recipient._id,
-				recipient_id: user._id
-			}]
-		};
-	} else if (group) {
-		query = {
-			group_id: group._id
-		};
-	}
 
 	if (since !== null) {
 		sort.created_at = 1;
@@ -138,7 +98,9 @@ module.exports = (params, user) =>
 
 	// Serialize
 	res(await Promise.all(messages.map(async message =>
-		await serialize(message))));
+		await serialize(message, user, {
+			populateRecipient: false
+		}))));
 
 	if (messages.length === 0) {
 		return;
@@ -146,36 +108,32 @@ module.exports = (params, user) =>
 
 	// Mark as read all
 	if (markAsRead) {
-		if (recipient) {
-			const ids = messages
-				.filter(m => m.is_read == false)
-				.filter(m => m.recipient.equals(user._id))
-				.map(m => m._id);
+		const ids = messages
+			.filter(m => m.is_read == false)
+			.filter(m => m.recipient.equals(user._id))
+			.map(m => m._id);
 
-			// Update documents
-			await Message.update({
-				_id: { $in: ids }
-			}, {
-				$set: { is_read: true }
-			}, {
-				multi: true
+		// Update documents
+		await Message.update({
+			_id: { $in: ids }
+		}, {
+			$set: { is_read: true }
+		}, {
+			multi: true
+		});
+
+		// Publish event
+		publishMessagingStream(recipient._id, user._id, 'read', ids.map(id => id.toString()));
+
+		const count = await Message
+			.count({
+				recipient_id: user._id,
+				is_read: false
 			});
 
-			// Publish event
-			publishMessagingStream(recipient._id, user._id, 'read', ids.map(id => id.toString()));
-
-			const count = await Message
-				.count({
-					recipient_id: user._id,
-					is_read: false
-				});
-
-			if (count == 0) {
-				// 全ての(いままで未読だった)メッセージを(これで)読みましたよというイベントを発行
-				publishUserStream(user._id, 'read_all_messaging_messages');
-			}
-		} else if (group) {
-			// TODO
+		if (count == 0) {
+			// 全ての(いままで未読だった)メッセージを(これで)読みましたよというイベントを発行
+			publishUserStream(user._id, 'read_all_messaging_messages');
 		}
 	}
 });

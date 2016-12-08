@@ -43,6 +43,6 @@ module.exports = (params, user) =>
 		.toArray();
 
 	// Serialize
-	res(await Promise.all(history.map(async i =>
-		await serialize(i.message))));
+	res(await Promise.all(history.map(async h =>
+		await serialize(h.message))));
 });
