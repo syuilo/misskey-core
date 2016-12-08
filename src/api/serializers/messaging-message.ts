@@ -55,7 +55,7 @@ export default (
 		_message.file = await serializeDriveFile(_message.file_id);
 	}
 
-	if (_message.recipient && opts.populateRecipient) {
+	if (opts.populateRecipient) {
 		// Populate recipient
 		_message.recipient = await serializeUser(_message.recipient_id, me);
 	}
