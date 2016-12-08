@@ -44,5 +44,5 @@ module.exports = (params, user) =>
 
 	// Serialize
 	res(await Promise.all(history.map(async h =>
-		await serialize(h.message))));
+		await serialize(h.message, user))));
 });
