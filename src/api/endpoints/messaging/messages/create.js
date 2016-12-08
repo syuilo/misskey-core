@@ -96,7 +96,7 @@ module.exports = (params, user) =>
 	res(messageObj);
 
 	// 自分のストリーム
-	publishMessagingStream(message.user_id, message.recipient, 'message', messageObj);
+	publishMessagingStream(message.user_id, message.recipient_id, 'message', messageObj);
 	publishUserStream(message.user_id, 'messaging_message', messageObj);
 
 	// 相手のストリーム
