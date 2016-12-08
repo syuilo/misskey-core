@@ -12,7 +12,7 @@ import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream } from '../../../event';
-import config from '../../../config';
+import config from '../../../../config';
 
 /**
  * 最大文字数
