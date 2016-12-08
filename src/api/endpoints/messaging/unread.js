@@ -21,8 +21,6 @@ module.exports = (params, user) =>
 			is_read: false
 		});
 
-	// TODO: Support group
-
 	res({
 		count: count
 	});
