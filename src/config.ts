@@ -63,6 +63,7 @@ export interface IConfig {
 		pass: string;
 	};
 	elasticsearch: {
+		enable: boolean;
 		host: string;
 		port: number;
 		pass: string;

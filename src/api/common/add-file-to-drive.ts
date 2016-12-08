@@ -7,7 +7,7 @@ import DriveFile from '../models/drive-file';
 import DriveFolder from '../models/drive-folder';
 import serialize from '../serializers/drive-file';
 import event from '../event';
-import es from '../../db/elasticsearch';
+import config from '../../config';
 
 /**
  * Add file to drive
@@ -135,13 +135,16 @@ export default (
 	event(user._id, 'drive_file_created', fileObj);
 
 	// Register to search database
-	es.index({
-		index: 'misskey',
-		type: 'drive_file',
-		id: file._id.toString(),
-		body: {
-			name: file.name,
-			user_id: user._id.toString()
-		}
-	});
+	if (config.elasticsearch.enable) {
+		const es = require('../../db/elasticsearch');
+		es.index({
+			index: 'misskey',
+			type: 'drive_file',
+			id: file._id.toString(),
+			body: {
+				name: file.name,
+				user_id: user._id.toString()
+			}
+		});
+	}
 });

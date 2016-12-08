@@ -12,7 +12,7 @@ import DriveFile from '../../../models/drive-file';
 import serialize from '../../../serializers/messaging-message';
 import publishUserStream from '../../../event';
 import { publishMessagingStream } from '../../../event';
-import es from '../../../db/elasticsearch';
+import config from '../../../config';
 
 /**
  * 最大文字数
@@ -164,7 +164,9 @@ module.exports = (params, user) =>
 	}, 5000);
 
 	// Register to search database
-	if (message.text) {
+	if (message.text && config.elasticsearch.enable) {
+		const es = require('../../../db/elasticsearch');
+
 		es.index({
 			index: 'misskey',
 			type: 'messaging_message',

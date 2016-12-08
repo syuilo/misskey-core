@@ -13,7 +13,7 @@ import serialize from '../../serializers/post';
 import createFile from '../../common/add-file-to-drive';
 import notify from '../../common/notify';
 import event from '../../event';
-import es from '../../../db/elasticsearch';
+import config from '../../../config';
 
 /**
  * 最大文字数
@@ -316,8 +316,12 @@ module.exports = (params, user, app) =>
 
 			return;
 		}));
+	}
 
-		// Register to search database
+	// Register to search database
+	if (text && config.elasticsearch.enable) {
+		const es = require('../../../db/elasticsearch');
+
 		es.index({
 			index: 'misskey',
 			type: 'post',
@@ -328,12 +332,12 @@ module.exports = (params, user, app) =>
 		});
 	}
 
-	if (mentions.length == 0) return;
-
 	// Append mentions data
-	Post.updateOne({ _id: post._id }, {
-		$set: {
-			mentions: mentions
-		}
-	});
+	if (mentions.length > 0) {
+		Post.updateOne({ _id: post._id }, {
+			$set: {
+				mentions: mentions
+			}
+		});
+	}
 });

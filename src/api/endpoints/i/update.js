@@ -7,7 +7,7 @@ import * as mongo from 'mongodb';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
 import event from '../../event';
-import es from '../../../db/elasticsearch';
+import config from '../../../config';
 
 /**
  * Update myself
@@ -80,13 +80,17 @@ module.exports = async (params, user, _, isWeb) =>
 	event(user._id, 'i_updated', iObj);
 
 	// Update search index
-	es.index({
-		index: 'misskey',
-		type: 'user',
-		id: user._id.toString(),
-		body: {
-			name: user.name,
-			bio: user.bio
-		}
-	});
+	if (config.elasticsearch.enable) {
+		const es = require('../../../db/elasticsearch');
+
+		es.index({
+			index: 'misskey',
+			type: 'user',
+			id: user._id.toString(),
+			body: {
+				name: user.name,
+				bio: user.bio
+			}
+		});
+	}
 });

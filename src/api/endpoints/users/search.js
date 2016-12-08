@@ -6,9 +6,8 @@
 import * as mongo from 'mongodb';
 import User from '../../models/user';
 import serialize from '../../serializers/user';
-import es from '../../db/elasticsearch';
-
-const size = 10;
+import config from '../../config';
+const escapeRegexp = require('escape-regexp');
 
 /**
  * Search a user
@@ -26,22 +25,63 @@ module.exports = (params, me) =>
 		return rej('query is required');
 	}
 
-	// Get 'page' parameter
-	let page = params.page;
-	if (page === undefined) {
-		page = 1;
-	} else if (page === 0) {
-		page = 1;
+	// Get 'offset' parameter
+	let offset = params.offset;
+	if (offset !== undefined && offset !== null) {
+		offset = parseInt(offset, 10);
+	} else {
+		offset = 0;
 	}
 
-	const from = (page - 1) * size;
+	// Get 'max' parameter
+	let max = params.max;
+	if (max !== undefined && max !== null) {
+		max = parseInt(max, 10);
+
+		// From 1 to 30
+		if (!(1 <= max && max <= 30)) {
+			return rej('invalid max range');
+		}
+	} else {
+		max = 10;
+	}
+
+	// If Elasticsearch is available, search by it
+	// If not, search by MongoDB
+	(config.elasticsearch.enable ? byElasticsearch : byNative)
+		(res, rej, me, query, offset, max);
+});
+
+// Search by MongoDB
+async function byNative(res, rej, me, query, offset, max) {
+	const escapedQuery = escapeRegexp(query);
+
+	// Search users
+	const users = await User
+		.find({
+			$or: [{
+				username_lower: new RegExp(escapedQuery.toLowerCase())
+			}, {
+				name: new RegExp(escapedQuery)
+			}]
+		})
+		.toArray();
+
+	// Serialize
+	res(await Promise.all(users.map(async user =>
+		await serialize(user, me, { detail: true }))));
+}
+
+// Search by Elasticsearch
+async function byElasticsearch(res, rej, me, query, offset, max) {
+	const es = require('../../db/elasticsearch');
 
 	es.search({
 		index: 'misskey',
 		type: 'user',
 		body: {
-			size: size,
-			from: from,
+			size: max,
+			from: offset,
 			query: {
 				simple_query_string: {
 					fields: ['username', 'name', 'bio'],
@@ -74,4 +114,4 @@ module.exports = (params, me) =>
 		res(await Promise.all(users.map(async user =>
 			await serialize(user, me, { detail: true }))));
 	});
-});
+}

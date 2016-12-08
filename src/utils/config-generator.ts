@@ -34,19 +34,19 @@ const form = [
 		type: 'input',
 		name: 'https_key',
 		message: 'Path of tls key:',
-		when: (ctx: any) => ctx.https
+		when: ctx => ctx.https
 	},
 	{
 		type: 'input',
 		name: 'https_cert',
 		message: 'Path of tls cert:',
-		when: (ctx: any) => ctx.https
+		when: ctx => ctx.https
 	},
 	{
 		type: 'input',
 		name: 'https_ca',
 		message: 'Path of tls ca:',
-		when: (ctx: any) => ctx.https
+		when: ctx => ctx.https
 	},
 	{
 		type: 'input',
@@ -94,21 +94,30 @@ const form = [
 		message: 'Redis\'s password:'
 	},
 	{
+		type: 'confirm',
+		name: 'elasticsearch',
+		message: 'Use Elasticsearch?',
+		default: false
+	},
+	{
 		type: 'input',
 		name: 'es_host',
 		message: 'Elasticsearch\'s host:',
-		default: 'localhost'
+		default: 'localhost',
+		when: ctx => ctx.elasticsearch
 	},
 	{
 		type: 'input',
 		name: 'es_port',
 		message: 'Elasticsearch\'s port:',
-		default: '9200'
+		default: '9200',
+		when: ctx => ctx.elasticsearch
 	},
 	{
 		type: 'password',
 		name: 'es_pass',
-		message: 'Elasticsearch\'s password:'
+		message: 'Elasticsearch\'s password:',
+		when: ctx => ctx.elasticsearch
 	},
 	{
 		type: 'input',
@@ -150,9 +159,10 @@ export default async () => {
 			pass: as['redis_pass']
 		},
 		elasticsearch: {
-			host: as['es_host'],
-			port: parseInt(as['es_port'], 10),
-			pass: as['es_pass']
+			enable: as['elasticsearch'],
+			host: as['es_host'] || null,
+			port: parseInt(as['es_port'], 10) || null,
+			pass: as['es_pass'] || null
 		},
 		recaptcha: {
 			siteKey: as['recaptcha_site'],

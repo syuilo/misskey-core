@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
 import User from '../models/user';
 import serialize from '../serializers/user';
-import es from '../../db/elasticsearch';
 
 import config from '../../config';
 
@@ -78,13 +77,16 @@ export default (req: express.Request, res: express.Response) => {
 		res.send(await serialize(account));
 
 		// Create search index
-		es.index({
-			index: 'misskey',
-			type: 'user',
-			id: account._id.toString(),
-			body: {
-				username: username
-			}
-		});
+		if (config.elasticsearch.enable) {
+			const es = require('../../db/elasticsearch');
+			es.index({
+				index: 'misskey',
+				type: 'user',
+				id: account._id.toString(),
+				body: {
+					username: username
+				}
+			});
+		}
 	}
 };

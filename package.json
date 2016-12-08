@@ -61,6 +61,7 @@
     "deepcopy": "0.6.3",
     "del": "2.2.2",
     "elasticsearch": "12.1.0",
+    "escape-regexp": "0.0.1",
     "express": "4.14.0",
     "file-type": "3.9.0",
     "git-last-commit": "0.2.0",

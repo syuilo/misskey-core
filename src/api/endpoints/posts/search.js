@@ -6,18 +6,17 @@
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
-import es from '../../db/elasticsearch';
-
-const size = 10;
+import config from '../../config';
+const escapeRegexp = require('escape-regexp');
 
 /**
  * Search a post
  *
  * @param {Object} params
- * @param {Object} user
+ * @param {Object} me
  * @return {Promise<object>}
  */
-module.exports = (params, user) =>
+module.exports = (params, me) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'query' parameter
@@ -26,20 +25,59 @@ module.exports = (params, user) =>
 		return rej('query is required');
 	}
 
-	// Get 'page' parameter
-	let page = params.page;
-	if (page === undefined) {
-		page = 0;
+	// Get 'offset' parameter
+	let offset = params.offset;
+	if (offset !== undefined && offset !== null) {
+		offset = parseInt(offset, 10);
+	} else {
+		offset = 0;
 	}
 
-	const from = page * size;
+	// Get 'max' parameter
+	let max = params.max;
+	if (max !== undefined && max !== null) {
+		max = parseInt(max, 10);
+
+		// From 1 to 30
+		if (!(1 <= max && max <= 30)) {
+			return rej('invalid max range');
+		}
+	} else {
+		max = 10;
+	}
+
+	// If Elasticsearch is available, search by it
+	// If not, search by MongoDB
+	(config.elasticsearch.enable ? byElasticsearch : byNative)
+		(res, rej, me, query, offset, max);
+});
+
+// Search by MongoDB
+async function byNative(res, rej, me, query, offset, max) {
+	const escapedQuery = escapeRegexp(query);
+
+	// Search posts
+	const posts = await Post
+		.find({
+			text: new RegExp(escapedQuery)
+		})
+		.toArray();
+
+	// Serialize
+	res(await Promise.all(posts.map(async post =>
+		await serialize(post, me))));
+}
+
+// Search by Elasticsearch
+async function byElasticsearch(res, rej, me, query, offset, max) {
+	const es = require('../../db/elasticsearch');
 
 	es.search({
 		index: 'misskey',
 		type: 'post',
 		body: {
-			size: size,
-			from: from,
+			size: max,
+			from: offset,
 			query: {
 				simple_query_string: {
 					fields: ['text'],
@@ -90,6 +128,6 @@ module.exports = (params, user) =>
 
 		// Serialize
 		res(await Promise.all(posts.map(async post =>
-			await serialize(post, user))));
+			await serialize(post, me))));
 	});
-});
+}
