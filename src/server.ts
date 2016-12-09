@@ -11,7 +11,6 @@ import * as ms from 'ms';
 // express modules
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 //import * as accesses from 'accesses';
