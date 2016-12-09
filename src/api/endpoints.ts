@@ -81,7 +81,7 @@ export default [
 	{ name: 'posts/show',             shouldBeSignin: false },
 	{ name: 'posts/replies',          shouldBeSignin: false },
 	{ name: 'posts/context',          shouldBeSignin: false },
-	{ name: 'posts/create',           shouldBeSignin: true, limitDuration: hour, limitMax: 120, minInterval: 3 * second, kind: 'post-write' },
+	{ name: 'posts/create',           shouldBeSignin: true, limitDuration: hour, limitMax: 120, minInterval: 1 * second, kind: 'post-write' },
 	{ name: 'posts/reposts',          shouldBeSignin: false },
 	{ name: 'posts/search',           shouldBeSignin: false },
 	{ name: 'posts/timeline',         shouldBeSignin: true, limitDuration: 10 * minute, limitMax: 100 },
