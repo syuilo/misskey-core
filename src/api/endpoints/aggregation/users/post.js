@@ -35,8 +35,8 @@ module.exports = (params) =>
 		.aggregate([
 			{ $match: { user_id: user._id } },
 			{ $project: {
-				repost_id: '$repost',
-				reply_to: '$reply_to',
+				repost_id: '$repost_id',
+				reply_to_id: '$reply_to_id',
 				created_at: { $add: ['$created_at', 9 * 60 * 60 * 1000] } // Convert into JST
 			}},
 			{ $project: {
@@ -47,11 +47,11 @@ module.exports = (params) =>
 				},
 				type: {
 					$cond: {
-						if: { $ne: ['$repost', null] },
+						if: { $ne: ['$repost_id', null] },
 						then: 'repost',
 						else: {
 							$cond: {
-								if: { $ne: ['$reply_to', null] },
+								if: { $ne: ['$reply_to_id', null] },
 								then: 'reply',
 								else: 'post'
 							}
