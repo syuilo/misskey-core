@@ -7,21 +7,21 @@ Misskey Core
 
 A core server of *Misskey*.
 
-Get started
------------
-Misskeyを運用するにはドメインがふたつ必要です。
-
-* ひとつめのドメインはプライマリドメインと呼んでいて、Misskeyの主要なサービスを提供するために利用されます。
-* ふたつめのドメインはセカンダリドメインと呼んでいて、XSSなどの脆弱性を回避するために利用されます。
-
-**セカンダリドメインはプライマリドメインのサブドメインであってはなりません。**
-
 Required
 --------
 * Node.js
 * MongoDB
 * Redis
 * GraphicsMagick
+
+Get started
+-----------
+ドメインをふたつ用意してください。
+
+* ひとつめのドメインはプライマリドメインと呼んでいて、Misskeyの主要なサービスを提供するために利用されます。
+* ふたつめのドメインはセカンダリドメインと呼んでいて、XSSなどの脆弱性を回避するために利用されます。
+
+**セカンダリドメインはプライマリドメインのサブドメインであってはなりません。**
 
 Build
 -----
@@ -36,12 +36,6 @@ Build
 Launch
 ------
 `npm start`
-
-Repositories
-------------
-* **misskey-core** ... :round_pushpin: This repository
-* [misskey-web](https://github.com/syuilo/misskey-web) ... Web client Implementation
-* [misskey-text](https://github.com/syuilo/misskey-text) ... Misskey's text parser
 
 License
 -------
