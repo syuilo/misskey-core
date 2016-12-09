@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import DriveFolder from '../../../models/drive-folder';
+import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-file';
 import event from '../../../event';
 
@@ -33,6 +34,17 @@ module.exports = (params, user) =>
 
 	if (folder === null) {
 		return rej('folder-not-found');
+	}
+
+	// Get 'name' parameter
+	let name = params.name;
+	if (name) {
+		name = name.trim();
+		if (isValidFolderName(name)) {
+			folder.name = name;
+		} else {
+			return rej('invalid folder name');
+		}
 	}
 
 	// Get 'parent_id' parameter
