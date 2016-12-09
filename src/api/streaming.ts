@@ -45,9 +45,14 @@ function authenticate(connection: websocket.connection): Promise<any> {
 		connection.on('message', async (data) => {
 			const msg = JSON.parse(data.utf8Data);
 
-			// Get user data
+			// Fetch user
+			// SELECT _id
 			const user = await User
-				.findOne({ token: msg.i });
+				.findOne({
+					token: msg.i
+				}, {
+					_id: true
+				});
 
 			if (user === null) {
 				connection.close();
