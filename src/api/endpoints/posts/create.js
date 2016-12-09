@@ -203,9 +203,8 @@ module.exports = (params, user, app) =>
 		.toArray();
 
 	// Publish event to followers stream
-	followers.forEach(following => {
-		event(following.follower_id, 'post', postObj);
-	});
+	followers.forEach(following =>
+		event(following.follower_id, 'post', postObj));
 
 	// Increment my posts count
 	User.updateOne({ _id: user._id }, {
