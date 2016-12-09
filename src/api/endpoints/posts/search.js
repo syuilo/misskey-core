@@ -6,7 +6,7 @@
 import * as mongo from 'mongodb';
 import Post from '../../models/post';
 import serialize from '../../serializers/post';
-import config from '../../config';
+import config from '../../../config';
 const escapeRegexp = require('escape-regexp');
 
 /**
