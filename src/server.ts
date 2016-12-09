@@ -5,7 +5,6 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-
 import * as ms from 'ms';
 
 // express modules
@@ -15,10 +14,7 @@ import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
 const vhost = require('vhost');
 const subdomain = require('subdomain');
-
 import web from './utils/serve-web-html';
-import manifest from './utils/manifest';
-import appleTouchIcon from './utils/apple-touch-icon';
 
 import config from './config';
 
@@ -53,8 +49,8 @@ app.use(compression());
  * Static resources
  */
 app.use(favicon(`${__dirname}/../resources/favicon.ico`));
-app.use(manifest);
-app.use(appleTouchIcon);
+app.use(require('./utils/manifest'));
+app.use(require('./utils/apple-touch-icon'));
 app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
 	maxAge: ms('7 days')
 }));
