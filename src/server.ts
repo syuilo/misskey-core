@@ -6,23 +6,22 @@ import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
 
+import * as ms from 'ms';
+
 // express modules
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
-import * as accesses from 'accesses';
+//import * as accesses from 'accesses';
 const vhost = require('vhost');
 const subdomain = require('subdomain');
 
+import web from './utils/serve-web-html';
 import manifest from './utils/manifest';
 import appleTouchIcon from './utils/apple-touch-icon';
 
-// utility module
-import * as ms from 'ms';
-
-// internal modules
 import config from './config';
 
 /**
@@ -31,14 +30,15 @@ import config from './config';
 const app = express();
 app.disable('x-powered-by');
 
-app.use(accesses.express());
+//app.use(accesses.express());
 
+/**
+ * Register subdomains
+ */
 app.use(vhost(`api.${config.host}`, require('./api/server')));
 app.use(vhost(config.secondary_host, require('./service/himasaku/server')));
 app.use(vhost(`file.${config.secondary_host}`, require('./file/server')));
 app.use(vhost(`proxy.${config.secondary_host}`, require('./service/forward-proxy/server')));
-
-app.locals.cache = true;
 
 /**
  * Initialize requests
@@ -54,7 +54,7 @@ app.use((req, res, next) => {
 app.use(compression());
 
 /**
- * Statics
+ * Static resources
  */
 app.use(favicon(`${__dirname}/../resources/favicon.ico`));
 app.use(manifest);
@@ -63,56 +63,33 @@ app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
 	maxAge: ms('7 days')
 }));
 
-/**
- * Basic parsers
- */
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 /**
  * Subdomain
  */
 app.use(subdomain({
 	base: config.host,
-	prefix: '__'
+	prefix: '@'
 }));
 
 /**
  * Routing
  */
-
-app.get('/api:url', require('./service/url-preview').default);
-app.post('/api:rss-proxy', require('./service/rss-proxy').default);
-
-// authorize form
-app.get('/__/auth/*', (req, res) => {
-	res.sendFile(`${__dirname}/web/auth/view.html`, {
-		maxAge: ms('7 days')
-	});
-});
-
-// developer center
-app.get('/__/dev/*', (req, res) => {
-	res.sendFile(`${__dirname}/web/dev/view.html`, {
-		maxAge: ms('7 days')
-	});
-});
-
-// client
-app.get('*', (req, res) => {
-	res.sendFile(`${__dirname}/web/client/view.html`, {
-		maxAge: ms('7 days')
-	});
-});
+app.get('/api:url',  require('./service/url-preview'));
+app.post('/api:rss', require('./service/rss-proxy'));
+app.get('/@/auth/*', web('auth')); // authorize form
+app.get('/@/dev/*',  web('dev')); // developer center
+app.get('*',         web('client')); // client
 
 /**
  * Create server
  */
 const server = config.https.enable ?
 	https.createServer({
-		key: fs.readFileSync(config.https.key),
+		key:  fs.readFileSync(config.https.key),
 		cert: fs.readFileSync(config.https.cert),
-		ca: fs.readFileSync(config.https.ca)
+		ca:   fs.readFileSync(config.https.ca)
 	}, app) :
 	http.createServer(app);
 

@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as request from 'request';
 const xml2json = require('xml2json');
 
-export default function (req: express.Request, res: express.Response): void {
+module.exports = (req: express.Request, res: express.Response) => {
 	const url: string = req.body.url;
 
 	request(url, (err, response, xml) => {
@@ -13,4 +13,4 @@ export default function (req: express.Request, res: express.Response): void {
 
 		res.send(xml2json.toJson(xml));
 	});
-}
+};
