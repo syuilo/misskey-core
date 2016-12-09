@@ -13,7 +13,6 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as favicon from 'serve-favicon';
 import * as compression from 'compression';
-//import * as accesses from 'accesses';
 const vhost = require('vhost');
 const subdomain = require('subdomain');
 
@@ -28,8 +27,6 @@ import config from './config';
  */
 const app = express();
 app.disable('x-powered-by');
-
-//app.use(accesses.express());
 
 /**
  * Register subdomains
