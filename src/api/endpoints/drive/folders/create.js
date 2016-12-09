@@ -5,6 +5,7 @@
  */
 import * as mongo from 'mongodb';
 import DriveFolder from '../../../models/drive-folder';
+import { isValidFolderName } from '../../../models/drive-folder';
 import serialize from '../../../serializers/drive-folder';
 import event from '../../../event';
 
@@ -24,9 +25,7 @@ module.exports = (params, user) =>
 		name = name.trim();
 		if (name.length === 0) {
 			name = null;
-		} else if (name.length > 100) {
-			return rej('too long name');
-		} else if (name.indexOf('\\') !== -1 || name.indexOf('/') !== -1 || name.indexOf('..') !== -1) {
+		} else if (!isValidFolderName(name)) {
 			return rej('invalid name');
 		}
 	} else {
