@@ -21,7 +21,6 @@ Required
 * Node.js
 * MongoDB
 * Redis
-* Elasticsearch
 * GraphicsMagick
 
 Build
