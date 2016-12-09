@@ -43,7 +43,7 @@ module.exports = (params) =>
 					day: { $dayOfMonth: '$created_at' }
 				}
 			}},
-			{ $group_id: {
+			{ $group: {
 				_id: '$date',
 				count: { $sum: 1 }
 			}}

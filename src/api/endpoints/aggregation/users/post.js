@@ -59,11 +59,11 @@ module.exports = (params) =>
 					}
 				}}
 			},
-			{ $group_id: { _id: {
+			{ $group: { _id: {
 				date: '$date',
 				type: '$type'
 			}, count: { $sum: 1 } } },
-			{ $group_id: {
+			{ $group: {
 				_id: '$_id.date',
 				data: { $addToSet: {
 					type: '$_id.type',
