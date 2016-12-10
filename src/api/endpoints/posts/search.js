@@ -60,6 +60,10 @@ async function byNative(res, rej, me, query, offset, max) {
 	const posts = await Post
 		.find({
 			text: new RegExp(escapedQuery)
+		}, {
+			sort: {
+				_id: -1
+			}
 		})
 		.toArray();
 
