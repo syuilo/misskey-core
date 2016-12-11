@@ -31,7 +31,8 @@ Build
 4. `npm run build`
 5. `npm start`
 6. 表示されるウィザードに従って設定ファイルを生成してください。
-7. `npm run buildall`
+7. `git clone git://github.com/syuilo/misskey-web.git`
+8. `npm run buildall`
 
 Launch
 ------
