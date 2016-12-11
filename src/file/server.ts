@@ -29,7 +29,7 @@ app.use('/resources', express.static(__dirname + '/resources', {
 }));
 
 app.get('/', (req, res) => {
-	res.render('index');
+	res.send('yee haw');
 });
 
 app.get('/default-avatar.jpg', (req, res) => {
