@@ -44,9 +44,9 @@ app.use('/_/resources', express.static(`${__dirname}/client/resources`, {
 /**
  * Common API
  */
-app.get('/api:meta', require('./meta'));
-app.get('/api:url',  require('./service/url-preview'));
-app.post('/api:rss', require('./service/rss-proxy'));
+app.get(/\/api:meta/, require('./meta'));
+app.get(/\/api:url/,  require('./service/url-preview'));
+app.post(/\/api:rss/, require('./service/rss-proxy'));
 
 /**
  * Subdomain
