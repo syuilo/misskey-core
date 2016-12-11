@@ -1,7 +1,7 @@
 import * as url from 'url';
 import * as express from 'express';
 import * as request from 'request';
-import config from '../../config';
+import config from '../../../config';
 
 module.exports = (req: express.Request, res: express.Response) => {
 	const _url = req.params.url;

@@ -5,16 +5,9 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as https from 'https';
-import * as ms from 'ms';
 
-// express modules
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as favicon from 'serve-favicon';
-import * as compression from 'compression';
 const vhost = require('vhost');
-const subdomain = require('subdomain');
-import web from './utils/serve-web-html';
 
 import config from './config';
 
@@ -25,54 +18,12 @@ const app = express();
 app.disable('x-powered-by');
 
 /**
- * Register subdomains
+ * Register modules
  */
 app.use(vhost(`api.${config.host}`, require('./api/server')));
 app.use(vhost(config.secondary_host, require('./service/himasaku/server')));
 app.use(vhost(`file.${config.secondary_host}`, require('./file/server')));
-app.use(vhost(`proxy.${config.secondary_host}`, require('./service/proxy/server')));
-
-/**
- * Initialize requests
- */
-app.use((req, res, next) => {
-	res.header('X-Frame-Options', 'DENY');
-	next();
-});
-
-/**
- * Compressions
- */
-app.use(compression());
-
-/**
- * Static resources
- */
-app.use(favicon(`${__dirname}/../resources/favicon.ico`));
-app.use(require('./utils/manifest'));
-app.use(require('./utils/apple-touch-icon'));
-app.use('/_/resources', express.static(`${__dirname}/web/resources`, {
-	maxAge: ms('7 days')
-}));
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
-/**
- * Subdomain
- */
-app.use(subdomain({
-	base: config.host,
-	prefix: '@'
-}));
-
-/**
- * Routing
- */
-app.get('/api:url',  require('./service/url-preview'));
-app.post('/api:rss', require('./service/rss-proxy'));
-app.get('/@/auth/*', web('auth')); // authorize form
-app.get('/@/dev/*',  web('dev')); // developer center
-app.get('*',         web('client')); // client
+app.use(require('./web/server'));
 
 /**
  * Create server

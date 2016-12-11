@@ -5,6 +5,7 @@ const gulp = require('gulp');
 const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
+const git = require('git-last-commit');
 
 const env = process.env.NODE_ENV;
 const isProduction = env === 'production';
@@ -41,16 +42,19 @@ gulp.task('build:ts', () =>
 		.pipe(gulp.dest('./built/'))
 );
 
-gulp.task('build:client', ['build:ts', 'build:js'], () => {
+gulp.task('build:client', ['build:ts', 'build:js'], cb => {
 	const config = require('./built/config').default;
 
-	cd(isProduction ? './src/web' : './../misskey-web/');
-	exec('npm install');
-	exec(`npm run build -- --url=${config.url} --recaptcha-siteKey=${config.recaptcha.siteKey}`);
-	cd(__dirname);
+	// Get commit info
+	git.getLastCommit((err, commit) => {
+		cd(isProduction ? './node_modules/misskey-web' : './../misskey-web/');
+		exec(`npm run build -- --url=${config.url} --recaptcha-sitekey=${config.recaptcha.siteKey} --version=${commit.hash}`);
+		cd(__dirname);
 
-	return gulp.src(isProduction ? './src/web/built/**/*' : './../misskey-web/built/**/*')
-		.pipe(gulp.dest('./built/web/'));
+		gulp.src(isProduction ? './node_modules/misskey-web/built/**/*' : './../misskey-web/built/**/*')
+			.pipe(gulp.dest('./built/web/client/'))
+			.on('end', cb);
+	});
 });
 
 gulp.task('build:copy', () => {
