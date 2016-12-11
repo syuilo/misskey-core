@@ -7,5 +7,7 @@ module.exports = async (req: express.Request, res: express.Response) => {
 		res.send({
 			commit: commit
 		});
+	}, {
+		dst: `${__dirname}/../../misskey-web`
 	});
 };
