@@ -184,7 +184,9 @@ module.exports = (params, user, app) =>
 		mentions.push(mentionee);
 
 		// Publish event
-		event(mentionee, type, postObj);
+		if (!user._id.equals(mentionee)) {
+			event(mentionee, type, postObj);
+		}
 	}
 
 	// Publish event to myself's stream
@@ -245,7 +247,9 @@ module.exports = (params, user, app) =>
 			addMention(repost.user_id, 'quote');
 		} else {
 			// Publish event
-			event(repost.user_id, 'repost', postObj);
+			if (!user._id.equals(repost.user_id)) {
+				event(repost.user_id, 'repost', postObj);
+			}
 		}
 
 		// 今までで同じ投稿をRepostしているか
