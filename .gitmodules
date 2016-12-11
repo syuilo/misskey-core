@@ -1,3 +1,0 @@
-[submodule "src/web"]
-	path = src/web
-	url = git://github.com/syuilo/misskey-web.git
