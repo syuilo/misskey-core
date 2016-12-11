@@ -47,11 +47,12 @@ gulp.task('build:client', ['build:ts', 'build:js'], cb => {
 
 	// Get commit info
 	git.getLastCommit((err, commit) => {
-		cd(isProduction ? './node_modules/misskey-web' : './../misskey-web/');
+		cd(isProduction ? './misskey-web/' : './../misskey-web/');
+		exec('npm install');
 		exec(`npm run build -- --url=${config.url} --recaptcha-sitekey=${config.recaptcha.siteKey} --version=${commit.hash}`);
 		cd(__dirname);
 
-		gulp.src(isProduction ? './node_modules/misskey-web/built/**/*' : './../misskey-web/built/**/*')
+		gulp.src(isProduction ? './misskey-web/built/**/*' : './../misskey-web/built/**/*')
 			.pipe(gulp.dest('./built/web/client/'))
 			.on('end', cb);
 	});

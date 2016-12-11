@@ -69,7 +69,6 @@
     "log-cool": "1.1.0",
     "mime-types": "2.1.13",
     "misskey-text": "1.0.5",
-    "misskey-web": "git://github.com/syuilo/misskey-web.git",
     "mongodb": "2.2.15",
     "ms": "0.7.2",
     "multer": "1.2.0",
