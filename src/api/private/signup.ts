@@ -41,6 +41,18 @@ export default (req: express.Request, res: express.Response) => {
 			return res.sendStatus(400);
 		}
 
+		const usernameExist = await User
+			.count({
+				username_lower: username.toLowerCase()
+			}, {
+				limit: 1
+			});
+
+		// Check username already used
+		if (usernameExist !== 0) {
+			return res.sendStatus(400);
+		}
+
 		// Generate hash of password
 		const salt = bcrypt.genSaltSync(14);
 		const hash = bcrypt.hashSync(password, salt);
