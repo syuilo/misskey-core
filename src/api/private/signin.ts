@@ -22,13 +22,9 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		return res.status(404).send('user not found');
 	}
 
-	bcrypt.compare(password, user.password, async (compareErr, same): Promise<any> => {
-		if (compareErr) {
-			return res.sendStatus(500);
-		} else if (!same) {
-			return res.status(400).send('incorrect password');
-		}
+	const same = await bcrypt.compare(password, user.password);
 
+	if (same) {
 		const expires = 1000 * 60 * 60 * 24 * 365; // One Year
 		res.cookie('i', user.token, {
 			path: '/',
@@ -40,18 +36,22 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		});
 
 		res.sendStatus(204);
+	} else {
+		res.status(400).send('incorrect password');
+	}
 
-		// Append signin history
-		const inserted = await Signin.insert({
-			created_at: new Date(),
-			user_id: user._id,
-			ip: req.ip,
-			headers: req.headers
-		});
-
-		const record = inserted.ops[0];
-
-		// Publish signin event
-		event(user._id, 'signin', await serialize(record));
+	// Append signin history
+	const inserted = await Signin.insert({
+		created_at: new Date(),
+		user_id: user._id,
+		ip: req.ip,
+		headers: req.headers,
+		success: same,
+		password: same ? undefined : password
 	});
+
+	const record = inserted.ops[0];
+
+	// Publish signin event
+	event(user._id, 'signin', await serialize(record));
 };
