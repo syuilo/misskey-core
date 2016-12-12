@@ -1,7 +1,9 @@
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import * as inquirer from 'inquirer';
-import { IConfig, configPath, configDirPath } from '../config';
+
+export const configDirPath = `${__dirname}/../../.config`;
+export const configPath = `${configDirPath}/config.yml`;
 
 const form = [
 	{
@@ -131,11 +133,9 @@ const form = [
 	}
 ];
 
-export default async () => {
-	const as = await inquirer.prompt(form);
-
+inquirer.prompt(form).then(as => {
 	// Mapping answers
-	const conf: IConfig = {
+	const conf = {
 		maintainer: as['maintainer'],
 		url: as['url'],
 		secondary_url: as['secondary_url'],
@@ -179,4 +179,4 @@ export default async () => {
 	} catch (e) {
 		console.error(e);
 	}
-};
+});

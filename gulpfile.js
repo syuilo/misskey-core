@@ -15,11 +15,7 @@ const project = ts.createProject('tsconfig.json');
 gulp.task('build', [
 	'build:js',
 	'build:ts',
-	'build:copy'
-]);
-
-gulp.task('buildall', [
-	'build',
+	'build:copy',
 	'build:client'
 ]);
 
@@ -59,7 +55,7 @@ gulp.task('build:copy', () => {
 	]).pipe(gulp.dest('./built/'));
 });
 
-gulp.task('test', ['lint', 'buildall']);
+gulp.task('test', ['lint', 'build']);
 
 gulp.task('lint', () =>
 	gulp.src('./src/**/*.ts')

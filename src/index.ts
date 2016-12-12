@@ -17,7 +17,6 @@ const git = require('git-last-commit');
 const portUsed = require('tcp-port-used');
 import yesno from './utils/cli/yesno';
 import ProgressBar from './utils/cli/progressbar';
-import configGenerator from './utils/config-generator';
 import initdb from './db/mongodb';
 import checkDependencies from './utils/check-dependencies';
 
@@ -159,14 +158,8 @@ async function init(): Promise<State> {
 	logInfo(`MACHINE: MEM: ${totalmem}GB (available: ${freemem}GB)`);
 
 	if (!fs.existsSync(require('./config').configPath)) {
-		logWarn('Config not found');
-		if (await yesno('Do you want setup now?', true)) {
-			await configGenerator();
-			delete require.cache[require.resolve('./config')];
-		} else {
-			logFailed('Failed to load configuration');
-			return State.failed;
-		}
+		logFailed('Configuration not found');
+		return State.failed;
 	}
 
 	// Load config

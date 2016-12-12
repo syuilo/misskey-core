@@ -9,9 +9,9 @@
   "bugs": "https://github.com/syuilo/misskey-core/issues",
   "main": "./built/index.js",
   "scripts": {
+		"config": "node ./src/utils/config.js",
     "start": "node ./built/index.js",
     "build": "gulp build",
-    "buildall": "gulp buildall",
     "lint": "gulp lint",
     "test": "gulp test"
   },

@@ -6,11 +6,7 @@ export const configPath = `${configDirPath}/config.yml`;
 
 let config: IConfig;
 
-try {
-	config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8')) as IConfig;
-} catch (e) {
-	// nope
-}
+config = yaml.safeLoad(fs.readFileSync(configPath, 'utf8')) as IConfig;
 
 const mixin: Mixin = {} as Mixin;
 
