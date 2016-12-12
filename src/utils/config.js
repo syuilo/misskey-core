@@ -1,9 +1,9 @@
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
-import * as inquirer from 'inquirer';
+const fs = require('fs');
+const yaml = require('js-yaml');
+const inquirer = require('inquirer');
 
-export const configDirPath = `${__dirname}/../../.config`;
-export const configPath = `${configDirPath}/config.yml`;
+const configDirPath = `${__dirname}/../../.config`;
+const configPath = `${configDirPath}/config.yml`;
 
 const form = [
 	{
