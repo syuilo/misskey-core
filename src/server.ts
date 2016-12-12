@@ -21,7 +21,7 @@ app.disable('x-powered-by');
  * Register modules
  */
 app.use(vhost(`api.${config.host}`, require('./api/server')));
-app.use(vhost(config.secondary_host, require('./service/himasaku/server')));
+app.use(vhost(config.secondary_host, require('./himasaku/server')));
 app.use(vhost(`file.${config.secondary_host}`, require('./file/server')));
 app.use(require('./web/server'));
 
@@ -37,13 +37,13 @@ const server = config.https.enable ?
 	http.createServer(app);
 
 /**
+ * Steaming
+ */
+require('./api/streaming')(server);
+
+/**
  * Server listen
  */
 server.listen(config.port, () => {
 	process.send('ready');
 });
-
-/**
- * Steaming
- */
-require('./api/streaming')(server);
