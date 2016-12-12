@@ -2,7 +2,8 @@ import * as express from 'express';
 import * as bcrypt from 'bcrypt';
 import User from '../models/user';
 import Signin from '../models/signin';
-//import event from '../event';
+import serialize from '../serializers/signin';
+import event from '../event';
 
 import config from '../../config';
 
@@ -41,13 +42,16 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		res.sendStatus(204);
 
 		// Append signin history
-		Signin.insert({
+		const inserted = await Signin.insert({
 			created_at: new Date(),
 			user_id: user._id,
 			ip: req.ip,
 			headers: req.headers
 		});
 
-		// Event
+		const record = inserted.ops[0];
+
+		// Publish signin event
+		event(user._id, 'signin', await serialize(record));
 	});
 };
