@@ -41,10 +41,11 @@ export default [
 	{ name: 'aggregation/posts/repost',    shouldBeSignin: false },
 	{ name: 'aggregation/posts/reply',     shouldBeSignin: false },
 
-	{ name: 'i',             shouldBeSignin: true, kind: 'account-read' },
-	{ name: 'i/update',      shouldBeSignin: true, limitDuration: day, limitMax: 50, kind: 'account-write' },
-	{ name: 'i/appdata/get', shouldBeSignin: true },
-	{ name: 'i/appdata/set', shouldBeSignin: true },
+	{ name: 'i',                shouldBeSignin: true, kind: 'account-read' },
+	{ name: 'i/update',         shouldBeSignin: true, limitDuration: day, limitMax: 50, kind: 'account-write' },
+	{ name: 'i/appdata/get',    shouldBeSignin: true },
+	{ name: 'i/appdata/set',    shouldBeSignin: true },
+	{ name: 'i/signin_history', shouldBeSignin: true, kind: 'account-read' },
 
 	{ name: 'i/notifications',                shouldBeSignin: true, kind: 'notification-read' },
 	{ name: 'notifications/delete',           shouldBeSignin: true, kind: 'notification-write' },
