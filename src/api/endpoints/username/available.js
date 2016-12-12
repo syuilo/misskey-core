@@ -4,6 +4,7 @@
  * Module dependencies
  */
 import User from '../../models/user';
+import { validateUsername } from '../../models/user';
 
 /**
  * Check available username
@@ -21,7 +22,7 @@ module.exports = async (params) =>
 	}
 
 	// Validate username
-	if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
+	if (!validateUsername(username)) {
 		return rej('invalid-username');
 	}
 

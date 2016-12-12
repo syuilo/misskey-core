@@ -3,6 +3,7 @@ import * as request from 'request';
 import * as bcrypt from 'bcrypt';
 import rndstr from 'rndstr';
 import User from '../models/user';
+import { validateUsername } from '../models/user';
 import serialize from '../serializers/user';
 
 import config from '../../config';
@@ -37,7 +38,7 @@ export default (req: express.Request, res: express.Response) => {
 		const name = '名無し';
 
 		// Validate username
-		if (!/^[a-zA-Z0-9\-]{3,20}$/.test(username)) {
+		if (!validateUsername(username)) {
 			return res.sendStatus(400);
 		}
 
