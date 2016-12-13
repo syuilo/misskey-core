@@ -45,8 +45,6 @@ export default function messagingStream(request: websocket.request, connection: 
 						_id: id
 					}, {
 						$set: { is_read: true }
-					}, {
-						multi: true
 					});
 
 					// Publish event
