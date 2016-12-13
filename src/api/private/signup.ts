@@ -13,6 +13,7 @@ recaptcha.init({
 });
 
 export default async (req: express.Request, res: express.Response) => {
+	// Verify recaptch
 	const success = await recaptcha(req.body['g-recaptcha-response']);
 
 	if (!success) {
@@ -30,6 +31,7 @@ export default async (req: express.Request, res: express.Response) => {
 		return;
 	}
 
+	// Fetch exist user that same username
 	const usernameExist = await User
 		.count({
 			username_lower: username.toLowerCase()
