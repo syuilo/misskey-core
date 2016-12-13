@@ -25,18 +25,23 @@ export default function messagingStream(request: websocket.request, connection: 
 					const id = new mongodb.ObjectID(msg.id);
 
 					// Fetch message
-					// SELECT _id, user_id
+					// SELECT _id, user_id, is_read
 					const message = await Message.findOne({
 						_id: id,
 						recipient_id: user._id
 					}, {
 						fields: {
 							_id: true,
-							user_id: true
+							user_id: true,
+							is_read: true
 						}
 					});
 
 					if (message == null) {
+						return;
+					}
+
+					if (message.is_read) {
 						return;
 					}
 
