@@ -13,7 +13,7 @@ recaptcha.init({
 });
 
 export default async (req: express.Request, res: express.Response) => {
-	// Verify recaptch
+	// Verify recaptcha
 	const success = await recaptcha(req.body['g-recaptcha-response']);
 
 	if (!success) {
