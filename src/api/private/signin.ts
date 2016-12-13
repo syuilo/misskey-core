@@ -7,7 +7,7 @@ import event from '../event';
 
 import config from '../../config';
 
-export default async (req: express.Request, res: express.Response): Promise<any> => {
+export default async (req: express.Request, res: express.Response) => {
 	res.header('Access-Control-Allow-Credentials', 'true');
 	res.header('Access-Control-Allow-Origin', config.url);
 
@@ -20,7 +20,8 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 	});
 
 	if (user === null) {
-		return res.status(404).send('user not found');
+		res.status(404).send('user not found');
+		return;
 	}
 
 	// Compare password
