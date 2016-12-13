@@ -14,6 +14,7 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 	const username = req.body['username'];
 	const password = req.body['password'];
 
+	// Fetch user
 	const user = await User.findOne({
 		username_lower: username.toLowerCase()
 	});
@@ -22,6 +23,7 @@ export default async (req: express.Request, res: express.Response): Promise<any>
 		return res.status(404).send('user not found');
 	}
 
+	// Compare password
 	const same = await bcrypt.compare(password, user.password);
 
 	if (same) {
