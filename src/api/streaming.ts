@@ -4,6 +4,9 @@ import * as redis from 'redis';
 import User from './models/user';
 import config from '../config';
 
+import homeStream from './stream/home';
+import messagingStream from './stream/messaging';
+
 module.exports = (server: http.Server) => {
 	/**
 	 * Init websocket server
@@ -42,7 +45,7 @@ module.exports = (server: http.Server) => {
 function authenticate(connection: websocket.connection): Promise<any> {
 	return new Promise((resolve, reject) => {
 		// Listen first message
-		connection.on('message', async (data) => {
+		connection.once('message', async (data) => {
 			const msg = JSON.parse(data.utf8Data);
 
 			// Fetch user
@@ -63,23 +66,5 @@ function authenticate(connection: websocket.connection): Promise<any> {
 
 			resolve(user);
 		});
-	});
-}
-
-function homeStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
-	// Subscribe Home stream channel
-	subscriber.subscribe(`misskey:user-stream:${user._id}`);
-	subscriber.on('message', (_, data) => {
-		connection.send(data);
-	});
-}
-
-function messagingStream(request: websocket.request, connection: websocket.connection, subscriber: redis.RedisClient, user: any): void {
-	const otherparty = request.resourceURL.query.otherparty;
-
-	// Subscribe messaging stream
-	subscriber.subscribe(`misskey:messaging-stream:${user._id}-${otherparty}`);
-	subscriber.on('message', (_, data) => {
-		connection.send(data);
 	});
 }
