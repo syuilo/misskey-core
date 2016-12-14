@@ -63,7 +63,9 @@ async function byNative(res, rej, me, query, offset, max) {
 		}, {
 			sort: {
 				_id: -1
-			}
+			},
+			limit: max,
+			skip: offset
 		})
 		.toArray();
 
