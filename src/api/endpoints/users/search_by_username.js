@@ -53,6 +53,9 @@ module.exports = (params, me) =>
 	const users = await User
 		.find({
 			username_lower: new RegExp(query.toLowerCase())
+		}, {
+			limit: limit,
+			skip: offset
 		})
 		.toArray();
 
