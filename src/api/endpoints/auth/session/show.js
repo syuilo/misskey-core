@@ -3,7 +3,6 @@
 /**
  * Module dependencies
  */
-import * as uuid from 'uuid';
 import AuthSess from '../../../models/auth-session';
 import serialize from '../../../serializers/auth-session';
 
