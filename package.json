@@ -68,7 +68,7 @@
     "js-yaml": "3.7.0",
     "log-cool": "1.1.0",
     "mime-types": "2.1.13",
-    "misskey-text": "1.0.5",
+    "misskey-text": "1.1.0",
     "mongodb": "2.2.16",
     "ms": "0.7.2",
     "multer": "1.2.0",
