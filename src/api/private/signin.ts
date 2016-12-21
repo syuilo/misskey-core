@@ -49,8 +49,7 @@ export default async (req: express.Request, res: express.Response) => {
 		user_id: user._id,
 		ip: req.ip,
 		headers: req.headers,
-		success: same,
-		password: same ? undefined : password
+		success: same
 	});
 
 	const record = inserted.ops[0];
