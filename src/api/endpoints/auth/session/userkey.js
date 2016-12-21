@@ -49,14 +49,14 @@ module.exports = (params) =>
 		return rej('session not found');
 	}
 
-	if (session.user == null) {
+	if (session.user_id == null) {
 		return rej('this session is not allowed yet');
 	}
 
 	// Lookup userkey
 	const userkey = await Userkey.findOne({
 		app_id: app._id,
-		user_id: session.user
+		user_id: session.user_id
 	});
 
 	// Delete session
