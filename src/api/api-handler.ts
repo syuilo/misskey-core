@@ -26,7 +26,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 	}
 
 	if (ctx.app && endpoint.kind) {
-		if (!(ctx.app as any).permission.some((p: any) => p === endpoint.kind)) {
+		if (!ctx.app.permission.some((p: any) => p === endpoint.kind)) {
 			return reply(403, 'ACCESS_DENIED');
 		}
 	}
