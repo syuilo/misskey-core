@@ -7,12 +7,16 @@ Misskey Core
 
 A core server of *Misskey*.
 
-Required
---------
+Dependencies
+------------
 * Node.js
 * MongoDB
 * Redis
 * GraphicsMagick
+
+Optional dependencies
+---------------------
+* Elasticsearch
 
 Get started
 -----------
