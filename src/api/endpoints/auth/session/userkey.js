@@ -7,6 +7,7 @@ import * as uuid from 'uuid';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import Userkey from '../../../models/userkey';
+import serialize from '../../../serializers/user';
 
 /**
  * Generate a session
@@ -66,6 +67,9 @@ module.exports = (params) =>
 
 	// Response
 	res({
-		userkey: userkey.key
+		userkey: userkey.key,
+		user: await serialize(session.user_id, null, {
+			detail: true
+		})
 	});
 });
