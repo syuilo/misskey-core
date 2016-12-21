@@ -49,10 +49,10 @@ export default (req: express.Request) =>
 		}
 
 		const app = await App
-			.findOne({ _id: userkeyDoc.app });
+			.findOne({ _id: userkeyDoc.app_id });
 
 		const user = await User
-			.findOne({ _id: userkeyDoc.user });
+			.findOne({ _id: userkeyDoc.user_id });
 
 		return resolve({ app: app, user: user, isWeb: false });
 	}
