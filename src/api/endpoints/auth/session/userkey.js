@@ -3,7 +3,6 @@
 /**
  * Module dependencies
  */
-import * as uuid from 'uuid';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
 import Userkey from '../../../models/userkey';
