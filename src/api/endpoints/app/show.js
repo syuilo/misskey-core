@@ -13,10 +13,10 @@ import serialize from '../../serializers/app';
  * @param {Object} params
  * @param {Object} user
  * @param {Object} _
- * @param {Object} isWeb
+ * @param {Object} isSecure
  * @return {Promise<object>}
  */
-module.exports = (params, user, _, isWeb) =>
+module.exports = (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'app_id' parameter
@@ -46,6 +46,6 @@ module.exports = (params, user, _, isWeb) =>
 
 	// Send response
 	res(await serialize(app, user, {
-		includeSecret: isWeb && app.user_id.equals(user._id)
+		includeSecret: isSecure && app.user_id.equals(user._id)
 	}));
 });

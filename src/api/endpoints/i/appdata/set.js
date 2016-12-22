@@ -12,10 +12,10 @@ import User from '../../../models/user';
  * @param {Object} params
  * @param {Object} user
  * @param {Object} app
- * @param {Boolean} isWeb
+ * @param {Boolean} isSecure
  * @return {Promise<object>}
  */
-module.exports = (params, user, app, isWeb) =>
+module.exports = (params, user, app, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	const data = params.data;
@@ -23,7 +23,7 @@ module.exports = (params, user, app, isWeb) =>
 		return rej('data is required');
 	}
 
-	if (isWeb) {
+	if (isSecure) {
 		const set = {
 			$set: {
 				data: Object.assign(user.data || {}, JSON.parse(data))

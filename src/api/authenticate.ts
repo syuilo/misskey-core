@@ -15,9 +15,9 @@ export interface IAuthContext {
 	user: any;
 
 	/**
-	 * Weather if the request is via the Misskey Web Client or not
+	 * Weather if the request is via the (Misskey Web Client or user direct) or not
 	 */
-	isWeb: boolean;
+	isSecure: boolean;
 }
 
 export default (req: express.Request) =>
@@ -34,7 +34,7 @@ export default (req: express.Request) =>
 		return resolve({
 			app: null,
 			user: user,
-			isWeb: true
+			isSecure: true
 		});
 	}
 
@@ -54,8 +54,8 @@ export default (req: express.Request) =>
 		const user = await User
 			.findOne({ _id: userkeyDoc.user_id });
 
-		return resolve({ app: app, user: user, isWeb: false });
+		return resolve({ app: app, user: user, isSecure: false });
 	}
 
-	return resolve({ app: null, user: null, isWeb: false });
+	return resolve({ app: null, user: null, isSecure: false });
 });

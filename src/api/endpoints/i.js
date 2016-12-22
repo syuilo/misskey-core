@@ -11,15 +11,15 @@ import serialize from '../serializers/user';
  * @param {Object} params
  * @param {Object} user
  * @param {Object} app
- * @param {Boolean} isWeb
+ * @param {Boolean} isSecure
  * @return {Promise<object>}
  */
-module.exports = (params, user, _, isWeb) =>
+module.exports = (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Serialize
 	res(await serialize(user, user, {
 		detail: true,
-		includeSecrets: isWeb
+		includeSecrets: isSecure
 	}));
 });

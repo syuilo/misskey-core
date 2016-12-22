@@ -11,10 +11,10 @@ import Appdata from '../../../models/appdata';
  * @param {Object} params
  * @param {Object} user
  * @param {Object} app
- * @param {Boolean} isWeb
+ * @param {Boolean} isSecure
  * @return {Promise<object>}
  */
-module.exports = (params, user, app, isWeb) =>
+module.exports = (params, user, app, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'key' parameter
@@ -23,7 +23,7 @@ module.exports = (params, user, app, isWeb) =>
 		key = null;
 	}
 
-	if (isWeb) {
+	if (isSecure) {
 		if (!user.data) {
 			return res();
 		}

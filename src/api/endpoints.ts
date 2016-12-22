@@ -11,7 +11,7 @@ export interface IEndpoint {
 	limitMax?: number;
 	minInterval?: number;
 	withFile?: boolean;
-	webOnly?: boolean;
+	secure?: boolean;
 	kind?: string;
 }
 
@@ -29,8 +29,8 @@ export default [
 	{ name: 'auth/session/generate', shouldBeSignin: false },
 	{ name: 'auth/session/show',     shouldBeSignin: false },
 	{ name: 'auth/session/userkey',  shouldBeSignin: false },
-	{ name: 'auth/accept',           shouldBeSignin: true, webOnly: true },
-	{ name: 'auth/deny',             shouldBeSignin: true, webOnly: true },
+	{ name: 'auth/accept',           shouldBeSignin: true, secure: true },
+	{ name: 'auth/deny',             shouldBeSignin: true, secure: true },
 
 	{ name: 'aggregation/users/post',      shouldBeSignin: false },
 	{ name: 'aggregation/users/like',      shouldBeSignin: false },

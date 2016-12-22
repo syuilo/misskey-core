@@ -15,10 +15,10 @@ import config from '../../../config';
  * @param {Object} params
  * @param {Object} user
  * @param {Object} _
- * @param {boolean} isWeb
+ * @param {boolean} isSecure
  * @return {Promise<object>}
  */
-module.exports = async (params, user, _, isWeb) =>
+module.exports = async (params, user, _, isSecure) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'name' parameter
@@ -70,7 +70,7 @@ module.exports = async (params, user, _, isWeb) =>
 	// Serialize
 	const iObj = await serialize(user, user, {
 		detail: true,
-		includeSecrets: isWeb
+		includeSecrets: isSecure
 	})
 
 	// Send response

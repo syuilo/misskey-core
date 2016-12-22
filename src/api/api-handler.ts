@@ -17,7 +17,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 		return reply(403, 'AUTHENTICATION_FAILED');
 	}
 
-	if (endpoint.webOnly && !ctx.isWeb) {
+	if (endpoint.secure && !ctx.isSecure) {
 		return reply(403, 'ACCESS_DENIED');
 	}
 
@@ -47,7 +47,7 @@ export default async (endpoint: IEndpoint, req: express.Request, res: express.Re
 
 	// API invoking
 	try {
-		const res = await exec(req.body, ctx.user, ctx.app, ctx.isWeb);
+		const res = await exec(req.body, ctx.user, ctx.app, ctx.isSecure);
 		reply(res);
 	} catch (e) {
 		reply(400, e);
