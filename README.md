@@ -20,12 +20,12 @@ Optional dependencies
 
 Get started
 -----------
-ドメインをふたつ用意してください。
+Misskey requires two domains called the primary domain and the secondary domain.
 
-* ひとつめのドメインはプライマリドメインと呼んでいて、Misskeyの主要なサービスを提供するために利用されます。
-* ふたつめのドメインはセカンダリドメインと呼んでいて、XSSなどの脆弱性を回避するために利用されます。
+* The primary domain is used to provide main service of Misskey.
+* The secondary domain is used to avoid vulnerabilities such as XSS.
 
-**セカンダリドメインはプライマリドメインのサブドメインであってはなりません。**
+**Ensure that the secondary domain is not a subdomain of the primary domain.**
 
 Build
 -----
