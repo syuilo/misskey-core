@@ -10,9 +10,10 @@ import serialize from '../../../serializers/auth-session';
  * Show a session
  *
  * @param {Object} params
+ * @param {Object} user
  * @return {Promise<object>}
  */
-module.exports = (params) =>
+module.exports = (params, user) =>
 	new Promise(async (res, rej) =>
 {
 	// Get 'token' parameter
@@ -31,5 +32,5 @@ module.exports = (params) =>
 	}
 
 	// Response
-	res(await serialize(session));
+	res(await serialize(session, user));
 });

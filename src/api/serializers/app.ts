@@ -7,17 +7,20 @@ import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import App from '../models/app';
 import User from '../models/user';
+import Userkey from '../models/userkey';
 import config from '../../config';
 
 /**
  * Serialize an app
  *
  * @param {Object} app
+ * @param {Object} me?
  * @param {Object} options?
  * @return {Promise<Object>}
  */
 export default (
 	app: any,
+	me?: any,
 	options?: {
 		includeSecret: boolean,
 		includeProfileImageIds: boolean
@@ -43,6 +46,15 @@ export default (
 		_app = deepcopy(app);
 	}
 
+	// Me
+	if (me && !mongo.ObjectID.prototype.isPrototypeOf(me)) {
+		if (typeof me === 'string') {
+			me = new mongo.ObjectID(me);
+		} else {
+			me = me._id;
+		}
+	}
+
 	// Rename _id to id
 	_app.id = _app._id;
 	delete _app._id;
@@ -57,6 +69,18 @@ export default (
 	_app.icon_url = _app.icon != null
 		? `${config.drive_url}/${_app.icon}`
 		: `${config.drive_url}/app-default.jpg`;
+
+	if (me) {
+		// 既に連携しているか
+		const exist = await Userkey.count({
+			app_id: _app.id,
+			user_id: me,
+		}, {
+			limit: 1
+		});
+
+		_app.is_authorized = exist === 1;
+	}
 
 	resolve(_app);
 });
