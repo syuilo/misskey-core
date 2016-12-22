@@ -32,9 +32,12 @@ Build
 1. `git clone git://github.com/syuilo/misskey-core.git` ... リポジトリをダウンロードします。
 2. `cd misskey-core` ... リポジトリに移動します。
 3. `npm install` ... 依存関係をインストールします。
-4. `npm run config` ... Misskeyの設定を行います。
-5. `git clone git://github.com/syuilo/misskey-web.git` ... Webリソースをダウンロードします。
-6. `npm run build` ... ビルドします。
+4. `git clone git://github.com/syuilo/misskey-web.git` ... Webリソースをダウンロードします。
+5. `npm run build` ... ビルドします。
+
+Install
+-------
+`npm run config` ... Misskeyの設定を行います。
 
 Launch
 ------
