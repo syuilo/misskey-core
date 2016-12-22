@@ -3,6 +3,7 @@
 /**
  * Module dependencies
  */
+import * as mongo from 'mongodb';
 const deepcopy = require('deepcopy');
 import serializeApp from './app';
 
