@@ -95,8 +95,13 @@ table.entity tr.nullable.optional td:nth-child(3):after {
 	content: "(Null許容かつ省略可能)";
 }
 
+pre, code, var, samp, kbd {
+	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
+}
+
 pre code {
 	display: block;
+	overflow: auto;
 	padding: 32px;
 	color: #525252;
 	background: #f8f8f8;
