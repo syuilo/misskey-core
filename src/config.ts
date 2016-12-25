@@ -18,6 +18,7 @@ if (config) {
 	mixin.scheme = config.url.substr(0, config.url.indexOf('://'));
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
 	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
+	mixin.auth_url = mixin.scheme + '://auth.' + mixin.host;
 	mixin.drive_url = mixin.secondary_scheme + '://file.' + mixin.secondary_host;
 	mixin.proxy_url = mixin.secondary_scheme + '://proxy.' + mixin.secondary_host;
 }
@@ -33,6 +34,7 @@ interface Mixin {
 	scheme: string;
 	secondary_host: string;
 	secondary_scheme: string;
+	auth_url: string;
 	drive_url: string;
 	proxy_url: string;
 }

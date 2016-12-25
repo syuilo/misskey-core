@@ -6,6 +6,7 @@
 import * as uuid from 'uuid';
 import App from '../../../models/app';
 import AuthSess from '../../../models/auth-session';
+import config from '../../../../config';
 
 /**
  * Generate a session
@@ -45,6 +46,7 @@ module.exports = (params) =>
 
 	// Response
 	res({
-		token: doc.token
+		token: doc.token,
+		url: `${config.auth_url}/${doc.token}`
 	});
 });
