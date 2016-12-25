@@ -40,6 +40,12 @@ Launch
 ------
 `npm start`
 
+Docs for API users
+----------------------
+
+## Unofficial articles
+* [【2016年12月版】Misskey APIの叩き方](http://blog.surume.tk/misskey-api-call-2016-12/)
+
 License
 -------
 [MIT](LICENSE)
