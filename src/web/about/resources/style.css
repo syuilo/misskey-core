@@ -1,12 +1,43 @@
 body {
 	margin: 0;
+	color: #34495e;
+}
+
+nav {
+	display: block;
+	float: left;
+	width: 210px;
+}
+nav ul {
+	display: block;
+	margin: 0;
+	padding: 0 0 0 16px;
+	list-style: none;
+}
+nav ul li {
+	margin: 0;
+	padding: 0;
+}
+nav ul li p {
+	margin: 16px 0 0 0;
+}
+@media screen and (max-width: 910px) {
+	nav {
+		display: none;
+	}
 }
 
 main {
+	float: left;
 	box-sizing: border-box;
 	padding: 32px;
+	width: 100%;
 	max-width: 700px;
-	color: #34495e;
+}
+@media screen and (max-width: 700px) {
+	main {
+		font-size: 8px;
+	}
 }
 
 footer {
@@ -35,7 +66,7 @@ a {
 h1 {
 	margin: 0;
 	padding: 16px 0;
-	font-size: 32px;
+	font-size: 200%;
 	border-bottom: solid 2px #eee;
 }
 
@@ -64,7 +95,7 @@ table th, table td {
 }
 
 table.entity tbody tr td:nth-child(1) {
-	font-family: monospace;
+	font-family: Consolas, 'Courier New', Courier, Monaco, monospace;
 }
 
 table.entity tbody tr td:nth-child(2) {
