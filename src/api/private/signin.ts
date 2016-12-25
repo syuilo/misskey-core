@@ -8,9 +8,6 @@ import event from '../event';
 import config from '../../config';
 
 export default async (req: express.Request, res: express.Response) => {
-	res.header('Access-Control-Allow-Credentials', 'true');
-	res.header('Access-Control-Allow-Origin', config.url);
-
 	const username = req.body['username'];
 	const password = req.body['password'];
 
