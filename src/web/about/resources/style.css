@@ -68,20 +68,20 @@ a {
 	}
 
 section {
-	margin: 2em 0;
+	margin: 32px 0;
 }
 
 h1 {
-	margin: 0;
-	padding: 0.5em 0;
-	font-size: 2em;
+	margin: 0 0 24px 0;
+	padding: 16px 0;
+	font-size: 1.5em;
 	border-bottom: solid 2px #eee;
 }
 
 h2 {
-	margin: 0;
-	padding: 0 0 0.75em 0;
-	font-size: 1.5em;
+	margin: 0 0 24px 0;
+	padding: 0 0 16px 0;
+	font-size: 1.4em;
 	border-bottom: solid 1px #eee;
 }
 
@@ -92,6 +92,7 @@ h3 {
 }
 
 p {
+	margin: 1em 0;
 	line-height: 1.6em;
 }
 
