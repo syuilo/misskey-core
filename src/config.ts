@@ -19,6 +19,7 @@ if (config) {
 	mixin.secondary_host = config.secondary_url.substr(config.secondary_url.indexOf('://') + 3);
 	mixin.secondary_scheme = config.secondary_url.substr(0, config.secondary_url.indexOf('://'));
 	mixin.drive_url = mixin.secondary_scheme + '://file.' + mixin.secondary_host;
+	mixin.proxy_url = mixin.secondary_scheme + '://proxy.' + mixin.secondary_host;
 }
 
 export default Object.assign(config || {}, mixin) as IConfig & Mixin;
@@ -33,6 +34,7 @@ interface Mixin {
 	secondary_host: string;
 	secondary_scheme: string;
 	drive_url: string;
+	proxy_url: string;
 }
 
 export interface IConfig {

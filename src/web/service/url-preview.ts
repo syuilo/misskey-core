@@ -1,7 +1,14 @@
 import * as express from 'express';
 import summaly from 'summaly';
+import config from '../../config';
 
 module.exports = async (req: express.Request, res: express.Response) => {
-	// TODO: Wrap a non-https resources with a proxy
-	res.send(await summaly(req.query.url));
+	const summary = await summaly(req.query.url);
+	summary.icon = wrap(summary.icon);
+	summary.thumbnail = wrap(summary.thumbnail);
+	res.send(summary);
 };
+
+function wrap(url: string): string {
+	return `${config.proxy_url}/${url}`;
+}
