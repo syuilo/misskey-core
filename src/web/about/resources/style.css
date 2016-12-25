@@ -32,10 +32,13 @@ table th, table td {
 	padding: 8px 16px;
 }
 
+table.entity tbody tr td:nth-child(1) {
+	font-family: monospace;
+}
+
 table.entity tbody tr td:nth-child(2) {
 	font-style: italic;
 }
-
 
 table.entity tr td:nth-child(3):after {
 	margin-left: 8px;
