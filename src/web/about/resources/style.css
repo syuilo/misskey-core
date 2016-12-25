@@ -4,12 +4,42 @@ body {
 
 main {
 	box-sizing: border-box;
-	padding: 16px;
+	padding: 32px;
 	max-width: 700px;
 	color: #34495e;
 }
 
+footer {
+	padding: 32px 0 0 0;
+	margin: 32px 0 0 0;
+	border-top: solid 1px #eee;
+}
+
+footer .contribution {
+	margin: 0 0 16px 0;
+}
+
+footer .copyright {
+	margin: 16px 0 0 0;
+	color: #aaa;
+}
+
+a {
+	text-decoration: none;
+	color: #f76d6c;
+}
+	a:hover {
+		text-decoration: underline;
+	}
+
 h1 {
+	margin: 0;
+	padding: 16px 0;
+	font-size: 32px;
+	border-bottom: solid 2px #eee;
+}
+
+h2 {
 	padding: 16px 0;
 	border-bottom: solid 1px #eee;
 }
@@ -63,4 +93,11 @@ table.entity tr.optional td:nth-child(3):after {
 
 table.entity tr.nullable.optional td:nth-child(3):after {
 	content: "(Null許容かつ省略可能)";
+}
+
+pre code {
+	display: block;
+	padding: 32px;
+	color: #525252;
+	background: #f8f8f8;
 }

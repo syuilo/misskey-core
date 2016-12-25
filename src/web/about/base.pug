@@ -12,4 +12,12 @@ html(lang='ja', dir='ltr')
 
 	body
 		main
-			block content
+			article
+				block content
+			footer
+				p.contribution
+					| 間違いを見つけた、またはドキュメントに貢献したいですか？
+					a(href='https://github.com/syuilo/misskey-core/blob/master/src/web/about/pages/' + path + '.pug', target='_blank') Github 上でこのページを編集する
+					|  か、
+					a(href='https://github.com/syuilo/misskey-core', target='_blank') Github からこのサイトを Fork してプルリクエストしましょう！
+				p.copyright (c) syuilo 2016

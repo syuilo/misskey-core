@@ -65,7 +65,9 @@ app.use('/@/about/resources', express.static(`${__dirname}/about/resources`, {
 	maxAge: ms('7 days')
 }));
 app.get('/@/about/:page([a-z\/]+)', (req, res) => {
-	res.render(`${__dirname}/about/pages/${req.params.page}`);
+	res.render(`${__dirname}/about/pages/${req.params.page}`, {
+		path: req.params.page
+	});
 });
 app.get('/@/auth/*', client('auth')); // authorize form
 app.get('/@/dev/*',  client('dev')); // developer center
