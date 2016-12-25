@@ -2,6 +2,7 @@
  * Web Server
  */
 
+import * as fs from 'fs';
 import * as ms from 'ms';
 
 // express modules
@@ -18,7 +19,8 @@ import config from '../config';
  * Init app
  */
 const app = express();
-app.disable('x-powered-by');
+app.disable('x-powered-by')
+app.set('view engine', 'pug');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
@@ -59,6 +61,12 @@ app.use(subdomain({
 /**
  * Routing
  */
+app.use('/@/about/resources', express.static(`${__dirname}/about/resources`, {
+	maxAge: ms('7 days')
+}));
+app.get('/@/about/:page([a-z\/]+)', (req, res) => {
+	res.render(`${__dirname}/about/pages/${req.params.page}`);
+});
 app.get('/@/auth/*', client('auth')); // authorize form
 app.get('/@/dev/*',  client('dev')); // developer center
 app.get('*',         client('client')); // client

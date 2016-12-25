@@ -50,9 +50,12 @@ gulp.task('build:client', ['build:ts', 'build:js'], () => {
 });
 
 gulp.task('build:copy', () => {
-	return gulp.src([
+	gulp.src([
 		'./src/**/resources/**/*'
 	]).pipe(gulp.dest('./built/'));
+	gulp.src([
+		'./src/web/about/**/*'
+	]).pipe(gulp.dest('./built/web/about/'));
 });
 
 gulp.task('test', ['lint', 'build']);

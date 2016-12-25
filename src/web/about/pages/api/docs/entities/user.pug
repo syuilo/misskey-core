@@ -1,0 +1,74 @@
+extend ../../../../base
+
+block title
+	| Entity: User
+
+block content
+	p ユーザーを表します。
+
+	table.entity
+		thead: tr
+			td Name
+			td Type
+			td Description
+		tbody
+			tr.nullable
+				td birthday
+				td String
+				td 誕生日
+			tr
+				td created_at
+				td Date
+				td アカウント作成日時
+			tr.nullable
+				td bio
+				td String
+				td プロフィール
+			tr
+				td followers_count
+				td Number
+				td フォロワー数
+			tr
+				td following_count
+				td Number
+				td フォロー数
+			tr.nullable
+				td location
+				td String
+				td 場所
+			tr
+				td name
+				td String
+				td ニックネーム
+			tr
+				td posts_count
+				td Number
+				td 投稿数
+			tr.optional
+				td drive_capacity
+				td Number
+				td ドライブの最大容量
+			tr
+				td username
+				td String
+				td ユーザー名
+			tr.nullable.optional
+				td avatar_id
+				td String
+				td アバターに設定しているドライブのファイルのID
+			tr.nullable.optional
+				td banner_id
+				td String
+				td バナーに設定しているドライブのファイルのID
+			tr
+				td id
+				td String
+				td ユーザーID
+			tr.nullable
+				td avatar_url
+				td String
+				td アバターURL
+			tr.nullable
+				td banner_url
+				td String
+				td バナーURL
