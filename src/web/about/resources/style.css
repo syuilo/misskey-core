@@ -91,6 +91,10 @@ h3 {
 	font-size: 1.25em;
 }
 
+h4 {
+	margin: 0;
+}
+
 p {
 	margin: 1em 0;
 	line-height: 1.6em;
