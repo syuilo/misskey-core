@@ -35,6 +35,9 @@ Misskey requires two domains called the primary domain and the secondary domain.
 `npm start`
 
 ## Docs for API users
+### Official articles (source code at [src/web/about/pages/api](src/web/about/pages/api/))
+* [Getting Started](https://about.misskey.xyz/api/getting-started) 
+
 ### Unofficial articles
 * [【2016年12月版】Misskey APIの叩き方](http://blog.surume.tk/misskey-api-call-2016-12/)
 
