@@ -1,6 +1,8 @@
 :warning: THIS REPOSITORY IS NO LONGER MAINTAINED :warning:
 ===========================================================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/syuilo/misskey-core.svg)](https://greenkeeper.io/)
+
 **MOVE TO https://github.com/syuilo/misskey**
 
 :v:
